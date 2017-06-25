@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Scons temporary files
+.sconsign.dblite
