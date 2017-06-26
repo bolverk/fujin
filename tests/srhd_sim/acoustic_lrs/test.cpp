@@ -1,0 +1,117 @@
+#include <iostream>
+#include <cmath>
+#include "spatial_reconstruction.hpp"
+#include "spatial_distribution.hpp"
+#include "periodic.hpp"
+#include "ideal_gas.hpp"
+#include "linear_rs.hpp"
+#include "van_leer.hpp"
+#include "utilities.hpp"
+#include "srhd_sim.hpp"
+#include "diagnostics.hpp"
+#include "pcm.hpp"
+#include "isentropic_flow.hpp"
+#include "main_loop.hpp"
+
+using namespace std;
+
+namespace {
+  double calc_entropy(double g,
+		      double d,
+		      double p)
+  {
+    return p/pow(d,g);
+  }
+
+  class InitCond
+  {
+  public:
+
+    InitCond(double mean_density,
+	     double pert_density,
+	     double mean_pressure,
+	     double g):
+      density_(pert_density,1,0,mean_density),
+      pressure_(calc_entropy
+		(g,mean_density,mean_pressure),
+		g,density_),
+      velocity_(calc_riemann_invariant
+		(g,density_(0),
+		 pressure_(0),
+		 0,-1),g,
+		density_,
+		pressure_) {}
+
+    SpatialDistribution const& getDist(string const& dname) const
+    {
+      if("density"==dname)
+	return density_;
+      else if("pressure"==dname)
+	return pressure_;
+      else if("velocity"==dname)
+	return velocity_;
+      else
+	throw "Unknown distribution name";
+    }
+
+  private:
+    SineWave density_;
+    ConstEntropy pressure_;
+    ConstRiemannInv velocity_;
+  };
+
+  class SimData
+  {
+  public:
+
+    SimData(void):
+    eos_(4./3.),
+    init_cond_
+    (1,1e-5,1e-3,
+     eos_.getAdiabaticIndex()),
+    rs_(eos_),
+    bc_(rs_),
+    sr_(),
+    geometry_(),
+    sim_(linspace(0,1,20),
+	 init_cond_.getDist("density"),
+	 init_cond_.getDist("pressure"),
+	 init_cond_.getDist("velocity"),
+	 bc_, bc_,
+	 eos_,
+	 rs_,
+	 sr_,
+	 geometry_) {}
+
+    SRHDSimulation& getSim(void)
+    {
+      return sim_;
+    }
+
+  private:
+    const IdealGas eos_;
+    const InitCond init_cond_;
+    const LinearRS rs_;
+    const Periodic bc_;
+    VanLeer sr_;
+    const Planar geometry_;
+    SRHDSimulation sim_;
+  };
+}
+
+int main(void)
+{
+  SimData sim_data;
+  SRHDSimulation& sim = sim_data.getSim();
+  write_snapshot(sim,"init_cond.txt",14);
+
+  main_loop(sim,
+	    SafeTimeTermination(10,1e6),
+	    &SRHDSimulation::TimeAdvance,
+	    WriteTime("time.txt"));
+
+  write_snapshot(sim,"snapshot.txt",14);
+
+  ofstream("test_terminated_normally.res").close();
+ return 0;
+}
