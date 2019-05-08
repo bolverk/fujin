@@ -3,12 +3,16 @@ SOURCES := $(shell find $(SOURCE_DIR) -name '*.cpp')
 STRIPPED_SOURCES := $(notdir $(SOURCES))
 LIB_FILE := libfujin.a
 CC := clang++
+SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
 	CFLAGS := -O0 -g -pg -Weverything -Werror -ferror-limit=1 -Wno-error=padded
 	LFLAGS := -pg
 else
 	MODE = production
 	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded
+	ifeq ($(SILENCE_WARNINGS),1)
+		CFLAGS := -O2
+	endif
 	LFLAGS :=
 endif
 
