@@ -15,6 +15,9 @@ addons:
     - g++-7
     - clang-3.8
 install:
+- export FUJIN_ROOT=`pwd`
+- ./install/install_boost.sh
+- export CPATH=$CPATH:./external_libraries/boost_66_0
 - make
 build: make
 script: make
