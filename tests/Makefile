@@ -1,9 +1,13 @@
+SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
 	CFLAGS := -O0 -g -pg -Weverything -Werror -Wno-error=padded -ferror-limit=1
 	LFLAGS := -pg
 else
 	MODE = production
 	CFLAGS := -O2 -Weverything -Werror -Wno-error=padded -ferror-limit=1
+	ifeq ($(SILENCE_WARNINGS),1)
+		CFLAGS := -O2
+	endif
 	LFLAGS :=
 endif
 PYTHON_PATH = python
