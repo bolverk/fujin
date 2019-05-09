@@ -20,6 +20,7 @@ install:
 - pip install --user numpy
 - pip install --user h5py
 - pip install --user scipy
+- pip install --user matplotlib
 - export FUJIN_ROOT=`pwd`
 - chmod +x ./install/install_boost.sh
 - ./install/install_boost.sh
