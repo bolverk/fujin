@@ -3,7 +3,6 @@
 def main():
 
     import numpy
-    import pylab
 
     res = numpy.loadtxt('res.txt')
     ans = [0.146165, 0.089294]
