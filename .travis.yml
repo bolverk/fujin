@@ -18,9 +18,9 @@ install:
 - export FUJIN_ROOT=`pwd`
 - chmod +x ./install/install_boost.sh
 - ./install/install_boost.sh
-- export CPATH=$CPATH:`pwd`/external_libraries/boost_66_0
+- export CPATH=$(CPATH):`pwd`/external_libraries/boost_1_66_0
 - echo $CPATH
-- export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:`pwd`/external_libraries/boost_66_0
+- export CPLUS_INCLUDE_PATH=$(CPLUS_INCLUDE_PATH):`pwd`/external_libraries/boost_1_66_0
 - echo $CPLUS_INCLUDE_PATH
 - ls
 - make
