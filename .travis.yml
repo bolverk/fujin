@@ -17,7 +17,8 @@ addons:
     - g++-7
     - clang-3.8
 install:
--  pip install --user numpy
+- pip install --user numpy
+- pip install --user h5py
 - export FUJIN_ROOT=`pwd`
 - chmod +x ./install/install_boost.sh
 - ./install/install_boost.sh
