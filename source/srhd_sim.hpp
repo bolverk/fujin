@@ -50,27 +50,27 @@ private:
 
 public:
   /*! \brief Class constructor
-    \param rVertices Reference to coordinate vector of the vertices
-    \param pDensityDistribution Pointer to initial conditions of the densities
-    \param pPressureDistribution Pointer to initial conditions of the pressures
-    \param pVelocityDistribution Pointer to initial conditions of the velocities
-    \param piInnerBC Inner boundary conditions
-    \param piOuterBC Outer boundary conditions
-    \param reos Reference to equation of state
-    \param rRiemannSolver Reference to riemann solver
-    \param pInterpolationMethod Pointer to spatial reconstruction
-    \param geometry_ Geometry
+    \param vertices List of vertices
+    \param density_distribution Initial density distribution
+    \param pressure_distribution Initial pressure distribution
+    \param proper_velocity_distribution Initial proper velocity distribution
+    \param inner_bc Inner boundary conditions
+    \param outer_bc Outer boundary conditions
+    \param eos Equation of state
+    \param riemann_solver Reference to riemann solver
+    \param interpolation_method Pointer to spatial reconstruction
+    \param geometry Geometry
    */
-  SRHDSimulation(const vector<double>& rVertices,
-		 SpatialDistribution const& pDensityDistribution,
-		 SpatialDistribution const& pPressureDistribution,
-		 SpatialDistribution const& pVelocityDistribution,
-		 BoundaryCondition const& piInnerBC,
-		 BoundaryCondition const& piOuterBC,
-		 EquationOfState const& reos,
-		 RiemannSolver const& rRiemannSolver,
-		 SpatialReconstruction& pInterpolationMethod,
-		 Geometry const& geometry_);
+  SRHDSimulation(const vector<double>& vertices,
+		 const SpatialDistribution& density_distribution,
+		 const SpatialDistribution& pressure_distribution,
+		 const SpatialDistribution& proper_velocity_distribution,
+		 const BoundaryCondition& inner_bc,
+		 const BoundaryCondition& outer_bc,
+		 const EquationOfState& eos,
+		 const RiemannSolver& riemann_solver,
+		 SpatialReconstruction& interpolation_method,
+		 const Geometry& geometry);
 
   //! \brief Advances the simulation in time
   void TimeAdvance1stOrder(void);

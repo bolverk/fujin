@@ -1,6 +1,7 @@
 #include "aimm_recovery.hpp"
 #include <cmath>
 #include <cassert>
+#include <iostream>
 
 namespace {
 
@@ -27,10 +28,15 @@ double calc_pressure(const NewConserved& c,
   std::pair<double, double> f_df = eval_func_deriv(c,g,prev);
   double res = prev - f_df.first / f_df.second;
   int counter = 0;
-  //  while(fabs(res-prev)>(res+prev)*1e-12){
   while((fabs(f_df.first) > res*1e-9 && fabs(f_df.first)>1e-14) ||
 	counter<4){
-    assert(++counter<20 && "too many iterations");
+		if(counter>18){
+			std::cout << c.mass << std::endl;
+			std::cout << c.positive << std::endl;
+			std::cout << c.negative << std::endl;
+		}
+		assert(++counter<20 && "too many iterations");
+//    assert(++counter<20 && "too many iterations");
     prev = res;
     f_df = eval_func_deriv(c,g,res);
     res -= f_df.first/f_df.second;
