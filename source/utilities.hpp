@@ -204,7 +204,7 @@ public:
   /*! \brief Class constructor
     \param v stl vector
    */
-  Echo(const vector<T>& v):
+  explicit Echo(const vector<T>& v):
     v_(v) {}
 
   size_t getLength(void) const

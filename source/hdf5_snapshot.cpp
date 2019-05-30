@@ -12,7 +12,7 @@ namespace {
     /*! \brief Class constructor
       \param i2m Source list
      */
-    MidValues(const Index2Member<double>& i2m):
+    explicit MidValues(const Index2Member<double>& i2m):
       i2m_(i2m) {}
 
     size_t getLength(void) const

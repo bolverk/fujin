@@ -26,7 +26,7 @@ public:
   /*! \brief Class constructor
     \param max_iter Number of iterations
    */
-  IterationTermination(int max_iter);
+  explicit IterationTermination(int max_iter);
 
   bool operator()(SRHDSimulation const& sim) const;
 
@@ -80,7 +80,7 @@ public:
   /*! \brief Class constructor
     \param fname File name
    */
-  WriteTime(string const& fname);
+  explicit WriteTime(string const& fname);
 
   void operator()(SRHDSimulation const& sim) const;
 
@@ -98,7 +98,7 @@ public:
   /*! \brief Class constructor
     \param fname File name
    */
-  TotalEnergyHistory(string const& fname);
+  explicit TotalEnergyHistory(string const& fname);
 
   void operator()(SRHDSimulation const& sim) const;
 

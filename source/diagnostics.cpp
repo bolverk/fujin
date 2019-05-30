@@ -117,7 +117,7 @@ namespace {
   {
   public:
 
-    CellVolumes(const SRHDSimulation& sim):
+    explicit CellVolumes(const SRHDSimulation& sim):
       sim_(sim) {}
 
     size_t getLength(void) const
@@ -221,7 +221,7 @@ public:
   /*! \brief Class constructor
     \param i2m Lazy list
    */
-  IsIncreasing(const Index2Member<T>& i2m):
+  explicit IsIncreasing(const Index2Member<T>& i2m):
     i2m_(i2m) {}
 
   size_t getLength(void) const
@@ -256,7 +256,7 @@ namespace {
     /*! \brief Class constructor
       \param sim Simulation
      */
-    CellCenterGetter(const SRHDSimulation& sim):
+    explicit CellCenterGetter(const SRHDSimulation& sim):
       edges_(sim.getHydroSnapshot().edges) {}
 
     size_t getLength(void) const

@@ -29,7 +29,7 @@ public:
   /*! \brief Class constructor
     \param iValue Value at each point
    */
-  Uniform(double iValue);
+  explicit Uniform(double iValue);
 
   /*! \brief Calculates the value at each point
     \param x Position

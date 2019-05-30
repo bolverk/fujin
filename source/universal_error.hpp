@@ -18,7 +18,7 @@ public:
   /*! \brief Class constructor
     \param err_msg Error message
    */
-  UniversalError(string const& err_msg);
+  explicit UniversalError(string const& err_msg);
   
   /*! \brief Appends string to error message
     \param em_add String to attach

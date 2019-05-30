@@ -91,7 +91,7 @@ public:
   /*! \brief Class constructor
     \param tol Tolerance
    */
-  SVRelStep(double tol);
+  explicit SVRelStep(double tol);
 
   bool operator()(double x, double f, SVFunction const& svf) const;
 

@@ -12,7 +12,7 @@ public:
   /*! \brief Class constructor
     \param rs Riemann solver
    */
-  Periodic(RiemannSolver const& rs);
+  explicit Periodic(RiemannSolver const& rs);
 
   RiemannSolution CalcRS
   (size_t idx, vector<Primitive> const& cells) const;

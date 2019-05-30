@@ -18,7 +18,7 @@ public:
   /*! \brief Class constructor
     \param ig Adiabatic index
   */
-  IdealGasRiemannSolver(double ig);
+  explicit IdealGasRiemannSolver(double ig);
   /*! \brief Solve the Riemann problem
     \param left Hydrodynamic state on the left side
     \param right Hydrodynamic state on the right side

@@ -49,7 +49,7 @@ namespace {
     {
     public:
 
-      DerivativeInterface(const HydroSnapshot& hs_i):
+      explicit DerivativeInterface(const HydroSnapshot& hs_i):
 	hs_(hs_i) {}
 
       size_t getLength(void) const
@@ -83,7 +83,7 @@ namespace {
     {
     public:
 
-      Minmoder(const vector<Primitive>& edge_slopes_i):
+     explicit Minmoder(const vector<Primitive>& edge_slopes_i):
 	edge_slopes_(edge_slopes_i) {}
 
       size_t getLength(void) const
@@ -117,7 +117,7 @@ VanLeer::interpolateAll
   {
   public:
 
-    Interpolator(const HydroSnapshot& hs_i):
+    explicit Interpolator(const HydroSnapshot& hs_i):
       hs_(hs_i),
       cell_slopes_(calc_cell_slopes(hs_i)) {}
 

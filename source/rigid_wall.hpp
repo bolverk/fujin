@@ -14,7 +14,7 @@ public:
   /*! \brief Class constructor
     \param rs Pointer to Riemann solver
    */
-  RigidWall(RiemannSolver const& rs);
+  explicit RigidWall(RiemannSolver const& rs);
 
   RiemannSolution CalcRS
   (size_t idx, vector<Primitive> const& cells) const;

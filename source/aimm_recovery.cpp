@@ -37,7 +37,7 @@ double calc_pressure(const NewConserved& c,
 		}
 		assert(++counter<20 && "too many iterations");
 //    assert(++counter<20 && "too many iterations");
-    prev = res;
+    //prev = res;
     f_df = eval_func_deriv(c,g,res);
     res -= f_df.first/f_df.second;
   }

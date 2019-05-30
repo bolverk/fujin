@@ -19,7 +19,7 @@ private:
 public:
   /*! \brief Class constructor
    */
-  HLL(const EquationOfState& eos);
+  explicit HLL(const EquationOfState& eos);
 
   /*! \brief Solve the Riemann problem
     \param left Hydrodynamic state on the left side

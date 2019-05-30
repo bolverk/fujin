@@ -14,7 +14,7 @@ namespace {
     /*! \brief Class constructor
       \param hs HydroSnapshot
      */
-    Interpolator(const HydroSnapshot& hs):
+    explicit Interpolator(const HydroSnapshot& hs):
       hs_(hs) {}
 
     size_t getLength(void) const

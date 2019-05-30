@@ -19,7 +19,7 @@ public:
   /*! \brief Class constructor
     \param ig Adiabatic index
    */
-  IdealGas(double ig);
+  explicit IdealGas(double ig);
 
   double dp2e(double d, double p) const;
 

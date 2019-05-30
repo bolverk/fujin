@@ -50,7 +50,7 @@ namespace {
     /*! \brief Class constructor
       \param geometry_i Geometry
     */
-    CalcAreaInterface(Geometry const& geometry_i):
+    explicit CalcAreaInterface(Geometry const& geometry_i):
       geometry_(geometry_i) {}
     
     double Eval(double x) const
@@ -102,7 +102,7 @@ namespace {
     {
     public:
 
-      VolumeCalc(Geometry const& geom2):
+      explicit VolumeCalc(Geometry const& geom2):
 	geometry_(geom2) {}
 
       double Eval(double r) const
@@ -546,7 +546,7 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs)
   const class Checker: public Index2Member<bool>
   {
   public:
-    Checker(const vector<RiemannSolution>& psvs_i):
+    explicit Checker(const vector<RiemannSolution>& psvs_i):
       psvs_(psvs_i) {}
 
     size_t getLength(void) const

@@ -12,7 +12,7 @@ public:
   /*! \brief Class constructor
     \param coefs List of coefficients
    */
-  Polynomial(const vector<double>& coefs);
+  explicit Polynomial(const vector<double>& coefs);
 
   double operator()(double x) const;
 

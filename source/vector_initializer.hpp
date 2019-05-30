@@ -9,7 +9,7 @@ public:
   /*! \brief Class constructor
     \param t First member
    */
-  VectorInitializer(T const& t):
+  explicit VectorInitializer(T const& t):
     list_(1,t) {}
 
   /*! \brief Appends member to initializer
