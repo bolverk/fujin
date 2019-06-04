@@ -37,6 +37,8 @@ void write_hdf5_snapshot(const SRHDSimulation& sim,
   (HDF5Shortcut(fname))
     ("position",
      serial_generate(MidValues(Echo<double>(sim.getHydroSnapshot().edges))))
+	("edges",
+     serial_generate(Echo<double>(sim.getHydroSnapshot().edges)))
     ("density",
      serial_generate(PrimitivePropertyGetter(sim,&Primitive::Density)))
     ("pressure",
