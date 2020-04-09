@@ -77,6 +77,14 @@ HydroSnapshot::HydroSnapshot
 HydroSnapshot::HydroSnapshot(HydroSnapshot const& source):
   edges(source.edges),cells(source.cells) {}
 
+HydroSnapshot& HydroSnapshot::operator=
+(const HydroSnapshot& source)
+{
+  edges = source.edges;
+  cells = source.cells;
+  return *this;
+}
+
 HydroSnapshot operator+(HydroSnapshot const& hs1,
 			HydroSnapshot const& hs2)
 {

@@ -7,9 +7,12 @@ SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
 	CFLAGS := -O0 -g -pg -Weverything -Werror -ferror-limit=1 -Wno-error=padded
 	LFLAGS := -pg
+else ifeq ($(MODE),parallel)
+	CC = mpiCC
+	CFLAGS = -DPARALLEL -std=c++11
 else
 	MODE = production
-	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded
+	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded -std=c++11
 	ifeq ($(SILENCE_WARNINGS),1)
 		CFLAGS := -O2
 	endif

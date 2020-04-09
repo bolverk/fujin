@@ -1,6 +1,7 @@
 #include "hdf5_snapshot.hpp"
 #include "hdf5_utils.hpp"
 #include "diagnostics.hpp"
+#include <assert.h>
 
 namespace {
 

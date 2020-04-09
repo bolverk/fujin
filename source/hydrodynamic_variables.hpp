@@ -142,6 +142,8 @@ public:
    */
   HydroSnapshot(HydroSnapshot const& source);
 
+  HydroSnapshot& operator=(const HydroSnapshot& source);
+
   //! \brief Grid
   vector<double> edges;
 
