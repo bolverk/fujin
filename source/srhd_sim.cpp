@@ -141,7 +141,18 @@ double SRHDSimulation::GetVolume(size_t Index) const
 
 void SRHDSimulation::TimeAdvance1stOrder(void)
 {
+#ifdef PARALLEL
+  const double dt_candidate = TimeStep();
+  double temp = dt_candidate;
+  MPI_Allreduce(&dt_candidate,&temp,1,
+		MPI_DOUBLE,
+		MPI_MIN,
+		MPI_COMM_WORLD);
+  const double dt = temp;
+  spdlog::debug("dt = {0}",dt);
+#else
   const double dt = TimeStep();
+#endif // PARALLEL
 
   data_ = BasicTimeAdvance(data_,sr,rs,eos,dt,geometry_,
 			   pInnerBC, pOuterBC);
@@ -224,10 +235,27 @@ void SRHDSimulation::TimeAdvance(void)
 	     pOuterBC,
 	     psvs);
 
+#ifdef PARALLEL
+  const double dt_candidate =
+    new_calc_time_step(data_,
+		       psvs,
+		       eos,
+		       CourantFactor);
+  double temp = dt_candidate;
+  MPI_Allreduce(&dt_candidate,
+		&temp,
+		1,
+		MPI_DOUBLE,
+		MPI_MIN,
+		MPI_COMM_WORLD);
+  const double dt = temp;
+  spdlog::debug("dt = {0}", dt);
+#else
   const double dt = new_calc_time_step(data_,
 				       psvs,
 				       eos,
 				       CourantFactor);
+#endif // PARALLEL
 
   update_new_conserved(psvs,
 		       data_.cells,
