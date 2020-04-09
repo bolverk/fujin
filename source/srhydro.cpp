@@ -4,6 +4,9 @@
 #include "utilities.hpp"
 #include "advanced_hydrodynamic_variables.hpp"
 #include "universal_error.hpp"
+#ifdef PARALLEL
+#include "mpi.h"
+#endif // PARALLEL
 
 namespace {
 
@@ -372,6 +375,45 @@ double MaxTimeStep(vector<double> const& v_list,
   return min_term(valid_time_steps);
 }
 
+namespace{
+#ifdef PARALLEL
+  vector<double> serialise_primitive
+    (const Primitive& p)
+  {
+    vector<double> res(3,0);
+    res.at(0) = p.Density;
+    res.at(1) = p.Pressure;
+    res.at(2) = p.Celerity;
+    return res;
+  }
+  
+  Primitive unserialise_primitive
+    (const vector<double>& v)
+  {
+    assert(v.size()==3);
+    Primitive res;
+    res.Density = v.at(0);
+    res.Pressure = v.at(1);
+    res.Celerity = v.at(2);
+    return res;
+  }
+
+  int get_mpi_rank(void)
+  {
+    int res;
+    MPI_Comm_rank(MPI_COMM_WORLD, &res);
+    return res;
+  }
+
+  int get_mpi_size(void)
+  {
+    int res;
+    MPI_Comm_size(MPI_COMM_WORLD, &res);
+    return res;
+  }
+#endif // PARALLEL
+}
+
 void CalcFluxes(HydroSnapshot const& data,
 		SpatialReconstruction const& sr,
 		RiemannSolver const& rs,
@@ -379,8 +421,62 @@ void CalcFluxes(HydroSnapshot const& data,
 		BoundaryCondition const& rbc,
 		vector<RiemannSolution>& psvs)
 {
+#ifdef PARALLEL
+  MPI_Request send_left, send_right;
+  // Send data
+  if(get_mpi_rank()>0)
+    MPI_Isend(&serialise_primitive(data.cells.front()).front(),
+	      3,
+	      MPI_DOUBLE,
+	      get_mpi_rank()-1,
+	      0,
+	      MPI_COMM_WORLD,
+	      &send_left);
+  if(get_mpi_rank()<get_mpi_size()-1)
+    MPI_Isend(&serialise_primitive(data.cells.back()).front(),
+	      3,
+	      MPI_DOUBLE,
+	      get_mpi_rank()+1,
+	      1,
+	      MPI_COMM_WORLD,
+	      &send_right);
+
+  // Receive data and calculate edge fluxes
+  if(get_mpi_rank()==0)
+    psvs.front() = lbc.CalcRS(0,data.cells);
+  else{
+    vector<double> buffer(3,0);
+    MPI_Recv(&buffer.front(),
+	     3,
+	     MPI_DOUBLE,
+	     get_mpi_rank()-1,
+	     1,
+	     MPI_COMM_WORLD,
+	     MPI_STATUS_IGNORE);
+    MPI_Wait(&send_left, MPI_STATUS_IGNORE);
+    psvs.front() = rs(unserialise_primitive(buffer),
+		      data.cells.front());
+  } 
+  if(get_mpi_rank()==get_mpi_size()-1)
+    psvs.back() = rbc.CalcRS(data.edges.size()-1,data.cells);
+  else{
+    vector<double> buffer(3,0);
+    MPI_Recv(&buffer.front(),
+	     3,
+	     MPI_DOUBLE,
+	     get_mpi_rank()+1,
+	     0,
+	     MPI_COMM_WORLD,
+	     MPI_STATUS_IGNORE);
+    MPI_Wait(&send_right, MPI_STATUS_IGNORE);
+    psvs.back() = rs(data.cells.back(),
+		     unserialise_primitive(buffer));
+    
+  }
+#else
   psvs[0] = lbc.CalcRS(0,data.cells);
   psvs[psvs.size()-1] = rbc.CalcRS(data.edges.size()-1,data.cells);
+#endif // PARALLEL
   const vector<std::pair<Primitive, Primitive> > interp_vals =
     sr.interpolateAll(data,dt);
   for(size_t i=1;i<data.edges.size()-1;++i)

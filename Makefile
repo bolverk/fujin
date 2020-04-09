@@ -9,7 +9,7 @@ ifeq ($(MODE),debug)
 	LFLAGS := -pg
 else ifeq ($(MODE),parallel)
 	CC = mpiCC
-	CFLAGS = -DPARALLEL -std=c++11
+	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors
 else
 	MODE = production
 	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded -std=c++11
