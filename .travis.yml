@@ -26,8 +26,9 @@ install:
 - ./install/install_boost.sh
 - chmod +x ./install/install_hdf5.sh
 - ./install/install_hdf5.sh
-- export CPATH=$CPATH:`pwd`/external_libraries/boost_1_66_0:`pwd`/external_libraries/include
-- export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:`pwd`/external_libraries/boost_1_66_0:`pwd`/external_libraries/include
+- chmod + ./install/install_spdlog.sh
+- export CPATH=$CPATH:`pwd`/external_libraries/boost_1_66_0:`pwd`/external_libraries/include:`pwd`/external_libraries/spdlog/include
+- export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:`pwd`/external_libraries/boost_1_66_0:`pwd`/external_libraries/include:`pwd`/external_libraries/spdlog/include
 - export HDF5_LIB_PATH=`pwd`/external_libraries/lib
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`pwd`/external_libraries/lib
 - make SILENCE_WARNINGS=1
