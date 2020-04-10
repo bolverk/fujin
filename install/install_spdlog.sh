@@ -1,4 +1,4 @@
-cd #FUJIN_ROOT
+cd $FUJIN_ROOT
 mkdir -p external_libraries
 cd external_libraries
 git clone https://github.com/gabime/spdlog.git
