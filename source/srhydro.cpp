@@ -488,6 +488,18 @@ namespace {
   }
 }
 
+namespace{
+  vector<double> calc_all_vertex_areas
+    (const Geometry& geo,
+     const vector<double>& vertices)
+  {
+    vector<double> res(vertices.size());
+    for(size_t i=0;i<vertices.size();++i)
+      res[i] = geo.calcArea(vertices[i]);
+    return res;
+  }
+}
+
 void update_new_conserved(const vector<RiemannSolution>& psvs,
 			  const vector<Primitive>& cells,
 			  const vector<double>& rest_mass,
@@ -496,9 +508,12 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
 			  vector<double>& vertices,
 			  vector<NewConserved>& conserved)
 {
+  /*
   vector<double> vertex_areas(vertices.size());
   for(size_t i=0;i<vertex_areas.size();++i)
     vertex_areas[i] = geometry.calcArea(vertices[i]);
+  */
+  const vector<double> vertex_areas = calc_all_vertex_areas(geometry, vertices);
   /*
   vector<double> volume_old = VerticesVolumes
     (vertices,geometry);
@@ -507,8 +522,8 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
   for(size_t i=0;i<psvs.size();++i)
     vertices[i] += dt*celerity2velocity(psvs[i].Celerity);
 
-  vector<double> volume_new = VerticesVolumes(vertices,geometry);
-  vector<double> area_new = CellAreas(vertices,geometry);
+  const vector<double> volume_new = VerticesVolumes(vertices,geometry);
+  //  vector<double> area_new = CellAreas(vertices,geometry);
 
   for(size_t i=0;i<conserved.size();++i){
     conserved[i].positive += 
