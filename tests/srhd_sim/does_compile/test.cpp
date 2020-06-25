@@ -22,7 +22,7 @@ int main()
   const size_t n = 100;
   vertex.resize(n+1);
   for (size_t i=0; i<n; i++)
-    vertex[i] = i/n;
+    vertex[i] = static_cast<double>(i)/static_cast<double>(n);
 
   double g = 4./3.;
   Uniform dd(1.0);
