@@ -24,7 +24,7 @@ namespace {
   {
     vector<double> res(coefs.size()-1);
     for(size_t i=0, endp=res.size();i<endp;++i)
-      res[i] = coefs[i]*(endp-i);
+      res[i] = coefs[i]*static_cast<double>(endp-i);
     return res;
   }
 }
