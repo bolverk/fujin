@@ -499,9 +499,11 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
   vector<double> vertex_areas(vertices.size());
   for(size_t i=0;i<vertex_areas.size();++i)
     vertex_areas[i] = geometry.calcArea(vertices[i]);
+  /*
   vector<double> volume_old = VerticesVolumes
     (vertices,geometry);
   vector<double> area_old = CellAreas(vertices,geometry);
+  */
   for(size_t i=0;i<psvs.size();++i)
     vertices[i] += dt*celerity2velocity(psvs[i].Celerity);
 
