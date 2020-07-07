@@ -7,9 +7,12 @@ SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
 	CFLAGS := -O0 -g -pg -Weverything -Werror -ferror-limit=1 -Wno-error=padded
 	LFLAGS := -pg
+else ifeq ($(MODE),gcc)
+	CC = gcc
+	CFLAGS = -O3 -march=native -g -ffast-math
 else
 	MODE = production
-	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded
+	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded -ffast-math
 	ifeq ($(SILENCE_WARNINGS),1)
 		CFLAGS := -O2
 	endif
