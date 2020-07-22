@@ -1,11 +1,13 @@
 SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
+	CC = clang++
 	CFLAGS := -O0 -g -pg -Weverything -Werror -Wno-error=padded -ferror-limit=1
 	LFLAGS := -pg
 else ifeq ($(MODE),gcc)
 	CC = gcc
 	CFLAGS = -O3 -march=native -g -ffast-math
 else
+	CC = clang++
 	MODE = production
 	CFLAGS := -O2 -Weverything -Werror -Wno-error=padded -ferror-limit=1 -ffast-math
 	ifeq ($(SILENCE_WARNINGS),1)
@@ -14,7 +16,6 @@ else
 	LFLAGS :=
 endif
 PYTHON_PATH = python
-CC = clang++
 BINARY = $(TEMP_FOLDER)/test.exe
 SOURCE_FILES = $(shell find $(FUJIN_ROOT)/source -name '*.*pp')
 EMPTY := 
