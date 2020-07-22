@@ -12,11 +12,18 @@
 #include "utilities.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#ifdef PARALLEL
+#include "mpi.h"
+#endif // PARALLEL
 
 using namespace std;
 
 int main()
 {
+
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 100;
@@ -44,7 +51,11 @@ int main()
 
   // Write data to file
   ofstream f;
+#ifdef PARALLEL
+  f.open("res_"+int2str(get_rank())+".txt");
+#else
   f.open("res.txt");
+#endif // PARALLEL
   double vol = 0;
   for (size_t i=0;i<sim.getHydroSnapshot().cells.size();i++)
     {
@@ -55,5 +66,10 @@ int main()
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
  return 0;
 }

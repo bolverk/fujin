@@ -13,6 +13,9 @@
 #include "rigid_wall.hpp"
 #include "diagnostics.hpp"
 #include "main_loop.hpp"
+#ifdef PARALLEL
+#include "mpi.h"
+#endif // PARALLEL
 
 namespace {
 
@@ -56,6 +59,10 @@ using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL,NULL);
+#endif // PARALLEL
+
   SimData sim_data;
   SRHDSimulation& sim = sim_data.getSim();
 
@@ -66,5 +73,10 @@ int main()
 	    TotalEnergyHistory("res.txt"));
 
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
  return 0;
 }
