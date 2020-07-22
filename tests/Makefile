@@ -1,4 +1,6 @@
 SILENCE_WARNINGS := 0
+EXECUTION_PREFIX = 
+PROCESS_NUM = 2
 ifeq ($(MODE),debug)
 	CC = clang++
 	CFLAGS := -O0 -g -pg -Weverything -Werror -Wno-error=padded -ferror-limit=1
@@ -6,6 +8,10 @@ ifeq ($(MODE),debug)
 else ifeq ($(MODE),gcc)
 	CC = gcc
 	CFLAGS = -O3 -march=native -g -ffast-math
+else ifeq ($(MODE),parallel)
+	EXECUTION_PREFIX = mpirun -n $(PROCESS_NUM)
+	CC = mpiCC
+	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors
 else
 	CC = clang++
 	MODE = production
@@ -38,7 +44,7 @@ $(RESULT_LIST): $(MODE)/%/test_passed.res: $(MODE)/%/test_terminated_normally.re
 	cd $(MODE)/$* && $(PYTHON_PATH) $(TEST_ROOT)/$*/test.py && tail ./test_passed.res
 
 $(NORMAL_TERMINATION_LIST): $(MODE)/%/test_terminated_normally.res: $(MODE)/%/test.exe
-	cd $(MODE)/$* && ./test.exe
+	cd $(MODE)/$* && $(EXECUTION_PREFIX) ./test.exe
 
 $(BINARY_LIST): $(MODE)/%/test.exe: $(MODE)/%/test.o $(FUJIN_ROOT)/library_$(MODE)/libfujin.a
 	echo $(LD_LIBRARY_PATH)
