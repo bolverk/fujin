@@ -142,6 +142,10 @@ public:
    */
   HydroSnapshot(HydroSnapshot const& source);
 
+  /*! \brief Copy constructor
+    \param source Source
+    return reference to self
+  */
   HydroSnapshot& operator=(const HydroSnapshot& source);
 
   //! \brief Grid

@@ -10,9 +10,12 @@ ifeq ($(MODE),debug)
 else ifeq ($(MODE),parallel)
 	CC = mpiCC
 	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors
+else ifeq ($(MODE),gcc)
+	CC = gcc
+	CFLAGS = -O3 -march=native -g -ffast-math
 else
 	MODE = production
-	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded -std=c++11
+	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded -ffast-math
 	ifeq ($(SILENCE_WARNINGS),1)
 		CFLAGS := -O2
 	endif

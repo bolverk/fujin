@@ -60,7 +60,7 @@ int main()
   const size_t n = 101;
   vertex.resize(n);
   for (size_t i=0; i<n; i++)
-    vertex[i] = (1.0*i)/(1.0*n-1.0);
+    vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
 
   double g = 5./3.;
   //  const double vin = 1.0-1e-10;

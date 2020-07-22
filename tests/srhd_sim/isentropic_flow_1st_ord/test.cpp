@@ -119,7 +119,7 @@ int main()
   const size_t n = 200;
   vertex.resize(n);
   for (size_t i=0; i<n; i++)
-    vertex[i] = -0.35 + 1.35*(1.0*i)/(1.0*n-1.0);
+    vertex[i] = -0.35 + 1.35*static_cast<double>(i)/static_cast<double>(n-1);
 
   double g = 5./3.;
   density_distribution dd(1,1,0.3);

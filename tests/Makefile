@@ -2,9 +2,12 @@ SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
 	CFLAGS := -O0 -g -pg -Weverything -Werror -Wno-error=padded -ferror-limit=1
 	LFLAGS := -pg
+else ifeq ($(MODE),gcc)
+	CC = gcc
+	CFLAGS = -O3 -march=native -g -ffast-math
 else
 	MODE = production
-	CFLAGS := -O2 -Weverything -Werror -Wno-error=padded -ferror-limit=1
+	CFLAGS := -O2 -Weverything -Werror -Wno-error=padded -ferror-limit=1 -ffast-math
 	ifeq ($(SILENCE_WARNINGS),1)
 		CFLAGS := -O2
 	endif
