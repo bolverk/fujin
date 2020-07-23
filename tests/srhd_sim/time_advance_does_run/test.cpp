@@ -11,11 +11,18 @@
 #include "imgrs.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
 int main()
 {
+
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 100;
@@ -43,12 +50,23 @@ int main()
   sim.TimeAdvance();
 
   // Write data to file
+#ifdef PARALLEL
+  if(get_mpi_rank()==0){
+#endif // PARALLEL
   ofstream f;
   f.open("res.txt");
   f << 0;
   f.close();
+#ifdef PARALLEL
+  }
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
  return 0;
 }
