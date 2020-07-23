@@ -13,7 +13,7 @@
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
 #ifdef PARALLEL
-#include "mpi.h"
+#include "parallel_helper.hpp"
 #endif // PARALLEL
 
 using namespace std;
@@ -52,14 +52,14 @@ int main()
   // Write data to file
   ofstream f;
 #ifdef PARALLEL
-  f.open("res_"+int2str(get_rank())+".txt");
+  f.open("res_"+int2str(get_mpi_rank())+".txt");
 #else
   f.open("res.txt");
 #endif // PARALLEL
-  double vol = 0;
+  //  double vol = 0;
   for (size_t i=0;i<sim.getHydroSnapshot().cells.size();i++)
     {
-      vol = (4.0*M_PI/3.0)*(pow(sim.getHydroSnapshot().edges[i],3));
+      const double vol = (4.0*M_PI/3.0)*(pow(sim.getHydroSnapshot().edges[i],3));
       f<<sim.GetVolume(i)<<" "<<vol<<endl;
     }
   f.close();
