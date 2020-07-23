@@ -15,6 +15,10 @@
 #include "rigid_wall.hpp"
 #include "free_flow.hpp"
 #include <fenv.h>
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -51,16 +55,23 @@ void WriteConserveds(SRHDSimulation const& sim, string const& fname)
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
+
   feenableexcept(FE_INVALID | 
 		 FE_DIVBYZERO | 
 		 FE_OVERFLOW  | 
 		 FE_UNDERFLOW);
 
+  /*
   vector<double> vertex;
   const size_t n = 101;
   vertex.resize(n);
   for (size_t i=0; i<n; i++)
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
+  */
+  const vector<double> vertex = linspace(0,1,101);
 
   double g = 5./3.;
   //  const double vin = 1.0-1e-10;
@@ -94,13 +105,20 @@ int main()
   // Write data to file
   ofstream f;
   f.open("res.txt");
-  f << sim.getHydroSnapshot().cells[n/2].Pressure << endl;
+  f << sim.getHydroSnapshot().cells[vertex.size()/2].Pressure << endl;
   f.close();
-
-  WritePrimitives(sim, "plot.txt");
-  //  WriteConserveds(sim, "plot_rs.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
  return 0;
 }
