@@ -14,7 +14,7 @@
 #include "diagnostics.hpp"
 #include "main_loop.hpp"
 #ifdef PARALLEL
-#include "mpi.h"
+#include "parallel_helper.hpp"
 #endif // PARALLEL
 
 namespace {
@@ -70,7 +70,11 @@ int main()
   main_loop(sim,
 	    IterationTermination(10),
 	    &SRHDSimulation::TimeAdvance,
-	    TotalEnergyHistory("res.txt"));
+#ifdef PARALLEL
+	    TotalEnergyHistory("res_"+int2str(get_mpi_rank())+".txt"));
+#else
+  TotalEnergyHistory("res.txt"));
+#endif // PARALLEL
 
   ofstream("test_terminated_normally.res").close();
 
