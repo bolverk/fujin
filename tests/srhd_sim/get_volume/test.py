@@ -1,15 +1,19 @@
 #! /usr/bin/python
 
-def main():
+def verify_file(fname):
 
     import numpy
-    rawd = numpy.loadtxt('res.txt')
-    res = 1
-    n = len(rawd[:,0])
-    for i in range(n):
-        if rawd[i,0]!=rawd[i,1]:
-            res = 0
-    return res
+    rawd = numpy.loadtxt(fname)
+    return ((rawd.T[0]-rawd.T[1])==0).all()
+
+def main():
+
+    from glob import glob
+
+    for fname in glob('res*.txt'):
+        if not verify_file(fname):
+            return False
+    return True
 
 if __name__=='__main__':
 
