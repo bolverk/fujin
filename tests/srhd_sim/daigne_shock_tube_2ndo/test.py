@@ -41,18 +41,24 @@ def main():
     from glob import glob
     from scipy import interpolate
     import numpy
+    import logging
+
+    LOGLEVEL = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    logging.basicConfig(level=LOGLEVEL)
 
     if len(glob('final_*.h5'))>0:
         data = consolidate_files()
     else:
         data = load_file('final.h5')
 
-    index = int(len(data['position'])/2)
+    index = int(len(data['position'])/2)+1
     p_f = data['pressure'][index]
     c_f = data['celerity'][index]
     p_dm = 20.7445
     v_dm = 0.956038
     c_dm = calc_celerity(v_dm)
+    logging.debug([p_f, p_dm])
+    logging.debug([c_f, c_dm])
 
     return approx_equal(p_f, p_dm, 0.02) and \
         approx_equal(c_f, c_dm, 0.01)

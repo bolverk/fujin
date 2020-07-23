@@ -44,6 +44,10 @@ void WriteMidVals(SRHDSimulation const& sim, string const& fname)
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
+
   const int n = 200;
   vector<double> vertex = linspace(0,1,n);
 
@@ -68,7 +72,7 @@ int main()
   // Main process
   double tf = 0.4;
   while(sim.GetTime()<tf){
-    sim.TimeAdvance2ndOrder();    
+    sim.TimeAdvance();    
   }
 
   // Write data to file
@@ -80,5 +84,10 @@ int main()
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
  return 0;
 }
