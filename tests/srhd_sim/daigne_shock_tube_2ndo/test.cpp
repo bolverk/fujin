@@ -9,6 +9,10 @@
 #include "rigid_wall.hpp"
 #include "pcm.hpp"
 #include "van_leer.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -62,14 +66,17 @@ int main()
 		     geometry);
 
   // Main process
-  double tf= 0.4;
+  double tf = 0.4;
   while(sim.GetTime()<tf){
     sim.TimeAdvance2ndOrder();    
   }
 
   // Write data to file
-  WriteMidVals(sim,"res.txt");
-  WritePrimitives(sim, "plot.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
