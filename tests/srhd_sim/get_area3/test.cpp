@@ -13,11 +13,18 @@
 #include "utilities.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#ifdef PARALLEL
+#include "mpi.h"
+#endif // PARALLEL
 
 using namespace std;
 
 int main()
 {
+
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 1000;
@@ -61,5 +68,9 @@ int main()
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
  return 0;
 }
