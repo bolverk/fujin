@@ -163,6 +163,9 @@ void SRHDSimulation::TimeAdvance1stOrder(void)
 
 void SRHDSimulation::TimeAdvance2ndOrder(void)
 {
+#ifdef PARALLEL
+  throw("Not implemented yet");
+#endif // PARALLEL
   const double dt = TimeStep();
 
   const HydroSnapshot mid = BasicTimeAdvance(data_,sr,rs,eos,0.5*dt,
