@@ -15,6 +15,10 @@
 #include "imgrs.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -115,6 +119,9 @@ namespace {
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   vector<double> vertex;
   const size_t n = 200;
   vertex.resize(n);
@@ -142,16 +149,29 @@ int main()
 		     sr,
 		     geometry);
 
-  write_snapshot(sim, "plot0.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "initial_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "initial.h5");
+#endif // PARALLEL
 
   // Main process
   while(sim.GetTime()<tf){
     sim.TimeAdvance1stOrder();
   }
 
-  write_snapshot(sim, "plot.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }

@@ -15,13 +15,47 @@ def get_vars(fname):
     v = rawd[:,3]
     return x, d, p, v
 
+def load_snapshot(fname):
+
+    import h5py
+    import numpy
+
+    with h5py.File(fname,'r') as f:
+        return {field:numpy.array(f[field])
+                for field in f}
+
+def consolidate(pattern):
+
+    from glob import glob
+    import re
+    import numpy
+
+    file_list = sorted(glob(pattern),
+                       key=lambda fname:int(re.search('(\d+)',fname)[0]))
+    partitions = [load_snapshot(fname) for fname in file_list]
+    return {field:numpy.concatenate([part[field] for part in partitions])
+            for field in partitions[0]}
+
 def main():
 
     import numpy
     import math
+    from glob import glob
 
-    x0, d0, p0, v0 = get_vars('plot0.txt')
-    xn, dn, pn, vn = get_vars('plot.txt')
+    if len(glob('initial_*.h5'))>1:
+        initial = consolidate('initial_*.h5')
+        final = consolidate('final_*.h5')
+    else:
+        initial = load_snapshot('initial.h5')
+        final = load_snapshot('final.h5')
+    x0 = initial['position']
+    d0 = initial['density']
+    p0 = initial['pressure']
+    v0 = initial['celerity']
+    xn = final['position']
+    dn = final['density']
+    pn = final['pressure']
+    vn = final['celerity']
 
     g = 5./3.
     e0 = [p/(g-1)+d for d,p in zip(d0,p0)]
