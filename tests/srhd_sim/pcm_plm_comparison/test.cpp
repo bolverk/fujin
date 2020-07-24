@@ -1,6 +1,6 @@
 /*
   Relativistic shock tube
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -13,53 +13,45 @@
 #include "pcm.hpp"
 #include "van_leer.hpp"
 #include "rigid_wall.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
 namespace {
-void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-{
-  ofstream f;
-  f.open(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-    const Primitive p = sim.getHydroSnapshot().cells[i];
-    f << sim.GetCellCentre(i) << " ";
-    f << p.Density << " ";
-    f << p.Pressure << " ";
-    f << velocity2celerity(p.Celerity) << endl;
+  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
+  {
+    ofstream f;
+    f.open(fname.c_str());
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
+      const Primitive p = sim.getHydroSnapshot().cells[i];
+      f << sim.GetCellCentre(i) << " ";
+      f << p.Density << " ";
+      f << p.Pressure << " ";
+      f << velocity2celerity(p.Celerity) << endl;
+    }
+    f.close();
   }
-  f.close();
-}
 
-  /*
-void WriteConserveds(SRHDSimulation const& sim, string const& fname)
-{
-  ofstream f;
-  f.open(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-    Conserved c = sim.GetConserved(i);
-    f << c.Mass << " ";
-    f << c.Momentum << " ";
-    f << c.Energy << endl;
+  void WriteRes(SRHDSimulation const& sim1, SRHDSimulation const& sim2)
+  {
+    ofstream f;
+    f.open("res.txt");
+    f << sim1.getHydroSnapshot().cells[50].Pressure << endl;
+    f << velocity2celerity(sim1.getHydroSnapshot().cells[50].Celerity) << endl;
+    f << sim2.getHydroSnapshot().cells[50].Pressure << endl;
+    f << velocity2celerity(sim2.getHydroSnapshot().cells[50].Celerity) << endl;
+    f.close();
   }
-  f.close();
-}
-  */
-
-void WriteRes(SRHDSimulation const& sim1, SRHDSimulation const& sim2)
-{
-  ofstream f;
-  f.open("res.txt");
-  f << sim1.getHydroSnapshot().cells[50].Pressure << endl;
-  f << velocity2celerity(sim1.getHydroSnapshot().cells[50].Celerity) << endl;
-  f << sim2.getHydroSnapshot().cells[50].Pressure << endl;
-  f << velocity2celerity(sim2.getHydroSnapshot().cells[50].Celerity) << endl;
-  f.close();
-}
 }
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   vector<double> vertex;
   const size_t n = 100;
   vertex.resize(n);
@@ -102,14 +94,20 @@ int main()
     sim2.TimeAdvance();
 
   // Write data to file
-  WriteRes(sim, sim2);
-
-  WritePrimitives(sim,"plot.txt");
-  WritePrimitives(sim2,"plot2.txt");
-  //  WriteConserveds(sim,"plot3.txt");
-  //  WriteConserveds(sim2,"plot4.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "pcm_"+int2str(get_mpi_rank())+".h5");
+  write_hdf5_snapshot(sim, "plm_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "pcm.h5");
+  write_hdf5_snapshot(sim, "plm.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
