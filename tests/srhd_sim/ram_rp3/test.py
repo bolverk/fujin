@@ -16,20 +16,40 @@ def consolidate(fname):
     import h5py
     import numpy
 
-    with h5py.File(fname) as f:
-        res = dict((key,numpy.array(f[key])) for key in f)
-    return res
+    with h5py.File(fname,'r') as f:
+        return {field:numpy.array(f[field]) for field in f}
+
+def consolidate_all(pattern):
+
+    from glob import glob
+    import re
+    import numpy
+    import logging
+
+    LOGLEVEL = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    logging.basicConfig(level=LOGLEVEL)
+
+    file_list = sorted(glob(pattern),
+                       key=lambda fname:int(re.search('(\d+)',fname)[0]))
+    logging.debug(file_list)
+    partitions = [consolidate(fname) for fname in file_list]
+    return {field:numpy.concatenate([part[field] for part in partitions])
+            for field in partitions[0]}
 
 def main():
 
     import numpy
     import os
     import sys
+    from glob import glob
     assert('FUJIN_ROOT' in os.environ)
     sys.path.append(os.environ['FUJIN_ROOT']+'/analytic')
     from ideal_gas_riemann_solver import RiemannProfile, Primitive
 
-    final = consolidate('final.h5')
+    if len(glob('final_*.h5'))>1:
+        final = consolidate_all('final_*.h5')
+    else:
+        final = consolidate('final.h5')
     exact_prof = RiemannProfile(Primitive(1,1,velocity2celerity(0.9)),
                                 Primitive(1,10,0), 4./3.)
     ss_cord = (final['position']-0.5)/final['time'][0]
