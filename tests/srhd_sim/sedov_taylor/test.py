@@ -1,10 +1,42 @@
 #! /usr/bin/python
 
+def consolidate():
+
+    import logging
+    import numpy
+    from glob import glob
+
+    LOGLEVEL = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    logging.basicConfig(level=LOGLEVEL)
+
+    partitions = [numpy.loadtxt(fname) 
+                  for fname in glob('rpmax_*.txt')]
+    combined_r = numpy.zeros(len(partitions[0].T[0]))
+    combined_t = numpy.zeros(len(partitions[0].T[0]))
+    combined_p = numpy.zeros(len(partitions[0].T[0]))
+    for n in range(len(partitions[0].T[0])):
+        p_list = numpy.array([part.T[2][n] for part in partitions])
+        r_list = numpy.array([part.T[1][n] for part in partitions])
+        t_list = numpy.array([part.T[0][n] for part in partitions])
+        combined_p[n] = numpy.max(p_list)
+        combined_r[n] = r_list[numpy.argmax(p_list)]
+        combined_t[n] = t_list[0]
+    return numpy.array([combined_t,combined_r,combined_p]).T
+
 def main():
 
     import numpy
+    from glob import glob
+    import logging
 
-    rawd = numpy.loadtxt('rpmax.txt')
+    LOGLEVEL = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    logging.basicConfig(level=LOGLEVEL)
+
+    if len(glob('rpmax_*.txt'))>1:
+        rawd = consolidate()
+    else:
+        rawd = numpy.loadtxt('rpmax.txt')
+    logging.debug(rawd)
     istart = 1000
     t = rawd[istart:,0]
     r = rawd[istart:,1]

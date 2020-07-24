@@ -15,6 +15,9 @@
 #include "rigid_wall.hpp"
 #include "main_loop.hpp"
 #include <fenv.h>
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -31,6 +34,14 @@ namespace {
       }
     }
     return rpmax;
+  }
+
+  double get_max_pressure(const SRHDSimulation& sim)
+  {
+    double pmax = sim.getHydroSnapshot().cells[0].Pressure;
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i)
+      pmax = max(pmax, sim.getHydroSnapshot().cells[i].Pressure);
+    return pmax;
   }
 
   void WriteVectors2File(vector<double> const& v1,
@@ -89,23 +100,34 @@ namespace {
     void operator()(const SRHDSimulation& sim) const
     {
       times_.push_back(sim.GetTime());
+      pressures_.push_back(get_max_pressure(sim));
       positions_.push_back(get_position_max_pressure(sim));
     }
 
     ~ShockFrontTracker(void)
     {
-      WriteVectors2File(times_, positions_, fname_);
+      ofstream f(fname_.c_str());
+      for(size_t i=0;i<positions_.size();++i)
+	f << times_.at(i) << " "
+	  << positions_.at(i) << " "
+	  << pressures_.at(i) << endl;
+      f.close();
     }
     
   private:
     const string fname_;
     mutable vector<double> positions_;
+    mutable vector<double> pressures_;
     mutable vector<double> times_;
   };
 
   void my_main_loop(SRHDSimulation& sim)
   {
+#ifdef PARALLEL
+    ShockFrontTracker sft("rpmax_"+int2str(get_mpi_rank())+".txt");
+#else
     ShockFrontTracker sft("rpmax.txt");
+#endif // PARALLEL
     SafeTimeTermination stt(50, 1e6);
     main_loop(sim, stt, &SRHDSimulation::TimeAdvance, sft);
   }
@@ -113,6 +135,9 @@ namespace {
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   feenableexcept(FE_INVALID   | 
 		 FE_DIVBYZERO | 
 		 FE_OVERFLOW  | 
@@ -121,5 +146,10 @@ int main()
   my_main_loop(SimData().getSim());
 
   ofstream("test_terminated_normally.res").close();
+  
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
   return 0;
 }
