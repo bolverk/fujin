@@ -17,6 +17,10 @@
 #include "rigid_wall.hpp"
 #include "collela.hpp"
 #include "isentropic_flow.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -38,6 +42,9 @@ void write_snapshot(SRHDSimulation const& sim, string const& fname)
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   vector<double> vertex = linspace(-0.35,1,200);
   double g = 5./3.;
   Collela dd2(1,1,0.3,0);
@@ -60,16 +67,28 @@ int main()
 		     sr,
 		     planar);
 
-  write_snapshot(sim, "plot0.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "initial_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "initial.h5");
+#endif // PARALLEL
 
   // Main process
   while(sim.GetTime()<tf){
     sim.TimeAdvance();
   }
 
-  write_snapshot(sim, "plot.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+  
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+  return 0;
 }
