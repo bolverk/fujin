@@ -16,6 +16,9 @@
 #include "hdf5_snapshot.hpp"
 #include "universal_error.hpp"
 #include "main_loop.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -29,7 +32,11 @@ namespace {
 	      term_cond,
 	      &SRHDSimulation::TimeAdvance,
 	      diag);
+#ifdef PARALLEL
+    write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
+#else
     write_hdf5_snapshot(sim,"final.h5");
+#endif // PARALLEL
   }
 }
 
@@ -94,11 +101,19 @@ namespace {
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   SimData sim_data;
   SRHDSimulation& sim = sim_data.getSim();
 
   main_loop_weh(sim);
 
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
   return 0;
 }

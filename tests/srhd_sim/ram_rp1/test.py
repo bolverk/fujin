@@ -14,6 +14,18 @@ def consolidate(fname):
         data = dict((key,numpy.array(f[key])) for key in f)
     return data
 
+def consolidate_all(pattern):
+
+    from glob import glob
+    import re
+    import numpy
+
+    file_list = sorted(glob(pattern),
+                       key=lambda fname:int(re.search('(\d+)',fname)[0]))
+    partitions = [consolidate(fname) for fname in file_list]
+    return {field:numpy.concatenate([part[field] for part in partitions])
+            for field in partitions[0]}
+
 def main():
 
     import numpy
@@ -22,8 +34,12 @@ def main():
     assert('FUJIN_ROOT' in os.environ)
     sys.path.append(os.environ['FUJIN_ROOT']+'/analytic')
     from ideal_gas_riemann_solver import RiemannProfile, Primitive
+    from glob import glob
 
-    final = consolidate('final.h5')
+    if len(glob('final_*.h5'))>1:
+        final = consolidate_all('final_*.h5')
+    else:
+        final = consolidate('final.h5')
 
     exact_prof = RiemannProfile(Primitive(10,13.33,0),
                                 Primitive(1,1e-8,0), 5./3.)
