@@ -12,6 +12,10 @@
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
 #include "main_loop.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 namespace {
   void WriteMidVals(SRHDSimulation const& sim, string fname)
@@ -28,20 +32,20 @@ namespace {
   public:
 
     SimData(void):
-    eos_(4./3.),
-    rs_(eos_),
-    bc_(rs_),
-    sr_(),
-    geometry_(),
-    sim_(linspace(0,1,100),
-	 Uniform(1),
-	 Step(0.2,0.1,0.5),
-	 Uniform(0),
-	 bc_, bc_,
-	 eos_,
-	 rs_,
-	 sr_,
-	 geometry_) {}
+      eos_(4./3.),
+      rs_(eos_),
+      bc_(rs_),
+      sr_(),
+      geometry_(),
+      sim_(linspace(0,1,100),
+	   Uniform(1),
+	   Step(0.2,0.1,0.5),
+	   Uniform(0),
+	   bc_, bc_,
+	   eos_,
+	   rs_,
+	   sr_,
+	   geometry_) {}
 
     SRHDSimulation& getSim(void)
     {
@@ -62,6 +66,9 @@ using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   SimData sim_data;
   SRHDSimulation& sim = sim_data.getSim();
 
@@ -72,8 +79,18 @@ int main()
 
   // Output
   WriteMidVals(sim,"res.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
