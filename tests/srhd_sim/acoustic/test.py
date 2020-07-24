@@ -29,15 +29,48 @@ def initial_velocity(x):
 
     return pert_velocity*math.sin(k*x)
 
+def load_snapshot(fname):
+
+    import h5py
+    import numpy
+
+    with h5py.File(fname,'r') as f:
+        return {field:numpy.array(f[field])
+                for field in f}
+
+def consolidate(pattern):
+
+    from glob import glob
+    import re
+    import numpy
+
+    file_list = sorted(glob(pattern),
+                       key=lambda fname:int(re.search('(\d+)',fname)[0]))
+    partitions = [load_snapshot(fname) for fname in file_list]
+    return {field:numpy.concatenate([part[field] for part in partitions])
+            for field in partitions[0]}
+
 def main():
 
     import numpy
+    from glob import glob
 
-    x_init, d_init, p_init, v_init = numpy.loadtxt('init_cond.txt',
-                                                   unpack=True)
-    x_final, d_final, p_final, v_final = numpy.loadtxt('snapshot.txt',
-                                                       unpack=True)
-    time = numpy.loadtxt('time.txt')
+    if len(glob('initial_*.h5')):
+        initial = consolidate('initial_*.h5')
+        final = consolidate('final_*.h5')
+    else:
+        initial = load_snapshot('initial.h5')
+        final = load_snapshot('final.h5')
+    x_init = initial['position']
+    d_init = initial['density']
+    p_init = initial['pressure']
+    v_init = initial['celerity']/numpy.sqrt(initial['celerity']**2+1)
+    x_final = final['position']
+    d_final = final['density']
+    p_final = final['pressure']
+    v_final = final['celerity']/numpy.sqrt(final['celerity']**2+1)
+    time = final['time'][0]
+
     d_exact = [initial_density(x-sound_speed*time) for x in x_final]
     p_exact = [initial_pressure(x-sound_speed*time) for x in x_final]
     v_exact = [initial_velocity(x-sound_speed*time) for x in x_final]
