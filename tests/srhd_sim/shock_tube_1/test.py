@@ -42,7 +42,6 @@ def main():
         final = load_snapshot('final.h5')
     index = int(len(final['position'])/2)
 
-    res = numpy.loadtxt('res.txt')
     res = [final['pressure'][index],
            celerity2velocity(final['celerity'][index])]
     ans = [0.146165, 0.089294]
