@@ -1,6 +1,6 @@
 /*
   Checks that the file does compile
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -11,11 +11,18 @@
 #include "imgrs.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 100;
@@ -43,13 +50,18 @@ int main()
   sim.TimeAdvance();
 
   // Write data to file
-  ofstream f;
-  f.open("res.txt");
-  f << sim.getHydroSnapshot().cells[50].Pressure << endl;
-  f << celerity2velocity(sim.getHydroSnapshot().cells[50].Celerity) << endl;
-  f.close();
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
