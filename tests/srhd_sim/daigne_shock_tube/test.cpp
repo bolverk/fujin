@@ -15,6 +15,9 @@
 #include "van_leer.hpp"
 #include "main_loop.hpp"
 #include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -65,6 +68,9 @@ namespace {
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   SimData sim_data;
   SRHDSimulation& sim = sim_data.getSim();
 
@@ -73,9 +79,17 @@ int main()
 	    &SRHDSimulation::TimeAdvance,
 	    WriteTime("time.txt"));
 
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
+#else
   write_hdf5_snapshot(sim,"final.h5");
-  WriteMidVals(sim,"res.txt");
+#endif // PARALLEL
 
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
