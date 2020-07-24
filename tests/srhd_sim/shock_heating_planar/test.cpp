@@ -3,7 +3,7 @@
   See following article for more detail
   W. Zhang, A. MacFadyen, "RAM: A Relativistic Adaptive mesh refinement Hydrodynamics Code", 
   The Astrophysical Journal Supplement Series, 164:255-279, 2006 May.
- */
+*/
 
 #include <iostream>
 #include <iomanip>
@@ -19,33 +19,36 @@
 #include "free_flow.hpp"
 #include "diagnostics.hpp"
 #include <fenv.h>
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 namespace {
-void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-    Primitive p = sim.getHydroSnapshot().cells[i];
-    f << sim.GetCellCentre(i) << " ";
-    f << p.Density << " ";
-    f << p.Pressure << " ";
-    f << celerity2velocity(p.Celerity) << std::endl;
+  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
+  {
+    std::ofstream f(fname.c_str());
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
+      Primitive p = sim.getHydroSnapshot().cells[i];
+      f << sim.GetCellCentre(i) << " ";
+      f << p.Density << " ";
+      f << p.Pressure << " ";
+      f << celerity2velocity(p.Celerity) << std::endl;
+    }
+    f.close();
   }
-  f.close();
-}
 
   /*
-void WriteConserveds(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
+    void WriteConserveds(SRHDSimulation const& sim, string const& fname)
+    {
+    std::ofstream f(fname.c_str());
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
     Conserved c = sim.GetConserved(i);
     f << c.Mass << " ";
     f << c.Momentum << " ";
     f << c.Energy << "\n";
-  }
-  f.close();
-}
+    }
+    f.close();
+    }
   */
 }
 
@@ -93,29 +96,30 @@ private:
 
 namespace {
 
-void main_loop(SRHDSimulation& sim)
-{
-  double tf = 0.5;
+  void main_loop(SRHDSimulation& sim)
+  {
+    double tf = 0.5;
 
-  while(sim.GetTime()<tf){
+    while(sim.GetTime()<tf){
 
-    sim.TimeAdvance();
+      sim.TimeAdvance();
+    }
   }
-}
 
-void Output(SRHDSimulation const& sim)
-{
-  ofstream f("res.txt");
-  f << sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2].Pressure << "\n";
-  f.close();
-
-  WritePrimitives(sim,"plot.txt");
-  //  WriteConserveds(sim,"plot_rs.txt");
-}
+  void Output(SRHDSimulation const& sim)
+  {
+    ofstream f("res.txt");
+    f << sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2].Pressure << "\n";
+    f.close();
+  }
 }
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
+
   feenableexcept(FE_INVALID   | 
 		 FE_DIVBYZERO | 
 		 FE_OVERFLOW  | 
@@ -126,9 +130,17 @@ int main()
 
   main_loop(sim);
 
+#ifdef PARALLEL
+  if(get_mpi_rank()==0)
+#endif // PARALLEL
   Output(sim);
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
