@@ -5,7 +5,7 @@
   "Gamma-ray bursts from internal shocks in a relativistic wind:
   a hydrodynamic study"
   Atron. Astrophys. 358, 1157-1166 (2000)
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -17,34 +17,38 @@
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
 #include "free_flow.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 namespace {
-void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  string dlmtr = " "; // Delimiter
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-    f << sim.GetCellCentre(i) << dlmtr;
-    const Primitive p = sim.getHydroSnapshot().cells[i];
-    f << p.Density << dlmtr;
-    f << p.Pressure << dlmtr;
-    f << celerity2velocity(p.Celerity) << std::endl;
+  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
+  {
+    std::ofstream f(fname.c_str());
+    string dlmtr = " "; // Delimiter
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
+      f << sim.GetCellCentre(i) << dlmtr;
+      const Primitive p = sim.getHydroSnapshot().cells[i];
+      f << p.Density << dlmtr;
+      f << p.Pressure << dlmtr;
+      f << celerity2velocity(p.Celerity) << std::endl;
+    }
+    f.close();
   }
-  f.close();
-}
 
   /*
-void WriteConserveds(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
+    void WriteConserveds(SRHDSimulation const& sim, string const& fname)
+    {
+    std::ofstream f(fname.c_str());
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
     Conserved c = sim.GetConserved(i);
     f << c.Mass << " ";
     f << c.Momentum << " ";
     f << c.Energy << "\n";
-  }
-  f.close();
-}
+    }
+    f.close();
+    }
   */
 }
 
@@ -52,6 +56,9 @@ using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   vector<double> vertex;
   const size_t n = 200;
   vertex.resize(n);
@@ -87,15 +94,18 @@ int main()
   }
 
   // Write data to file
-  ofstream f;
-  f.open("res.txt");
-  f << sim.getHydroSnapshot().cells[10].Pressure << "\n";
-  f.close();
-
-  WritePrimitives(sim, "plot.txt");
-  //  WriteConserveds(sim, "plot_rs.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
