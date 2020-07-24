@@ -16,6 +16,9 @@
 #include "rigid_wall.hpp"
 #include "hdf5_snapshot.hpp"
 #include "main_loop.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -61,14 +64,26 @@ namespace {
 	      term_cond,
 	      &SRHDSimulation::TimeAdvance,
 	      diag);
+#ifdef PARALLEL
+    write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
+#else
     write_hdf5_snapshot(sim,"final.h5");
+#endif // PARALLEL
   }
 }
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   my_main_loop(SimData().getSim());
 
   ofstream("test_terminated_normally.res");
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
   return 0;
 }
