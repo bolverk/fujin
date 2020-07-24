@@ -12,11 +12,18 @@
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
 #include "advanced_hydrodynamic_variables.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
 int main()
 {
+
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 100;
@@ -47,14 +54,25 @@ int main()
   Conserved cv = Primitive2Conserved(hs, eos);
 
   // Write data to file
+#ifdef PARALLEL
+  if(get_mpi_rank()==0){
+#endif // PARALLEL
   ofstream f;
   f.open("res.txt");
   f << cv.Mass << endl;
   f << cv.Momentum << endl;
   f << cv.Energy << endl;
   f.close();
+#ifdef PARALLEL
+  }
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
