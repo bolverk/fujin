@@ -3,45 +3,66 @@ def L1_error_norm(a1, a2):
     abs_diff = [abs(x-y) for x,y in zip(a1,a2)]
     return sum(abs_diff)
 
+def load_snapshot(fname):
+
+    import h5py
+    import numpy
+
+    with h5py.File(fname,'r') as f:
+        return {field:numpy.array(f[field])
+                for field in f}
+
+def consolidate(pattern):
+
+    from glob import glob
+    import re
+    import numpy
+
+    file_list = sorted(glob(pattern),
+                       key=lambda fname:int(re.search('(\d+)',fname)[0]))
+    partitions = [load_snapshot(fname) for fname in file_list]
+    return {field:numpy.concatenate([part[field] for part in partitions])
+            for field in partitions[0]}
+
+def celerity2velocity(w):
+
+    import numpy
+    
+    return w/numpy.sqrt(w**2+1)
+
 def main():
 
     import numpy
+    from glob import glob
+    import logging
 
-    x_init, d_init, p_init, v_init = numpy.loadtxt('init_cond.txt',
-                                                   unpack=True)
-    x_final, d_final, p_final, v_final = numpy.loadtxt('snapshot.txt',
-                                                       unpack=True)
-
-    if False:
-        
-        import pylab
-
-        pylab.subplot(311)
-        pylab.plot(x_init,d_init)
-        pylab.plot(x_final,d_final)
-
-        pylab.subplot(312)
-        pylab.plot(x_init,p_init)
-        pylab.plot(x_final,p_final)
-
-        pylab.subplot(313)
-        pylab.plot(x_init,v_init)
-        pylab.plot(x_final,v_final)
-
-        pylab.show()
+    LOGLEVEL = os.environ.get('LOGLEVEL', 'WARNING').upper()
+    logging.basicConfig(level=LOGLEVEL)
+    
+    if len(glob('initial_*.h5'))>1:
+        initial = consolidate('initial_*.h5')
+        final = consolidate('final_*.h5')
+    else:
+        initial = load_snapshot('initial.h5')
+        final = load_snapshot('final.h5')
+    x_init = initial['position']
+    d_init = initial['density']
+    p_init = initial['pressure']
+    v_init = initial['celerity']
+    x_final = final['position']
+    d_final = final['density']
+    p_final = final['pressure']
+    v_final = final['celerity']
     
     l1_vals = dict(density=L1_error_norm(d_init,d_final),
                    pressure=L1_error_norm(p_init,p_final),
                    velocity=L1_error_norm(v_init,v_final))
 
-    f = open('gradesheet.txt','w')
-    for i in l1_vals:
-        f.write(str(l1_vals[i])+'\n')
-    f.close()
+    logging.debug(l1_vals)
 
     res = True
     for i in l1_vals:
-        res = res and l1_vals[i]==0
+        res = res and numpy.abs(l1_vals[i])<1e-11
     
     return res
 
