@@ -1,6 +1,6 @@
 /*
   Checks that the file does compile
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -12,11 +12,17 @@
 #include "spatial_reconstruction.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 100;
@@ -51,5 +57,10 @@ int main()
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
