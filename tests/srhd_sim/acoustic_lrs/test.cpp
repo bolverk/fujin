@@ -12,6 +12,10 @@
 #include "pcm.hpp"
 #include "isentropic_flow.hpp"
 #include "main_loop.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -101,17 +105,34 @@ namespace {
 
 int main(void)
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   SimData sim_data;
   SRHDSimulation& sim = sim_data.getSim();
-  write_snapshot(sim,"init_cond.txt",14);
+
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "initial_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "initial.h5");
+#endif // PARALLEL
 
   main_loop(sim,
 	    SafeTimeTermination(10,1e6),
 	    &SRHDSimulation::TimeAdvance,
 	    WriteTime("time.txt"));
 
-  write_snapshot(sim,"snapshot.txt",14);
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
