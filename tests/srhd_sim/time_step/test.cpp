@@ -1,6 +1,6 @@
 /*
   Checks that the file does compile
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -11,33 +11,39 @@
 #include "imgrs.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 namespace {
-void WriteTimeStep(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  f << sim.TimeStep() << "\n";
-  f.close();
-}
-
-void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-    const Primitive p = sim.getHydroSnapshot().cells[i];
-    f << sim.GetCellCentre(i) << " ";
-    f << p.Density << " ";
-    f << p.Pressure << " ";
-    f << celerity2velocity(p.Celerity) << std::endl;
+  void WriteTimeStep(SRHDSimulation const& sim, string const& fname)
+  {
+    std::ofstream f(fname.c_str());
+    f << sim.TimeStep() << "\n";
+    f.close();
   }
-  f.close();
-}
+
+  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
+  {
+    std::ofstream f(fname.c_str());
+    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
+      const Primitive p = sim.getHydroSnapshot().cells[i];
+      f << sim.GetCellCentre(i) << " ";
+      f << p.Density << " ";
+      f << p.Pressure << " ";
+      f << celerity2velocity(p.Celerity) << std::endl;
+    }
+    f.close();
+  }
 }
 
 using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
 
   vector<double> vertex;
   const size_t n = 100;
@@ -64,10 +70,18 @@ int main()
 		     geometry);
 
   // Write data to file
+#ifdef PARALLEL
+  WriteTimeStep(sim, "res_"+int2str(get_mpi_rank())+".txt");
+#else
   WriteTimeStep(sim,"res.txt");
-  WritePrimitives(sim,"plot.txt");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
