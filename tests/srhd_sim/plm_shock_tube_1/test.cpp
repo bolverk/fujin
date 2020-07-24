@@ -11,6 +11,10 @@
 #include "ideal_gas.hpp"
 #include "hll.hpp"
 #include "rigid_wall.hpp"
+#include "hdf5_snapshot.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 namespace {
 void WritePrimitives(SRHDSimulation const& sim, string const& fname)
@@ -40,6 +44,10 @@ using namespace std;
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
+
   feenableexcept(FE_INVALID | 
 		 FE_DIVBYZERO | 
 		 FE_OVERFLOW  | 
@@ -71,16 +79,24 @@ int main()
 
   // Main process
   size_t iter = 50;
-  vector<double> e(iter);
+  //  vector<double> e(iter);
   while(sim.GetTime()<0.7){
     sim.TimeAdvance();
   }
 
   // Write data to file
-  WriteMidVals(sim,"res.txt");
-  WritePrimitives(sim,"plot.txt");
+#ifdef PARALLEL
+  write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
+#else
+  write_hdf5_snapshot(sim, "final.h5");
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
- return 0;
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
+
+  return 0;
 }
