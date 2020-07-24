@@ -12,6 +12,9 @@
 #include "advanced_hydrodynamic_variables.hpp"
 #include "utilities.hpp"
 #include "hdf5_utils.hpp"
+#ifdef PARALLEL
+#include "parallel_helper.hpp"
+#endif // PARALLEL
 
 using namespace std;
 
@@ -38,6 +41,9 @@ namespace {
 
 int main()
 {
+#ifdef PARALLEL
+  MPI_Init(NULL, NULL);
+#endif // PARALLEL
   feenableexcept(FE_INVALID   | 
 		 FE_DIVBYZERO | 
 		 FE_OVERFLOW  | 
@@ -63,31 +69,19 @@ int main()
 	}
     }
 
+#ifdef PARALLEL
+  if(get_mpi_rank()==0)
+#endif // PARALLEL
   HDF5Shortcut("results.h5")
     ("pressure",pressure)
     ("celerity",celerity)
     ("reconstructed",reconstructed);
 
-  //  const Primitive hs(1,0.1, velocity2celerity(0.3));
-  //  const Conserved cv = Primitive2Conserved(hs,eos);
-  //  const NewConserved cv = primitive_to_new_conserved(hs,eos);
-
-  /*
-  const double dh = conserved2enthalpy_diff
-    (cv.positive,
-     cv.negative,
-     eos.getAdiabaticIndex());
-  */
-
-  // Write data to file
-  /*
-  ofstream f("res.txt");
-  f << eos.dp2e(hs.Density,hs.Pressure) + hs.Pressure << endl;
-  f << 1+dh << endl;
-  f.close();
-  */
-
   // Finalise
   ofstream("test_terminated_normally.res").close();
+
+#ifdef PARALLEL
+  MPI_Finalize();
+#endif // PARALLEL
   return 0;
 }
