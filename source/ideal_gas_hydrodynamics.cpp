@@ -117,7 +117,7 @@ double calc_hydrodynamic_celerity_dp(double p,
     : calc_isentrope_celerity_dp(p,d0,p0,g);
 }
 
-double right_celerity(double p,
+double calc_right_celerity(double p,
 		      const Primitive& hv,
 		      double g)
 {
@@ -168,7 +168,7 @@ double eval_trans_eqn(double p,
 		      Primitive const& right,
 		      double g)
 {
-  return right_celerity(p,right,g)-
+  return calc_right_celerity(p,right,g)-
     calc_left_celerity(p,left,g);
 }
 
@@ -355,7 +355,7 @@ double solve_trans_eqn(Primitive const& left,
   if(acoustic_approximation_is_valid(left, right, g))
     return acoustic_approximation(left, right, g);
 
-  const double wrpl = right_celerity
+  const double wrpl = calc_right_celerity
     (left.Pressure, right, g);
   const double wlpr = calc_left_celerity
     (right.Pressure, left, g);

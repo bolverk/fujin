@@ -48,7 +48,7 @@ double calc_hydrodynamic_celerity_dp(double p,
 				     double p0,
 				     double g);
 
-double right_celerity(double p,
+double calc_right_celerity(double p,
 		      const Primitive& hv,
 		      double g);
 

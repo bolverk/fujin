@@ -139,7 +139,10 @@ template<class MT> MT min_term(vector<MT> const& v)
   \param num Number of terms
   \return Vector of uniformly spaced values
  */
-vector<double> linspace(double vmin, double vmax, size_t num);
+vector<double> linspace
+(const double vmin,
+ const double vmax,
+ const size_t num);
 
 vector<double> logspace(double vmin, double vmax, size_t num,
 			double dv_ratio);

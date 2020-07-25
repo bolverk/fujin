@@ -18,7 +18,7 @@ namespace {
     /*! \brief Class constructor
       \param v Original array
      */
-    MidValues(const vector<T>& v):
+    explicit MidValues(const vector<T>& v):
       v_(v) {}
 
     size_t getLength(void) const 

@@ -102,7 +102,9 @@ double min(vector<double> const& v)
   \param num Number of terms
   \return Equally spaced grid
  */
-vector<double> linspace(double vmin, double vmax, size_t num)
+vector<double> linspace(const double vmin,
+			const double vmax,
+			const size_t num)
 {
   class Linspacer: public Index2Member<double>
   {
@@ -130,7 +132,10 @@ vector<double> linspace(double vmin, double vmax, size_t num)
     const double vmin_;
     const double vmax_;
     const size_t num_;
-  } linspacer(vmin, vmax, num);
+  };
+  
+  Linspacer linspacer(vmin, vmax, num);
+  
   return serial_generate(linspacer);
 }
 
