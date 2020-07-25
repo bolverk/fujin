@@ -19,7 +19,8 @@ SafeTimeTermination::SafeTimeTermination
 
 bool SafeTimeTermination::operator()(SRHDSimulation const& sim) const
 {
-  assert(sim.GetCycle()<max_iter_);
+  if(max_iter_>0)
+    assert(sim.GetCycle()<max_iter_);
   return sim.GetTime()>tf_;
 }
 
