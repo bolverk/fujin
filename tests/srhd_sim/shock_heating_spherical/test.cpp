@@ -22,36 +22,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-namespace {
-  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-  {
-    std::ofstream f(fname.c_str());
-    string dlmtr = " "; // Delimiter
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-      f << sim.GetCellCentre(i) << dlmtr;
-      const Primitive p = sim.getHydroSnapshot().cells[i];
-      f << p.Density << dlmtr;
-      f << p.Pressure << dlmtr;
-      f << celerity2velocity(p.Celerity) << std::endl;
-    }
-    f.close();
-  }
-
-  /*
-    void WriteConserveds(SRHDSimulation const& sim, string const& fname)
-    {
-    std::ofstream f(fname.c_str());
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-    Conserved c = sim.GetConserved(i);
-    f << c.Mass << " ";
-    f << c.Momentum << " ";
-    f << c.Energy << "\n";
-    }
-    f.close();
-    }
-  */
-}
-
 using namespace std;
 
 int main()

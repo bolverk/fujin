@@ -1,6 +1,6 @@
 /*
   Relativistic shock tube
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -15,30 +15,6 @@
 #ifdef PARALLEL
 #include "parallel_helper.hpp"
 #endif // PARALLEL
-
-namespace {
-void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-    const Primitive p = sim.getHydroSnapshot().cells[i];
-    f << sim.GetCellCentre(i) << " ";
-    f << p.Density << " ";
-    f << p.Pressure << " ";
-    f << celerity2velocity(p.Celerity) << std::endl;
-  }
-  f.close();
-}
-
-void WriteMidVals(SRHDSimulation const& sim, string const& fname)
-{
-  std::ofstream f(fname.c_str());
-  const Primitive p = sim.getHydroSnapshot().cells[50];
-  f << p.Pressure << "\n";
-  f << celerity2velocity(p.Celerity) << "\n";
-  f.close();
-}
-}
 
 using namespace std;
 
@@ -78,8 +54,6 @@ int main()
 		     geometry);
 
   // Main process
-  size_t iter = 50;
-  //  vector<double> e(iter);
   while(sim.GetTime()<0.7){
     sim.TimeAdvance();
   }

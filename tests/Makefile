@@ -7,11 +7,11 @@ ifeq ($(MODE),debug)
 	LFLAGS := -pg
 else ifeq ($(MODE),gcc)
 	CC = gcc
-	CFLAGS = -O3 -march=native -g -ffast-math
+	CFLAGS = -O3 -march=native -g -ffast-math -Werror -Wall -Wextra -pedantic -Wno-long-long -Wfatal-errors -Weffc++ -Wshadow -Wmissing-declarations -Wconversion
 else ifeq ($(MODE),parallel)
 	EXECUTION_PREFIX = mpirun -n $(PROCESS_NUM)
 	CC = mpiCC
-	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors
+	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors -O3 -march=native -ffast-math
 else
 	CC = clang++
 	MODE = production

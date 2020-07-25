@@ -31,6 +31,7 @@ namespace {
       eos_(5./3.),
       rs_(eos_),
       bc_(rs_),
+      sr_(),
       geometry_(),
       sim_(linspace(0,1,100),
 	   Uniform(1),

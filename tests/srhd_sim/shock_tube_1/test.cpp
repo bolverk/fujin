@@ -19,14 +19,6 @@
 #endif // PARALLEL_HELPER
 
 namespace {
-  void WriteMidVals(SRHDSimulation const& sim, string const& fname)
-  {
-    std::ofstream f(fname.c_str());
-    const Primitive p = sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2];
-    f << p.Pressure << "\n";
-    f << celerity2velocity(p.Celerity) << "\n";
-    f.close();
-  }
 
   class SimData
   {

@@ -1,7 +1,7 @@
 /*
   Checks that the program calculates cross section areas properly
   in spherical geometry
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -14,7 +14,7 @@
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
 #ifdef PARALLEL
-#include "mpi.h"
+#include "parallel_helper.hpp"
 #endif // PARALLEL
 
 using namespace std;
@@ -52,6 +52,9 @@ int main()
 		     geometry);
 
   // Write data to file
+#ifdef PARALLEL
+  if(get_mpi_rank()==0){
+#endif // PARALLEL
   ofstream f;
   f.open("res.txt");
   double vol1 = 0;
@@ -65,6 +68,9 @@ int main()
       f<<vol1<<" "<<vol2<<endl;
     }
   f.close();
+#ifdef PARALLEL
+  }
+#endif // PARALLEL
 
   // Finalise
   ofstream("test_terminated_normally.res").close();
@@ -72,5 +78,5 @@ int main()
 #ifdef PARALLEL
   MPI_Finalize();
 #endif // PARALLEL
- return 0;
+  return 0;
 }

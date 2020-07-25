@@ -20,33 +20,6 @@
 
 using namespace std;
 
-namespace {
-  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-  {
-    ofstream f;
-    f.open(fname.c_str());
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-      const Primitive p = sim.getHydroSnapshot().cells[i];
-      f << sim.GetCellCentre(i) << " ";
-      f << p.Density << " ";
-      f << p.Pressure << " ";
-      f << velocity2celerity(p.Celerity) << endl;
-    }
-    f.close();
-  }
-
-  void WriteRes(SRHDSimulation const& sim1, SRHDSimulation const& sim2)
-  {
-    ofstream f;
-    f.open("res.txt");
-    f << sim1.getHydroSnapshot().cells[50].Pressure << endl;
-    f << velocity2celerity(sim1.getHydroSnapshot().cells[50].Celerity) << endl;
-    f << sim2.getHydroSnapshot().cells[50].Pressure << endl;
-    f << velocity2celerity(sim2.getHydroSnapshot().cells[50].Celerity) << endl;
-    f.close();
-  }
-}
-
 int main()
 {
 #ifdef PARALLEL

@@ -100,21 +100,6 @@ namespace {
       return tanh(aux);
     }
   };
-
-
-  void write_snapshot(SRHDSimulation const& sim, string const& fname)
-  {
-    ofstream f;
-    f.open(fname.c_str());
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-      Primitive p = sim.getHydroSnapshot().cells[i];
-      f << sim.GetCellCentre(i) << " ";
-      f << p.Density << " ";
-      f << p.Pressure << " ";
-      f << celerity2velocity(p.Celerity) << endl;
-    }
-    f.close();
-  }
 }
 
 int main()

@@ -44,18 +44,6 @@ namespace {
     return pmax;
   }
 
-  void WriteVectors2File(vector<double> const& v1,
-			 vector<double> const& v2,
-			 string const& fname)
-  {
-    ofstream f;
-    f.open(fname.c_str());
-    for(size_t i=0;i<v1.size();i++){
-      f << v1[i] << " " << v2[i] << endl;
-    }
-    f.close();
-  }
-
   class SimData
   {
   public:
@@ -95,7 +83,7 @@ namespace {
   public:
     
     ShockFrontTracker(const string& fname):
-      fname_(fname), positions_(), times_() {}
+      fname_(fname), positions_(), pressures_(), times_() {}
 
     void operator()(const SRHDSimulation& sim) const
     {

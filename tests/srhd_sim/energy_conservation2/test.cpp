@@ -25,19 +25,6 @@ namespace {
     }
     f.close();
   }
-
-  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-  {
-    std::ofstream f(fname.c_str());
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-      const Primitive p = sim.getHydroSnapshot().cells[i];
-      f << sim.GetCellCentre(i) << " ";
-      f << p.Density << " ";
-      f << p.Pressure << " ";
-      f << celerity2velocity(p.Celerity) << std::endl;
-    }
-    f.close();
-  }
 }
 
 using namespace std;

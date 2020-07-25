@@ -16,32 +16,6 @@
 
 using namespace std;
 
-namespace {
-void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-{
-  ofstream f(fname.c_str());
-  string dlmtr = " "; // Delimiter
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-    f << sim.GetCellCentre(i) << dlmtr;
-    Primitive p = sim.getHydroSnapshot().cells[i];
-    f << p.Density << dlmtr;
-    f << p.Pressure << dlmtr;
-    f << celerity2velocity(p.Celerity) << endl;
-  }
-  f.close();
-}
-
-void WriteMidVals(SRHDSimulation const& sim, string const& fname)
-{
-  ofstream f;
-  f.open(fname.c_str());
-  Primitive p = sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2+1];
-  f << p.Pressure << endl;
-  f << celerity2velocity(p.Celerity) << endl;
-  f.close();
-}
-}
-
 int main()
 {
 #ifdef PARALLEL
@@ -89,5 +63,5 @@ int main()
   MPI_Finalize();
 #endif // PARALLEL
 
- return 0;
+  return 0;
 }

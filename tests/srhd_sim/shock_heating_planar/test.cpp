@@ -23,35 +23,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-namespace {
-  void WritePrimitives(SRHDSimulation const& sim, string const& fname)
-  {
-    std::ofstream f(fname.c_str());
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-      Primitive p = sim.getHydroSnapshot().cells[i];
-      f << sim.GetCellCentre(i) << " ";
-      f << p.Density << " ";
-      f << p.Pressure << " ";
-      f << celerity2velocity(p.Celerity) << std::endl;
-    }
-    f.close();
-  }
-
-  /*
-    void WriteConserveds(SRHDSimulation const& sim, string const& fname)
-    {
-    std::ofstream f(fname.c_str());
-    for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
-    Conserved c = sim.GetConserved(i);
-    f << c.Mass << " ";
-    f << c.Momentum << " ";
-    f << c.Energy << "\n";
-    }
-    f.close();
-    }
-  */
-}
-
 using namespace std;
 
 class SimData
@@ -136,6 +107,9 @@ int main()
   Output(sim);
 
   // Finalise
+#ifdef PARALLEL
+  if(get_mpi_rank()==0)
+#endif // PARALLEL
   ofstream("test_terminated_normally.res").close();
 
 #ifdef PARALLEL

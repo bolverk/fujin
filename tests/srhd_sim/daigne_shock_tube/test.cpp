@@ -22,14 +22,6 @@
 using namespace std;
 
 namespace {
-  void WriteMidVals(SRHDSimulation const& sim, string const& fname)
-  {
-    ofstream f(fname.c_str());
-    const Primitive p = sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2];
-    f << p.Pressure << endl;
-    f << celerity2velocity(p.Celerity) << endl;
-    f.close();
-  }
 
   class SimData
   {
