@@ -140,7 +140,7 @@ double right_celerity_diff(double p,
   return celerity_addition_diff(w1,w2,dw1,dw2);
 }
 
-double left_celerity(double p,
+double calc_left_celerity(double p,
 		     Primitive const& hv,
 		     double g)
 {
@@ -169,7 +169,7 @@ double eval_trans_eqn(double p,
 		      double g)
 {
   return right_celerity(p,right,g)-
-    left_celerity(p,left,g);
+    calc_left_celerity(p,left,g);
 }
 
 double eval_trans_eqn_diff(double p,
@@ -357,7 +357,7 @@ double solve_trans_eqn(Primitive const& left,
 
   const double wrpl = right_celerity
     (left.Pressure, right, g);
-  const double wlpr = left_celerity
+  const double wlpr = calc_left_celerity
     (right.Pressure, left, g);
   const double right_celerity = right.Celerity;
   const double left_celerity = left.Celerity;

@@ -56,9 +56,9 @@ double right_celerity_diff(double p,
 			   const Primitive& hv,
 			   double g);
 
-double left_celerity(double p,
-		     const Primitive& hv,
-		     double g);
+double calc_left_celerity(double p,
+			  const Primitive& hv,
+			  double g);
 
 double left_celerity_diff(double p,
 			  const Primitive& hv,

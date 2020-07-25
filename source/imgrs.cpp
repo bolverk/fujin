@@ -24,7 +24,7 @@ RiemannSolution IdealGasRiemannSolver::operator()
     return RiemannSolution(0.5*(left_i.Pressure+right_i.Pressure),
 			   0.5*(left_i.Celerity+right_i.Celerity));
   const double ps = solve_trans_eqn(left_i,right_i,g);
-  const double ws = 0.5*(left_celerity(ps,left_i,g)+
+  const double ws = 0.5*(calc_left_celerity(ps,left_i,g)+
 			 right_celerity(ps,right_i,g));
   return RiemannSolution(ps,ws);
 }
