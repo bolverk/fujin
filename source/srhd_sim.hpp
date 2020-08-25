@@ -72,6 +72,23 @@ public:
 		 SpatialReconstruction& interpolation_method,
 		 const Geometry& geometry);
 
+  /*! \brief Class constructor
+    \param init_cond Initial conditions
+    \param inner_bc Inner boundary conditions
+    \param outer_bc Outer boundary conditions
+    \param eos Equation of state
+    \param rs Riemann solver
+    \param interpolation_method Pointer to spatial reconstruction
+    \param geometry Geometry
+   */
+  SRHDSimulation(const HydroSnapshot& init_cond,
+		 const BoundaryCondition& inner_bc,
+		 const BoundaryCondition& outer_bc,
+		 const EquationOfState& eos,
+		 const RiemannSolver& rs,
+		 SpatialReconstruction& interpolation_method,
+		 const Geometry& geometry);
+
   //! \brief Advances the simulation in time
   void TimeAdvance1stOrder(void);
 

@@ -106,7 +106,27 @@ SRHDSimulation::SRHDSimulation
   rs(rRiemannSolver), 
   sr(pInterpolationMethod),
   CourantFactor(1./3.), 
-//ConsVars(Primitives2Conserveds(data_.cells,reos)),
+  ConsVars(primitives_to_new_conserveds(data_.cells,reos)),
+  RestMass(serial_generate(RestMassCalculator(data_,geometry))),
+  geometry_(geometry),
+  Time(0),Cycle(0),
+  pInnerBC(piInnerBC), pOuterBC(piOuterBC) {}
+
+SRHDSimulation::SRHDSimulation
+(const HydroSnapshot& init_cond,
+ BoundaryCondition const& piInnerBC,
+ BoundaryCondition const& piOuterBC,
+ EquationOfState const& reos,
+ RiemannSolver const& rRiemannSolver,
+ SpatialReconstruction& pInterpolationMethod,
+ Geometry const& geometry):
+  data_(init_cond),
+  eos(reos), 
+  psvs(distribute_vertices(init_cond.edges).size(),
+       RiemannSolution()),
+  rs(rRiemannSolver), 
+  sr(pInterpolationMethod),
+  CourantFactor(1./3.), 
   ConsVars(primitives_to_new_conserveds(data_.cells,reos)),
   RestMass(serial_generate(RestMassCalculator(data_,geometry))),
   geometry_(geometry),
