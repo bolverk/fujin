@@ -15,7 +15,7 @@ else ifeq ($(MODE),gcc)
 	CFLAGS = -O3 -march=native -g -ffast-math -Werror -Wall -Wextra -pedantic -Wno-long-long -Wfatal-errors -Weffc++ -Wshadow -Wmissing-declarations -Wconversion
 else
 	MODE = production
-	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded
+	CFLAGS := -O2 -Weverything -Werror -ferror-limit=1 -Wno-error=padded -Wno-c++98-compat
 	ifeq ($(SILENCE_WARNINGS),1)
 		CFLAGS := -O2
 	endif

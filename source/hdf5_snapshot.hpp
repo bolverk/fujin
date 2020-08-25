@@ -15,5 +15,12 @@
 void write_hdf5_snapshot(const SRHDSimulation& sim,
 			 const string& fname);
 
+/*! \brief Read an hdf5 snapshot
+  \param fname File name
+  \return Hydrodynamic snapshot
+ */
+HydroSnapshot read_hdf5_snapshot
+(const string& fname);
+
 #endif // HDF5_SNAPSHOT_HPP
 
