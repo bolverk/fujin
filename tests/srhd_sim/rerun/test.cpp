@@ -18,10 +18,11 @@ using namespace std;
 namespace {
 
   void main_loop(SRHDSimulation& sim,
-		 const double tf,
+		 const int& inum,
 		 const string& outname)
   {
-    SafeTimeTermination term_cond(tf, 1e5);
+    //    SafeTimeTermination term_cond(tf, 1e5);
+    IterationTermination term_cond(inum);
     WriteTime diag("time.txt");
     main_loop(sim,
 	      term_cond,
@@ -99,11 +100,11 @@ private:
 namespace {
 
   void main_loop_weh(SRHDSimulation& sim,
-		     const double tf,
+		     const int& inum,
 		     const string& outname)
   {
     try{
-      main_loop(sim, tf, outname);
+      main_loop(sim, inum, outname);
     }
     catch(UniversalError const& eo){
       report_error(eo,cout);
@@ -123,21 +124,21 @@ int main()
     SimData sim_data;
     SRHDSimulation& sim = sim_data.getSim();
 
-    main_loop_weh(sim, 0.4, "continuous.h5");
+    main_loop_weh(sim, 300, "continuous.h5");
   }
 
   {
     SimData sim_data;
     SRHDSimulation& sim = sim_data.getSim();
 
-    main_loop_weh(sim, 0.2, "checkpoint.h5");
+    main_loop_weh(sim, 150, "checkpoint.h5");
   }
 
   {
     SimData sim_data("checkpoint.h5");
     SRHDSimulation& sim = sim_data.getSim();
 
-    main_loop_weh(sim, 0.2, "interrupted.h5");
+    main_loop_weh(sim, 149, "interrupted.h5");
   }
   
   ofstream("test_terminated_normally.res").close();

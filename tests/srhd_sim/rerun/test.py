@@ -40,11 +40,9 @@ def main():
     interrupted = consolidate('interrupted.h5')
     checkpoint = consolidate('checkpoint.h5')
 
-    l1_thresholds = {}
-
     for field in ['edges', 'density', 'pressure', 'celerity']:
         if calc_l1(continuous[field],
-                   interrupted[field])>1e-2:
+                   interrupted[field])>1e-12:
             return False    
 
     return True
