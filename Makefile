@@ -10,6 +10,9 @@ ifeq ($(MODE),debug)
 else ifeq ($(MODE),parallel)
 	CC = mpiCC
 	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors -march=native -O3 -ffast-math
+else ifeq ($(MODE),debug_parallel)
+	CC = mpiCC
+	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors -march=native -ggdb
 else ifeq ($(MODE),gcc)
 	CC = gcc
 	CFLAGS = -O3 -march=native -g -ffast-math -Werror -Wall -Wextra -pedantic -Wno-long-long -Wfatal-errors -Weffc++ -Wshadow -Wmissing-declarations -Wconversion

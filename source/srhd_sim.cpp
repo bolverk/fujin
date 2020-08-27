@@ -122,7 +122,7 @@ SRHDSimulation::SRHDSimulation
  Geometry const& geometry):
   data_(init_cond),
   eos(reos), 
-  psvs(distribute_vertices(init_cond.edges).size(),
+  psvs(init_cond.edges.size(),
        RiemannSolution()),
   rs(rRiemannSolver), 
   sr(pInterpolationMethod),

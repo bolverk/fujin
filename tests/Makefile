@@ -12,6 +12,10 @@ else ifeq ($(MODE),parallel)
 	EXECUTION_PREFIX = mpirun -n $(PROCESS_NUM)
 	CC = mpiCC
 	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors -O3 -march=native -ffast-math
+else ifeq ($(MODE),debug_parallel)
+	EXECUTION_PREFIX = mpirun -n $(PROCESS_NUM)
+	CC = mpiCC
+	CFLAGS = -DPARALLEL -std=c++11 -Wfatal-errors -ggdb -march=native
 else
 	CC = clang++
 	MODE = production

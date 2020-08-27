@@ -480,8 +480,8 @@ void CalcFluxes(HydroSnapshot const& data,
   const vector<std::pair<Primitive, Primitive> > interp_vals =
     sr.interpolateAll(data,dt);
   for(size_t i=1;i<data.edges.size()-1;++i)
-    psvs[i] = rs(interp_vals[i-1].first,
-		 interp_vals[i-1].second);
+    psvs.at(i) = rs(interp_vals.at(i-1).first,
+		 interp_vals.at(i-1).second);
 }
 
 namespace{

@@ -111,6 +111,9 @@ HydroSnapshot read_hdf5_snapshot
     {
       data[field] = read_double_vector_from_hdf5(file, field);
     }
+  assert(data["density"].size()+1==data["edges"].size());
+  assert(data["density"].size()==data["pressure"].size());
+  assert(data["density"].size()==data["celerity"].size());
   return HydroSnapshot(data["edges"],
 		       combine2cells(data["density"],
 				     data["pressure"],

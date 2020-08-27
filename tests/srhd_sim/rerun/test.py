@@ -36,6 +36,17 @@ def main():
     from ideal_gas_riemann_solver import RiemannProfile, Primitive
     from glob import glob
 
+    if len(glob('continuous_*.h5'))>1:
+
+        for fname in glob('continuous_*.h5'):
+            continuous = consolidate(fname)
+            interrupted = consolidate(fname.replace('continuous','interrupted'))
+            for field in ['edges','density','pressure','celerity']:
+                if calc_l1(continuous[field],
+                           interrupted[field])>1e-12:
+                    return False
+        return True
+
     continuous = consolidate('continuous.h5');
     interrupted = consolidate('interrupted.h5')
     checkpoint = consolidate('checkpoint.h5')

@@ -19,7 +19,8 @@ namespace {
 
   void main_loop(SRHDSimulation& sim,
 		 const int& inum,
-		 const string& outname)
+		 const string& outname,
+		 const bool write_file=true)
   {
     //    SafeTimeTermination term_cond(tf, 1e5);
     IterationTermination term_cond(inum);
@@ -28,11 +29,8 @@ namespace {
 	      term_cond,
 	      &SRHDSimulation::TimeAdvance,
 	      diag);
-#ifdef PARALLEL
-    write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
-#else
-    write_hdf5_snapshot(sim,outname);
-#endif // PARALLEL
+    if(write_file)
+      write_hdf5_snapshot(sim,outname);
   }
 }
 
@@ -101,10 +99,11 @@ namespace {
 
   void main_loop_weh(SRHDSimulation& sim,
 		     const int& inum,
-		     const string& outname)
+		     const string& outname,
+		     const bool& write_file=true)
   {
     try{
-      main_loop(sim, inum, outname);
+      main_loop(sim, inum, outname, write_file);
     }
     catch(UniversalError const& eo){
       report_error(eo,cout);
@@ -118,32 +117,48 @@ int main()
 {
 #ifdef PARALLEL
   MPI_Init(NULL, NULL);
-  throw("not implemented yet");
 #endif // PARALLEL
   {
     SimData sim_data;
     SRHDSimulation& sim = sim_data.getSim();
 
+#ifdef PARALLEL
+    main_loop_weh(sim, 300, "continuous_"+int2str(get_mpi_rank())+".h5");
+#else
     main_loop_weh(sim, 300, "continuous.h5");
+#endif // PARALLEL
   }
 
   {
     SimData sim_data;
     SRHDSimulation& sim = sim_data.getSim();
 
+#ifdef PARALLEL
+    main_loop_weh(sim, 150, "checkpoint_"+int2str(get_mpi_rank())+".h5");
+#else
     main_loop_weh(sim, 150, "checkpoint.h5");
+#endif // PARALLEL
   }
 
   {
+#ifdef PARALLEL
+    SimData sim_data("checkpoint_"+int2str(get_mpi_rank())+".h5");
+#else
     SimData sim_data("checkpoint.h5");
+#endif // PARALLEL
     SRHDSimulation& sim = sim_data.getSim();
 
+#ifdef PARALLEL
+    main_loop_weh(sim, 149, "interrupted_"+int2str(get_mpi_rank())+".h5");
+#else
     main_loop_weh(sim, 149, "interrupted.h5");
+#endif // PARALLEL
   }
   
   ofstream("test_terminated_normally.res").close();
 
 #ifdef PARALLEL
+  //  MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
 #endif // PARALLEL
 
