@@ -66,7 +66,7 @@ int main()
   vector<double> e(iter);
   for (size_t i=0;i<iter;i++)
     {
-      sim.TimeAdvance();
+      sim.timeAdvance();
       e[i] = TotalEnergy(sim);
     }
 

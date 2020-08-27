@@ -74,7 +74,7 @@ int main()
 
   main_loop(sim,
 	    IterationTermination(50),
-	    &SRHDSimulation::TimeAdvance,
+	    &SRHDSimulation::timeAdvance,
 	    WriteTime("time.txt"));
 
   // Output

@@ -71,9 +71,9 @@ namespace {
   {
     double tf = 0.5;
 
-    while(sim.GetTime()<tf){
+    while(sim.getTime()<tf){
 
-      sim.TimeAdvance();
+      sim.timeAdvance();
     }
   }
 

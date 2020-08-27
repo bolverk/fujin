@@ -90,23 +90,23 @@ public:
 		 const Geometry& geometry);
 
   //! \brief Advances the simulation in time
-  void TimeAdvance1stOrder(void);
+  void timeAdvance1stOrder(void);
 
   //! \brief Advances the simulation in time
-  void TimeAdvance2ndOrder(void);
+  void timeAdvance2ndOrder(void);
 
   //! \brief Advances the simulation in time
-  void TimeAdvance(void);
+  void timeAdvance(void);
 
   /*! \brief Calculates the conserved variables from the primitives 
    */
-  void CalcConservedFromPrimitive(void);
+  void calcConservedFromPrimitive(void);
 
   /*! \brief override default Courant Friedrichs Lewy coefficient
     \details Determins the ratio between the actual time step and the maximal time step
     \param cfl_new New CFL coefficient
    */
-  void OverrideCFL(double cfl_new);
+  void overrideCFL(double cfl_new);
 
   // Diagnostics
 
@@ -114,13 +114,13 @@ public:
     \param Index Cell index
     \return Time step
   */
-  double TimeStepForCell(size_t Index) const;
+  double calcTimeStepForCell(size_t Index) const;
 
   /*! \brief Return the volume bounded by a certain vertex
     \param Index Vertex index
     \return Volume
   */
-  double GetVolume(size_t Index) const;
+  double getVolume(size_t Index) const;
 
   /*! \brief Returns the hydrodynamic snapshot
     \return Hydrodynamic snapshot
@@ -132,50 +132,36 @@ public:
    */
   const vector<RiemannSolution>& getRiemannSolutions(void) const;
 
-  /*! \brief Returns conserved variables struct
-    \param i Cell index
+  /*! \brief Returns the conserved variables
     \return Conserved variables
    */
-  NewConserved GetConserved(size_t i) const;
-
-  /*! \brief returns the centre of a cell
-    \param index Cell index
-    \return Cell centre
-   */
-  double GetCellCentre(size_t index) const;
-
-  /*! \brief Returns the rest mass of the cell
-    \param Index Call index
-    \return Rest mass
-   */
-  double GetCellRestMass(size_t Index) const;
+  const vector<NewConserved>& getConserved(void) const;
 
   /*! \brief Calculates the time step
     \return Time step
   */
-  double TimeStep(void) const;
+  double calcTimeStep(void) const;
 
   /*! \brief Calculates the area at a certain cell centre
     \param Index Cell index
     \return Area
    */
-  double GetArea(size_t Index) const;
+  double getArea(size_t Index) const;
 
   /*! \brief Returns the time
   \return Time
   */
-  double GetTime(void) const;
+  double getTime(void) const;
 
   /*! \brief Returns cycle number
     \return Cycle number
    */
-  int GetCycle(void) const;
+  int getCycle(void) const;
 
-  /*! \brief Returns the rest mass of a cell
-    \param index Cell index
-    \return Rest mass
+  /*! \brief Returns the rest masses
+    \return Rest masses
    */
-  double GetRestMass(size_t index) const;
+  const vector<double>&  getRestMasses(void) const;
 
   /*! \brief Returns the equation of state
     \return Equation of state

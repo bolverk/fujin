@@ -58,8 +58,8 @@ int main()
 #endif // PARALLEL
 
   // Main process
-  while(sim.GetTime()<tf){
-    sim.TimeAdvance();
+  while(sim.getTime()<tf){
+    sim.timeAdvance();
   }
 
 #ifdef PARALLEL

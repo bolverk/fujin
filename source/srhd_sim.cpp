@@ -18,14 +18,10 @@
 
 using namespace std;
 
-double SRHDSimulation::GetCellCentre(size_t index) const
+double SRHDSimulation::getArea(size_t i) const
 {
-  return 0.5*(data_.edges[index]+data_.edges[index+1]);
-}
-
-double SRHDSimulation::GetArea(size_t Index) const
-{
-  return geometry_.calcArea(GetCellCentre(Index));
+  const double r = 0.5*(data_.edges.at(i)+data_.edges.at(i+1));
+  return geometry_.calcArea(r);
 }
 
 namespace{
@@ -137,36 +133,36 @@ SRHDSimulation::SRHDSimulation
   innerBC_(piInnerBC), 
   outerBC_(piOuterBC) {}
 
-void SRHDSimulation::OverrideCFL(double cfl_new)
+void SRHDSimulation::overrideCFL(double cfl_new)
 {
   cfl_ = cfl_new;
 }
 
-double SRHDSimulation::TimeStep(void) const
+double SRHDSimulation::calcTimeStep(void) const
 {
   return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
 }
 
-double SRHDSimulation::TimeStepForCell(size_t i) const
+double SRHDSimulation::calcTimeStepForCell(size_t i) const
 {
   return MaxTimeStep(data_.edges[i+1]-data_.edges[i],
 		     data_.cells[i],eos_);
 }
 
-double SRHDSimulation::GetRestMass(size_t Index) const
+const vector<double>& SRHDSimulation::getRestMasses(void) const
 {
-  return restMass_[Index];
+  return restMass_;
 }
 
-double SRHDSimulation::GetVolume(size_t Index) const
+double SRHDSimulation::getVolume(size_t i) const
 {
-  return geometry_.calcVolume(data_.edges[Index]);
+  return geometry_.calcVolume(data_.edges.at(i));
 }
 
-void SRHDSimulation::TimeAdvance1stOrder(void)
+void SRHDSimulation::timeAdvance1stOrder(void)
 {
 #ifdef PARALLEL
-  const double dt_candidate = TimeStep();
+  const double dt_candidate = calcTimeStep();
   double temp = dt_candidate;
   MPI_Allreduce(&dt_candidate,&temp,1,
 		MPI_DOUBLE,
@@ -175,7 +171,7 @@ void SRHDSimulation::TimeAdvance1stOrder(void)
   const double dt = temp;
   spdlog::debug("dt = {0}",dt);
 #else
-  const double dt = TimeStep();
+  const double dt = calcTimeStep();
 #endif // PARALLEL
 
   data_ = BasicTimeAdvance(data_,sr_,rs_,eos_,dt,geometry_,
@@ -185,12 +181,12 @@ void SRHDSimulation::TimeAdvance1stOrder(void)
   cycle_++;
 }
 
-void SRHDSimulation::TimeAdvance2ndOrder(void)
+void SRHDSimulation::timeAdvance2ndOrder(void)
 {
 #ifdef PARALLEL
   throw("Not implemented yet");
 #endif // PARALLEL
-  const double dt = TimeStep();
+  const double dt = calcTimeStep();
 
   const HydroSnapshot mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
 					     geometry_,
@@ -245,7 +241,7 @@ namespace {
   }
 }
 
-void SRHDSimulation::TimeAdvance(void)
+void SRHDSimulation::timeAdvance(void)
 {
   //  double dt = TimeStep();
 
@@ -258,9 +254,9 @@ void SRHDSimulation::TimeAdvance(void)
 #ifdef PARALLEL
   const double dt_candidate =
     new_calc_time_step(data_,
-		       psvs,
-		       eos,
-		       CourantFactor);
+		       psvs_,
+		       eos_,
+		       cfl_);
   double temp = dt_candidate;
   MPI_Allreduce(&dt_candidate,
 		&temp,
@@ -297,7 +293,7 @@ void SRHDSimulation::TimeAdvance(void)
   cycle_++;
 }
 
-void SRHDSimulation::CalcConservedFromPrimitive(void)
+void SRHDSimulation::calcConservedFromPrimitive(void)
 {
   consVars_ = primitives_to_new_conserveds(data_.cells,eos_);
 }
@@ -315,22 +311,17 @@ SRHDSimulation::getRiemannSolutions(void) const
   return psvs_;
 }
 
-NewConserved SRHDSimulation::GetConserved(size_t i) const
+const vector<NewConserved>& SRHDSimulation::getConserved(void) const
 {
-  return consVars_[i];
+  return consVars_;
 }
 
-double SRHDSimulation::GetCellRestMass(size_t i) const
-{
-  return restMass_[i];
-}
-
-double SRHDSimulation::GetTime(void) const
+double SRHDSimulation::getTime(void) const
 {
   return time_;
 }
 
-int SRHDSimulation::GetCycle(void) const
+int SRHDSimulation::getCycle(void) const
 {
   return cycle_;
 }

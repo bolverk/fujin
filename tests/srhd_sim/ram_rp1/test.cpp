@@ -30,7 +30,7 @@ namespace {
     WriteTime diag("time.txt");
     main_loop(sim,
 	      term_cond,
-	      &SRHDSimulation::TimeAdvance,
+	      &SRHDSimulation::timeAdvance,
 	      diag);
 #ifdef PARALLEL
     write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");

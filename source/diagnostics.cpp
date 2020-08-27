@@ -61,7 +61,7 @@ namespace {
     {
       return ConservedPrimitiveConsistency
 	(sim_.getHydroSnapshot().cells[i],
-	 sim_.GetConserved(i),
+	 sim_.getConserved().at(i),
 	 sim_.getEOS(),
 	 thres_);
     }
@@ -103,7 +103,7 @@ namespace {
 
     double operator()(size_t i) const
     {
-      return sim_.GetRestMass(i)*sim_.GetConserved(i).*pcm_;
+      return sim_.getRestMasses().at(i)*sim_.getConserved().at(i).*pcm_;
     }
 
   private:
@@ -127,7 +127,7 @@ namespace {
 
     double operator()(size_t i) const
     {
-      return sim_.GetVolume(i);	
+      return sim_.getVolume(i);	
     }
 
   private:

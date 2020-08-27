@@ -52,9 +52,9 @@ void write_hdf5_snapshot(const SRHDSimulation& sim,
     ("celerity",
      serial_generate(PrimitivePropertyGetter(sim,&Primitive::Celerity)))
     ("time",
-     vector<double>(1,sim.GetTime()))
+     vector<double>(1,sim.getTime()))
     ("cycle",
-     vector<double>(1,sim.GetCycle()));
+     vector<double>(1,sim.getCycle()));
 }
 
 namespace {

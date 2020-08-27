@@ -119,7 +119,7 @@ int main(void)
 
   main_loop(sim,
 	    SafeTimeTermination(10,1e6),
-	    &SRHDSimulation::TimeAdvance,
+	    &SRHDSimulation::timeAdvance,
 	    WriteTime("time.txt"));
 
 #ifdef PARALLEL

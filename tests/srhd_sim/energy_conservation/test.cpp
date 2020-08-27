@@ -69,7 +69,7 @@ int main()
   // Main process
   main_loop(sim,
 	    IterationTermination(10),
-	    &SRHDSimulation::TimeAdvance,
+	    &SRHDSimulation::timeAdvance,
 #ifdef PARALLEL
 	    TotalEnergyHistory("res_"+int2str(get_mpi_rank())+".txt"));
 #else

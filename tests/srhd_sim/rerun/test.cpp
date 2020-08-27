@@ -27,7 +27,7 @@ namespace {
     WriteTime diag("time.txt");
     main_loop(sim,
 	      term_cond,
-	      &SRHDSimulation::TimeAdvance,
+	      &SRHDSimulation::timeAdvance,
 	      diag);
     if(write_file)
       write_hdf5_snapshot(sim,outname);

@@ -141,8 +141,8 @@ int main()
 #endif // PARALLEL
 
   // Main process
-  while(sim.GetTime()<tf){
-    sim.TimeAdvance1stOrder();
+  while(sim.getTime()<tf){
+    sim.timeAdvance1stOrder();
   }
 
 #ifdef PARALLEL

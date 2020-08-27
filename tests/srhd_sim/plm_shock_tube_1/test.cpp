@@ -54,8 +54,8 @@ int main()
 		     geometry);
 
   // Main process
-  while(sim.GetTime()<0.7){
-    sim.TimeAdvance();
+  while(sim.getTime()<0.7){
+    sim.timeAdvance();
   }
 
   // Write data to file

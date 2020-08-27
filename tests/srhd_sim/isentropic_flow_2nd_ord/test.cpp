@@ -177,9 +177,9 @@ int main()
   main_loop(sim,
 	    SafeTimeTermination(0.8,1e6),
 #ifdef PARALLEL
-	    &SRHDSimulation::TimeAdvance,
+	    &SRHDSimulation::timeAdvance,
 #else
-	    &SRHDSimulation::TimeAdvance2ndOrder,
+	    &SRHDSimulation::timeAdvance2ndOrder,
 #endif // PARALLEL
 	    WriteTime("time.txt"));
 

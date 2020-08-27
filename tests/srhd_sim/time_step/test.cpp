@@ -16,10 +16,10 @@
 #endif // PARALLEL
 
 namespace {
-  void WriteTimeStep(SRHDSimulation const& sim, string const& fname)
+  void WritecalcTimeStep(SRHDSimulation const& sim, string const& fname)
   {
     std::ofstream f(fname.c_str());
-    f << sim.TimeStep() << "\n";
+    f << sim.calcTimeStep() << "\n";
     f.close();
   }
 }
@@ -58,9 +58,9 @@ int main()
 
   // Write data to file
 #ifdef PARALLEL
-  WriteTimeStep(sim, "res_"+int2str(get_mpi_rank())+".txt");
+  WritecalcTimeStep(sim, "res_"+int2str(get_mpi_rank())+".txt");
 #else
-  WriteTimeStep(sim,"res.txt");
+  WritecalcTimeStep(sim,"res.txt");
 #endif // PARALLEL
 
   // Finalise

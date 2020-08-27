@@ -60,7 +60,7 @@ int main()
   for (size_t i=0;i<sim.getHydroSnapshot().cells.size();i++)
     {
       const double vol = (4.0*M_PI/3.0)*(pow(sim.getHydroSnapshot().edges[i],3));
-      f<<sim.GetVolume(i)<<" "<<vol<<endl;
+      f<<sim.getVolume(i)<<" "<<vol<<endl;
     }
   f.close();
 

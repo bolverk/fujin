@@ -10,7 +10,7 @@ IterationTermination::IterationTermination(int max_iter):
 
 bool IterationTermination::operator()(SRHDSimulation const& sim) const
 {
-  return sim.GetCycle()>max_iter_;
+  return sim.getCycle()>max_iter_;
 }
 
 SafeTimeTermination::SafeTimeTermination
@@ -20,8 +20,8 @@ SafeTimeTermination::SafeTimeTermination
 bool SafeTimeTermination::operator()(SRHDSimulation const& sim) const
 {
   if(max_iter_>0)
-    assert(sim.GetCycle()<max_iter_);
-  return sim.GetTime()>tf_;
+    assert(sim.getCycle()<max_iter_);
+  return sim.getTime()>tf_;
 }
 
 DiagnosticFunction::~DiagnosticFunction(void) {}
@@ -31,7 +31,7 @@ WriteTime::WriteTime(string const& fname):
 
 void WriteTime::operator()(SRHDSimulation const& sim) const
 {
-  write_number(sim.GetTime(),fname_.c_str());
+  write_number(sim.getTime(),fname_.c_str());
 }
 
 TotalEnergyHistory::TotalEnergyHistory(string const& fname):

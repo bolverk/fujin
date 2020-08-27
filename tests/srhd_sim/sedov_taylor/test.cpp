@@ -25,12 +25,12 @@ namespace {
   double get_position_max_pressure(SRHDSimulation const& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
-    double rpmax = sim.GetCellCentre(0);
+    double rpmax = sim.getHydroSnapshot().edges.at(1);
     for(size_t i=0;i<sim.getHydroSnapshot().cells.size();i++){
       Primitive p = sim.getHydroSnapshot().cells[i];
       if(pmax<p.Pressure){
 	pmax = p.Pressure;
-	rpmax = sim.GetCellCentre(i);
+	rpmax = sim.getHydroSnapshot().edges.at(i+1);
       }
     }
     return rpmax;
@@ -87,7 +87,7 @@ namespace {
 
     void operator()(const SRHDSimulation& sim) const
     {
-      times_.push_back(sim.GetTime());
+      times_.push_back(sim.getTime());
       pressures_.push_back(get_max_pressure(sim));
       positions_.push_back(get_position_max_pressure(sim));
     }
@@ -117,7 +117,7 @@ namespace {
     ShockFrontTracker sft("rpmax.txt");
 #endif // PARALLEL
     SafeTimeTermination stt(50, 1e6);
-    main_loop(sim, stt, &SRHDSimulation::TimeAdvance, sft);
+    main_loop(sim, stt, &SRHDSimulation::timeAdvance, sft);
   }
 }
 

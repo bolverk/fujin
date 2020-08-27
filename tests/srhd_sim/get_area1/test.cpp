@@ -56,8 +56,8 @@ int main()
   double vol2 = 0;
   for (size_t i=0;i<sim.getHydroSnapshot().cells.size();++i)
     {
-      vol1 = sim.GetVolume(i+1)-sim.GetVolume(i);
-      vol2 = sim.GetArea(i)*
+      vol1 = sim.getVolume(i+1)-sim.getVolume(i);
+      vol2 = sim.getArea(i)*
 	(sim.getHydroSnapshot().edges[i+1]-
 	 sim.getHydroSnapshot().edges[i]);
       f<<vol1<<" "<<vol2<<endl;

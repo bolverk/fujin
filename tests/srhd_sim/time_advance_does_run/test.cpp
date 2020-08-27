@@ -47,7 +47,7 @@ int main()
 		     rs,
 		     sr,
 		     geometry);
-  sim.TimeAdvance();
+  sim.timeAdvance();
 
   // Write data to file
 #ifdef PARALLEL

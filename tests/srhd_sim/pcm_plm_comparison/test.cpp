@@ -60,11 +60,11 @@ int main()
 		      geometry);
 
   // Main process
-  while(sim.GetTime()<tf)
-    sim.TimeAdvance();
+  while(sim.getTime()<tf)
+    sim.timeAdvance();
 
-  while(sim2.GetTime()<tf)
-    sim2.TimeAdvance();
+  while(sim2.getTime()<tf)
+    sim2.timeAdvance();
 
   // Write data to file
 #ifdef PARALLEL
