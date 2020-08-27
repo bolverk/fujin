@@ -24,29 +24,29 @@ private:
   //! \brief Hydrodynamic state (edges and cells)
   HydroSnapshot data_;
   //! \brief Equation of state
-  EquationOfState const& eos;
+  const EquationOfState& eos_;
   //! \brief Riemann solutions
-  vector<RiemannSolution> psvs;
+  vector<RiemannSolution> psvs_;
   //! \brief rs Riemann sovler
-  RiemannSolver const& rs;
+  const RiemannSolver& rs_;
   //! \brief Spatial reconstruction method
-  SpatialReconstruction const& sr;
-  //! \brief Courant Friedrichs Lewi factor
-  double CourantFactor;
+  const SpatialReconstruction& sr_;
+  //! \brief Courant Friedrichs Lewy factor
+  double cfl_;
   //! \brief Vectors of conserved variables
-  vector<NewConserved> ConsVars;
+  vector<NewConserved> consVars_;
   //! \brief Rest masses of the cells
-  vector<double> RestMass;
+  vector<double> restMass_;
   //! \brief Geometry
-  Geometry const& geometry_;
+  const Geometry& geometry_;
   //! \brief Virtual time
-  double Time;
+  double time_;
   //! \brief Cycle number
-  int Cycle;
+  int cycle_;
   //! \brief Innter boundary condition
-  BoundaryCondition const& pInnerBC;
+  const BoundaryCondition& innerBC_;
   //! \brief Outer boundary condition
-  BoundaryCondition const& pOuterBC;
+  const BoundaryCondition& outerBC_;
 
 public:
   /*! \brief Class constructor

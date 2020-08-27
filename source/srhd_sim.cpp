@@ -100,17 +100,19 @@ SRHDSimulation::SRHDSimulation
 		  DensityDistribution,
 		  PressureDistribution,
 		  VelocityDistribution)),
-  eos(reos), 
-  psvs(distribute_vertices(rVertices).size(),
-       RiemannSolution()),
-  rs(rRiemannSolver), 
-  sr(pInterpolationMethod),
-  CourantFactor(1./3.), 
-  ConsVars(primitives_to_new_conserveds(data_.cells,reos)),
-  RestMass(serial_generate(RestMassCalculator(data_,geometry))),
+  eos_(reos), 
+  psvs_(distribute_vertices(rVertices).size(),
+	RiemannSolution()),
+  rs_(rRiemannSolver), 
+  sr_(pInterpolationMethod),
+  cfl_(1./3.), 
+  consVars_(primitives_to_new_conserveds(data_.cells,reos)),
+  restMass_(serial_generate(RestMassCalculator(data_,geometry))),
   geometry_(geometry),
-  Time(0),Cycle(0),
-  pInnerBC(piInnerBC), pOuterBC(piOuterBC) {}
+  time_(0),
+  cycle_(0),
+  innerBC_(piInnerBC), 
+  outerBC_(piOuterBC) {}
 
 SRHDSimulation::SRHDSimulation
 (const HydroSnapshot& init_cond,
@@ -121,37 +123,39 @@ SRHDSimulation::SRHDSimulation
  SpatialReconstruction& pInterpolationMethod,
  Geometry const& geometry):
   data_(init_cond),
-  eos(reos), 
-  psvs(init_cond.edges.size(),
-       RiemannSolution()),
-  rs(rRiemannSolver), 
-  sr(pInterpolationMethod),
-  CourantFactor(1./3.), 
-  ConsVars(primitives_to_new_conserveds(data_.cells,reos)),
-  RestMass(serial_generate(RestMassCalculator(data_,geometry))),
+  eos_(reos), 
+  psvs_(init_cond.edges.size(),
+	RiemannSolution()),
+  rs_(rRiemannSolver), 
+  sr_(pInterpolationMethod),
+  cfl_(1./3.), 
+  consVars_(primitives_to_new_conserveds(data_.cells,reos)),
+  restMass_(serial_generate(RestMassCalculator(data_,geometry))),
   geometry_(geometry),
-  Time(0),Cycle(0),
-  pInnerBC(piInnerBC), pOuterBC(piOuterBC) {}
+  time_(0),
+  cycle_(0),
+  innerBC_(piInnerBC), 
+  outerBC_(piOuterBC) {}
 
 void SRHDSimulation::OverrideCFL(double cfl_new)
 {
-  CourantFactor = cfl_new;
+  cfl_ = cfl_new;
 }
 
 double SRHDSimulation::TimeStep(void) const
 {
-  return CourantFactor*MaxTimeStep(data_.edges, data_.cells,eos);
+  return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
 }
 
 double SRHDSimulation::TimeStepForCell(size_t i) const
 {
   return MaxTimeStep(data_.edges[i+1]-data_.edges[i],
-		     data_.cells[i],eos);
+		     data_.cells[i],eos_);
 }
 
 double SRHDSimulation::GetRestMass(size_t Index) const
 {
-  return RestMass[Index];
+  return restMass_[Index];
 }
 
 double SRHDSimulation::GetVolume(size_t Index) const
@@ -174,11 +178,11 @@ void SRHDSimulation::TimeAdvance1stOrder(void)
   const double dt = TimeStep();
 #endif // PARALLEL
 
-  data_ = BasicTimeAdvance(data_,sr,rs,eos,dt,geometry_,
-			   pInnerBC, pOuterBC);
+  data_ = BasicTimeAdvance(data_,sr_,rs_,eos_,dt,geometry_,
+			   innerBC_, outerBC_);
 
-  Time += dt;
-  Cycle++;
+  time_ += dt;
+  cycle_++;
 }
 
 void SRHDSimulation::TimeAdvance2ndOrder(void)
@@ -188,38 +192,31 @@ void SRHDSimulation::TimeAdvance2ndOrder(void)
 #endif // PARALLEL
   const double dt = TimeStep();
 
-  const HydroSnapshot mid = BasicTimeAdvance(data_,sr,rs,eos,0.5*dt,
+  const HydroSnapshot mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
 					     geometry_,
-					     pInnerBC,pOuterBC);
+					     innerBC_,
+					     outerBC_);
 
   CalcFluxes(mid,
-	     sr,rs,dt,
-	     pInnerBC,
-	     pOuterBC,
-	     psvs);
+	     sr_,rs_,dt,
+	     innerBC_,
+	     outerBC_,
+	     psvs_);
 
-  const vector<bool> filter = NeedUpdate(psvs);
+  const vector<bool> filter = NeedUpdate(psvs_);
 
-  /*
-  UpdateConserved(psvs,
-		  RestMass,
-		  dt, 
-		  geometry_,
-		  data_.edges,
-		  ConsVars);
-  */
-  update_new_conserved(psvs,
+  update_new_conserved(psvs_,
 		       data_.cells,
-		       RestMass,
+		       restMass_,
 		       dt, 
 		       geometry_,
 		       data_.edges,
-		       ConsVars);
+		       consVars_);
 
-  UpdatePrimitives(ConsVars, eos, filter, data_.cells);
+  UpdatePrimitives(consVars_, eos_, filter, data_.cells);
 
-  Time += dt;
-  Cycle++;
+  time_ += dt;
+  cycle_++;
 }
 
 namespace {
@@ -253,10 +250,10 @@ void SRHDSimulation::TimeAdvance(void)
   //  double dt = TimeStep();
 
   CalcFluxes(data_,
-	     sr,rs,0,
-	     pInnerBC,
-	     pOuterBC,
-	     psvs);
+	     sr_,rs_,0,
+	     innerBC_,
+	     outerBC_,
+	     psvs_);
 
 #ifdef PARALLEL
   const double dt_candidate =
@@ -275,34 +272,34 @@ void SRHDSimulation::TimeAdvance(void)
   spdlog::debug("dt = {0}", dt);
 #else
   const double dt = new_calc_time_step(data_,
-				       psvs,
-				       eos,
-				       CourantFactor);
+				       psvs_,
+				       eos_,
+				       cfl_);
 #endif // PARALLEL
 
-  update_new_conserved(psvs,
+  update_new_conserved(psvs_,
 		       data_.cells,
-		       RestMass,
+		       restMass_,
 		       dt, geometry_,
 		       data_.edges,
-		       ConsVars);
+		       consVars_);
 
   for(size_t i=1;i<data_.edges.size();++i)
     assert(data_.edges[i]>data_.edges[i-1]);
-  for(size_t i=0;i<ConsVars.size();++i)
-    assert(ConsVars[i].mass>0);
+  for(size_t i=0;i<consVars_.size();++i)
+    assert(consVars_[i].mass>0);
 
-  const vector<bool> filter = NeedUpdate(psvs);
+  const vector<bool> filter = NeedUpdate(psvs_);
 
-  UpdatePrimitives(ConsVars, eos, filter, data_.cells);
+  UpdatePrimitives(consVars_, eos_, filter, data_.cells);
 
-  Time += dt;
-  Cycle++;
+  time_ += dt;
+  cycle_++;
 }
 
 void SRHDSimulation::CalcConservedFromPrimitive(void)
 {
-  ConsVars = primitives_to_new_conserveds(data_.cells,eos);
+  consVars_ = primitives_to_new_conserveds(data_.cells,eos_);
 }
 
 // Diagnostics
@@ -315,30 +312,30 @@ const HydroSnapshot& SRHDSimulation::getHydroSnapshot(void) const
 const vector<RiemannSolution>& 
 SRHDSimulation::getRiemannSolutions(void) const
 {
-  return psvs;
+  return psvs_;
 }
 
 NewConserved SRHDSimulation::GetConserved(size_t i) const
 {
-  return ConsVars[i];
+  return consVars_[i];
 }
 
 double SRHDSimulation::GetCellRestMass(size_t i) const
 {
-  return RestMass[i];
+  return restMass_[i];
 }
 
 double SRHDSimulation::GetTime(void) const
 {
-  return Time;
+  return time_;
 }
 
 int SRHDSimulation::GetCycle(void) const
 {
-  return Cycle;
+  return cycle_;
 }
 
 const EquationOfState& SRHDSimulation::getEOS(void) const
 {
-  return eos;
+  return eos_;
 }
