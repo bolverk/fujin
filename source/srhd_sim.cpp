@@ -82,15 +82,15 @@ namespace{
 
 SRHDSimulation::SRHDSimulation 
 (const vector<double>& rVertices,
- SpatialDistribution const& DensityDistribution,
- SpatialDistribution const& PressureDistribution,
- SpatialDistribution const& VelocityDistribution,
- BoundaryCondition const& piInnerBC,
- BoundaryCondition const& piOuterBC,
- EquationOfState const& reos,
- RiemannSolver const& rRiemannSolver,
- SpatialReconstruction& pInterpolationMethod,
- Geometry const& geometry):
+ const SpatialDistribution& DensityDistribution,
+ const SpatialDistribution& PressureDistribution,
+ const SpatialDistribution& VelocityDistribution,
+ const BoundaryCondition& piInnerBC,
+ const BoundaryCondition& piOuterBC,
+ const EquationOfState& reos,
+ const RiemannSolver& rRiemannSolver,
+ const SpatialReconstruction& pInterpolationMethod,
+ const Geometry& geometry):
   data_(distribute_vertices(rVertices),
 	InitCells(distribute_vertices(rVertices),
 		  DensityDistribution,
@@ -112,12 +112,12 @@ SRHDSimulation::SRHDSimulation
 
 SRHDSimulation::SRHDSimulation
 (const HydroSnapshot& init_cond,
- BoundaryCondition const& piInnerBC,
- BoundaryCondition const& piOuterBC,
- EquationOfState const& reos,
- RiemannSolver const& rRiemannSolver,
- SpatialReconstruction& pInterpolationMethod,
- Geometry const& geometry):
+ const BoundaryCondition& piInnerBC,
+ const BoundaryCondition& piOuterBC,
+ const EquationOfState& reos,
+ const RiemannSolver& rRiemannSolver,
+ const SpatialReconstruction& pInterpolationMethod,
+ const Geometry& geometry):
   data_(init_cond),
   eos_(reos), 
   psvs_(init_cond.edges.size(),

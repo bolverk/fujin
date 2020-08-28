@@ -69,7 +69,7 @@ public:
 		 const BoundaryCondition& outer_bc,
 		 const EquationOfState& eos,
 		 const RiemannSolver& riemann_solver,
-		 SpatialReconstruction& interpolation_method,
+		 const SpatialReconstruction& interpolation_method,
 		 const Geometry& geometry);
 
   /*! \brief Class constructor
@@ -86,7 +86,7 @@ public:
 		 const BoundaryCondition& outer_bc,
 		 const EquationOfState& eos,
 		 const RiemannSolver& rs,
-		 SpatialReconstruction& interpolation_method,
+		 const SpatialReconstruction& interpolation_method,
 		 const Geometry& geometry);
 
   //! \brief Advances the simulation in time
