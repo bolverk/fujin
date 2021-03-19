@@ -138,9 +138,6 @@ public:
 
 vector<double> operator*(double d, vector<double> const& v);
 
-vector<double> join(vector<double> const& v1,
-		    vector<double> const& v2);
-
 /*! \brief Checks if a number is effectively zero withing working precision
   \param x Number
   \return True if x if very close to zero

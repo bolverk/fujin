@@ -127,22 +127,6 @@ vector<double> operator*(double d, vector<double> const& v)
   return res;
 }
 
-/*! \brief Concatenate two vectors
-  \param v1 first vector
-  \param v2 second vector
-  \return Joint vectors
- */
-vector<double> join(vector<double> const& v1,
-		    vector<double> const& v2)
-{
-  vector<double> res;
-  for(size_t i=0;i<v1.size();++i)
-    res.push_back(v1[i]);
-  for(size_t i=0;i<v2.size();++i)
-    res.push_back(v2[i]);
-  return res;
-}
-
 bool effectively_zero(double x)
 {
   return abs(x)<1e-14;
