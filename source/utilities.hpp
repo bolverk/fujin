@@ -196,8 +196,13 @@ private:
 template<class T> vector<T> serial_generate(const Index2Member<T>& i2m)
 {
   vector<T> res(i2m.getLength());
-  for(size_t i=0, endp=res.size();i<endp;++i)
-    res[i] = i2m(i);
+  size_t n = 0;
+  generate(res.begin(),
+	   res.end(),
+	   [&n,&i2m]()mutable
+	   {return i2m(n++);});
+  //  for(size_t i=0, endp=res.size();i<endp;++i)
+  //    res[i] = i2m(i);
   return res;
 }
 
