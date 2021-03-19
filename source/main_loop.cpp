@@ -52,8 +52,10 @@ MultipleDiagnostics::MultipleDiagnostics(void):
 
 void MultipleDiagnostics::operator()(SRHDSimulation const& sim) const
 {
-  for(size_t i=0;i<diag_list.size();++i)
-    diag_list[i](sim);
+  for_each(diag_list.begin(),
+	   diag_list.end(),
+	   [&sim](auto& diag)
+	   {diag(sim);});
 }
 
 void main_loop(SRHDSimulation& sim,
