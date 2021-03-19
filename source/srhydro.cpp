@@ -553,8 +553,6 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
 		   const Primitive& prim)
 	    {return eos.Conserved2Primitive
 		(prim, cons);});
-  //  for(size_t i=0;i<cells.size();i++)
-  //    cells[i] = eos.Conserved2Primitive(cells[i], conserved[i]);
 }
 
 vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs)

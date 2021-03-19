@@ -1,9 +1,11 @@
 #include "hdf5_utils.hpp"
 #include <H5Cpp.h>
 #include <cassert>
+#include <algorithm>
 //#include "utils.hpp"
 
 using namespace H5;
+using std::transform;
 
 HDF5Shortcut::HDF5Shortcut(const string& fname):
   fname_(fname), double_data_(), int_data_() {}
@@ -34,8 +36,11 @@ namespace {
   template<class T, class S> vector<T> list_static_cast(const vector<S>& source)
   {
     vector<T> res(source.size());
-    for(size_t i=0;i<res.size();++i)
-      res[i] = static_cast<T>(source[i]);
+    transform(source.begin(),
+	      source.end(),
+	      res.begin(),
+	      [](const S& s)
+	      {return static_cast<T>(s);});
     return res;
   }
 
