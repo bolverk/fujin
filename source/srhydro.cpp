@@ -530,9 +530,18 @@ void UpdatePrimitives(vector<Conserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<Primitive>& cells)
 {
-  for(size_t i=0;i<cells.size();i++)
-    cells[i] = eos.Conserved2Primitive(cells[i],
-				       old_to_new_conserved(conserved[i]));
+  transform(conserved.begin(),
+	    conserved.end(),
+	    cells.begin(),
+	    cells.begin(),
+	    [&eos](const Conserved& cons,
+	       const Primitive& prim)
+	    {return eos.Conserved2Primitive
+		(prim,
+		 old_to_new_conserved(cons));});
+  //  for(size_t i=0;i<cells.size();i++)
+  //    cells[i] = eos.Conserved2Primitive(cells[i],
+  //				       old_to_new_conserved(conserved[i]));
 }
 
 void UpdatePrimitives(vector<NewConserved> const& conserved,
