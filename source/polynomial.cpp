@@ -17,9 +17,6 @@ namespace {
 	     coefs.end(),
 	     [&res, &x](double c)
 	     {res = res*x+c;});
-    //    for(vector<double>::const_iterator c=coefs.begin(), endp=coefs.end();
-    //	c!=endp;++c)
-    //      res = x*res + (*c);
     return res;	
   }
 

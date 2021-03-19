@@ -282,8 +282,10 @@ void SRHDSimulation::timeAdvance(void)
 
   for(size_t i=1;i<data_.edges.size();++i)
     assert(data_.edges[i]>data_.edges[i-1]);
-  for(size_t i=0;i<consVars_.size();++i)
-    assert(consVars_[i].mass>0);
+  for_each(consVars_.begin(),
+	   consVars_.end(),
+	   [](const NewConserved& cv)
+	   {assert(cv.mass>0);});
 
   const vector<bool> filter = NeedUpdate(psvs_);
 
