@@ -487,8 +487,6 @@ namespace{
 	      res.begin(),
 	      [&geo](const double r)
 	      {return geo.calcArea(r);});
-    //    for(size_t i=0;i<vertices.size();++i)
-    //      res[i] = geo.calcArea(vertices[i]);
     return res;
   }
 }
@@ -502,9 +500,13 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
 			  vector<NewConserved>& conserved)
 {
   const vector<double> vertex_areas = calc_all_vertex_areas(geometry, vertices);
- 
-  for(size_t i=0;i<psvs.size();++i)
-    vertices[i] += dt*celerity2velocity(psvs[i].Celerity);
+
+  transform(psvs.begin(),
+	    psvs.end(),
+	    vertices.begin(),
+	    vertices.begin(),
+	    [&dt](const RiemannSolution& rsol, double pos)
+	    {return pos + dt*celerity2velocity(rsol.Celerity);});
 
   const vector<double> volume_new = VerticesVolumes(vertices,geometry);
 
