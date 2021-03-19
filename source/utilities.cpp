@@ -114,15 +114,6 @@ string int2str(int n)
   return ss.str();
 }
 
-vector<double> apply_to_all_members(vector<double> const& v,
-				    ScalarFunction const& sf)
-{
-  vector<double> res(v.size(),0);
-  for(size_t i=0;i<res.size();++i)
-    res[i] = sf.Eval(v[i]);
-  return res;
-}
-
 /*! \brief Product by a scalar
   \param d Scalar
   \param v List

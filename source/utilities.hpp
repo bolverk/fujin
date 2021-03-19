@@ -136,14 +136,6 @@ public:
   virtual ~ScalarFunction(void);
 };
 
-/*! \brief Applies a scalar function to all members of a vector
-  \param v Vector
-  \param sf Scalar function
-  \return Modified vector
- */
-vector<double> apply_to_all_members(vector<double> const& v,
-				    ScalarFunction const& sf);
-
 vector<double> operator*(double d, vector<double> const& v);
 
 vector<double> join(vector<double> const& v1,

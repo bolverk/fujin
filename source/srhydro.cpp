@@ -55,10 +55,6 @@ namespace {
 	      [&geometry](const double x, const double y)
 	      {return geometry.calcArea(0.5*(x+y));});
     return res;
-    /*
-    return apply_to_all_members(vertices2cell_centers(vertices),
-				CalcAreaInterface(geometry));
-    */
   }
 
   /*! \brief Volumes contained within vertices
