@@ -19,7 +19,7 @@ else ifeq ($(MODE),debug_parallel)
 else
 	CC = clang++
 	MODE = production
-	CFLAGS := -O2 -Weverything -Werror -Wno-error=padded -ferror-limit=1 -ffast-math
+	CFLAGS := -O2 -Weverything -Werror -Wno-error=padded -ferror-limit=1 -ffast-math -Wno-c++98-compat
 	ifeq ($(SILENCE_WARNINGS),1)
 		CFLAGS := -O2
 	endif

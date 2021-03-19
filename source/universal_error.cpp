@@ -1,5 +1,9 @@
 #include <iostream>
+#include <algorithm>
 #include "universal_error.hpp"
+
+using std::pair;
+using std::for_each;
 
 UniversalError::UniversalError(string const& err_msg):
   err_msg_(err_msg),
@@ -29,7 +33,15 @@ void report_error(const UniversalError& eo,
 		   std::ostream& s)
 {
   s << eo.getErrorMessage() << "\n";
+  for_each(eo.getData().begin(),
+	   eo.getData().end(),
+	   [&s](const pair<string, double>& x)
+	   {s << x.first << ": " << x.second << "\n";});
+	     //  for(auto x:eo.getData())
+	     //    s << x.first << ": " << x.second << "\n";
+  /*
   for(vector<std::pair<string,double> >::const_iterator it = eo.getData().begin();
       it != eo.getData().end(); ++it)
     s << it->first << ": " << it->second << "\n";
+  */
 }

@@ -9,10 +9,12 @@
 #include <complex>
 #include <vector>
 #include "trans_eqn_solver.hpp"
+#include <algorithm>
 
 using std::complex;
 using std::string;
 using std::vector;
+using std::transform;
 
 /*! \brief Relativistic velocity addition
   \param v1 First velocity
@@ -259,8 +261,14 @@ template<class T> vector<T> operator+(const vector<T>& v1,
 {
   assert(v1.size()==v2.size());
   vector<T> res(v1.size());
-  for(size_t i=0;i<v2.size();++i)
-    res[i] = v1[i] + v2[i];
+  transform(v1.begin(),
+	    v1.end(),
+	    v2.begin(),
+	    res.begin(),
+	    [](const T& t1, const T& t2)
+	    {return t1+t2;});
+  //  for(size_t i=0;i<v2.size();++i)
+  //    res[i] = v1[i] + v2[i];
   return res;
 }
 
@@ -274,8 +282,14 @@ template<class T> vector<T> operator-(const vector<T>& v1,
 {
   assert(v1.size()==v2.size());
   vector<T> res(v1.size());
-  for(size_t i=0;i<v1.size();++i)
-    res[i] = v1[i] - v2[i];
+  transform(v1.begin(),
+	    v1.end(),
+	    v2.begin(),
+	    res.begin(),
+	    [](const T& t1, const T& t2)
+	    {return t1-t2;});
+  //  for(size_t i=0;i<v1.size();++i)
+  //    res[i] = v1[i] - v2[i];
   return res;
 }
 
@@ -288,23 +302,14 @@ template<class S, class T> vector<T> operator*
 (const S s, const vector<T>& v)
 {
   vector<T> res(v.size());
-  for(size_t i=0;i<v.size();++i)
-    res[i] = s*v[i];
+  transform(v.begin(),
+	    v.end(),
+	    res.begin(),
+	    [&s](const T& t)
+	    {return s*t;});
+  //  for(size_t i=0;i<v.size();++i)
+  //    res[i] = s*v[i];
   return res;
 }
-
-/*! \brief min Finds minimum member
-  \param i2m Lazy list
-  \return Minimum term
- */
-/*
-template<class T> T min(const Index2Member<T>& i2m)
-{
-  T res = i2m(0);
-  for(size_t i=1;i<i2m.getLength();++i)
-    res = min(res,i2m(i));
-  return res;
-}
-*/
 
 #endif // UTILITIES_HPP
