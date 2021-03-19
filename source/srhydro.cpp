@@ -83,19 +83,6 @@ namespace {
 				CalcAreaInterface(geometry));
   }
 
-  /*! \brief Calculates the areas of vertices
-    \param vertices Position of the vertices
-    \return Areas of vertices
-  */
-  /*
-    vector<double> VertexAreas(vector<double> const& vertices, 
-    Geometry const& geometry)
-    {
-    return apply_to_all_members(vertices, 
-    CalcAreaInterface(geometry));
-    }
-  */
-
   /*! \brief Volumes contained within vertices
     \param vertices Position of vertices
     \param geometry Geometry
@@ -104,24 +91,13 @@ namespace {
   vector<double> VerticesVolumes(vector<double> vertices, 
 				 Geometry const& geometry)
   {
-    class VolumeCalc: public ScalarFunction
-    {
-    public:
-
-      explicit VolumeCalc(Geometry const& geom2):
-	geometry_(geom2) {}
-
-      double Eval(double r) const
-      {
-	return geometry_.calcVolume(r);
-      }
-
-    private:
-
-      Geometry const& geometry_;
-    } sf(geometry);
-
-    return apply_to_all_members(vertices,sf);
+    vector<double> res(vertices.size());
+    transform(vertices.begin(),
+	      vertices.end(),
+	      res.begin(),
+	      [&geometry](const double r)
+	      {return geometry.calcVolume(r);});
+    return res;
   }
 }
 

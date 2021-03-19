@@ -107,27 +107,6 @@ vector<double> linspace(const double vmin,
   return res;
 }
 
-/*! \brief Logarithmically spaced grid
-  \param vmin Minimum value
-  \param vmax Maximum value
-  \param num Number of grid points
-  \param q ration between consecutive steps
-  \return Logarithmically spaced grid
- */
-/*
-vector<double> logspace(double vmin, double vmax, 
-			size_t num, double q)
-{
-  const double dv0 = (vmax-vmin)/((pow(q,num)-1)/(q-1));
-  vector<double> res(num,0);
-  res[0] = vmin;
-  for(size_t i=1;i<num;++i){
-    res[i] = res[i-1] + pow(dv0,static_cast<double>(i));
-  }
-  return res;
-}
-*/
-
 string int2str(int n)
 {
   stringstream ss;
