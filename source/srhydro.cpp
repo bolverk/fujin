@@ -10,6 +10,7 @@
 #endif // PARALLEL
 
 using std::min_element;
+using std::pair;
 
 namespace {
 
@@ -235,75 +236,7 @@ double MaxTimeStep(double width, Primitive const& p,
   const double sound_speed = eos.dp2ba(p.Density, p.Pressure);
   const double b_c = celerity2velocity(p.Celerity);
   const double g2_c = 1+pow(p.Celerity,2);
-  /*
-  const double vel = RelVelAdd
-    (sound_speed,celerity2velocity(fabs(p.Celerity)));
-  return width/vel;
-  */
   return width*(1-sound_speed*fabs(b_c))*g2_c/sound_speed;
-}
-
-namespace{
-
-  //! \brief Calculates the time step for every cell
-  /*
-  class MaxTimeStepCalculator: public Index2Member<double>
-  {
-  public:
-  */
-
-    /*! \brief Class constructor
-      \param v_list Computational Grid
-      \param p_list Computational cells
-      \param eos Equation of state
-     */
-    /*
-    MaxTimeStepCalculator(const vector<double>& v_list,
-			  const vector<Primitive>& p_list,
-			  const EquationOfState& eos):
-      v_list_(v_list),
-      p_list_(p_list),
-      eos_(eos) {}
-    */
-
-  /*
-    size_t getLength(void) const
-    {
-      return p_list_.size();
-    }
-
-    double operator()(size_t i) const
-    {
-      return MaxTimeStep(v_list_[i+1]-v_list_[i],
-			 p_list_[i],eos_);
-    }
-  */
-
-  //  private:
-    //! \brief Computational grid
-  //    const vector<double>& v_list_;
-    //! \brief Computational cells
-  //    const vector<Primitive>& p_list_;
-    //! \brief Equation of state
-  //    const EquationOfState& eos_;
-  //  };
-
-  /*! \brief Returns the maximum allowed time step for every cell
-    \param vv Vertices
-    \param pv Primitive variables
-    \return List of time step for each cell
-  */
-  /*
-    vector<double> MaxTimeSteps(vector<double> const& vv,
-    vector<Primitive> const& pv,
-    const EquationOfState& eos )
-    {
-    vector<double> res(pv.size(),0);
-    for(size_t i=0;i<pv.size();++i)
-    res[i] = MaxTimeStep(vv[i+1]-vv[i],pv[i], eos);
-    return res;
-    }
-  */
 }
 
 double MaxTimeStep(vector<double> const& v_list, 
@@ -432,9 +365,16 @@ void CalcFluxes(HydroSnapshot const& data,
 #endif // PARALLEL
   const vector<std::pair<Primitive, Primitive> > interp_vals =
     sr.interpolateAll(data,dt);
+  transform(interp_vals.begin(),
+	    interp_vals.end(),
+	    psvs.begin()+1,
+	    [&rs](const pair<Primitive, Primitive>& pp)
+	    {return rs(pp.first, pp.second);});
+  /*
   for(size_t i=1;i<data.edges.size()-1;++i)
     psvs.at(i) = rs(interp_vals.at(i-1).first,
 		 interp_vals.at(i-1).second);
+  */
 }
 
 namespace{
