@@ -302,35 +302,14 @@ void write_snapshot(SRHDSimulation const& sim,
   properties.push_back(make_unique<CellCenterGetter>(sim));
   for(auto itm : {&Primitive::Density, &Primitive::Pressure, &Primitive::Celerity})
     properties.push_back(make_unique<PrimitivePropertyGetter>(sim, itm));
-  /*			 
-  const vector<Index2Member<double>* > properties = 
-    VectorInitializer<Index2Member<double>* >
-    (new CellCenterGetter(sim))
-    (new PrimitivePropertyGetter(sim,&Primitive::Density))
-    (new PrimitivePropertyGetter(sim,&Primitive::Pressure))
-    (new PrimitivePropertyGetter(sim,&Primitive::Celerity))();
-  */
   std::ofstream f(fname.c_str());
   f.precision(precision);
   for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
     for(auto &p : properties)
       f << (*p)(i) << " ";
-    /*
-    BOOST_FOREACH(Index2Member<double>* p, properties)
-      {
-	f << (*p)(i) << " ";
-      }
-    */
     f << "\n";
   }
   f.close();
-
-  /*
-  BOOST_FOREACH(Index2Member<double>* p,properties)
-    {
-      delete p;
-    }
-  */
 }
 
 void write_number(double num,

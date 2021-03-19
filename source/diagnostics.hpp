@@ -76,8 +76,10 @@ template <class T> void write_to_file(vector<T> const& v, string const& fname,
 {
   std::ofstream f(fname.c_str());
   f.precision(precision);
-  for(size_t i=0;i<v.size();++i)
-    f << v[i] << "\n";
+  for_each(v.begin(),
+	   v.end(),
+	   [&f](const T& t)
+	   {f << t << "\n";});
   f.close();
 }
 

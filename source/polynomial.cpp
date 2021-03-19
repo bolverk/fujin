@@ -1,4 +1,7 @@
+#include <algorithm>
 #include "polynomial.hpp"
+
+using std::for_each;
 
 namespace {
 
@@ -10,9 +13,13 @@ namespace {
   double poly_eval(double x, const vector<double>& coefs)
   {
     double res = 0;
-    for(vector<double>::const_iterator c=coefs.begin(), endp=coefs.end();
-	c!=endp;++c)
-      res = x*res + (*c);
+    for_each(coefs.begin(),
+	     coefs.end(),
+	     [&res, &x](double c)
+	     {res = res*x+c;});
+    //    for(vector<double>::const_iterator c=coefs.begin(), endp=coefs.end();
+    //	c!=endp;++c)
+    //      res = x*res + (*c);
     return res;	
   }
 
