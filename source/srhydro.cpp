@@ -370,11 +370,6 @@ void CalcFluxes(HydroSnapshot const& data,
 	    psvs.begin()+1,
 	    [&rs](const pair<Primitive, Primitive>& pp)
 	    {return rs(pp.first, pp.second);});
-  /*
-  for(size_t i=1;i<data.edges.size()-1;++i)
-    psvs.at(i) = rs(interp_vals.at(i-1).first,
-		 interp_vals.at(i-1).second);
-  */
 }
 
 namespace{
@@ -413,8 +408,14 @@ void UpdateConserved(vector<RiemannSolution>  const& psvs,
   vector<double> volume_old = VerticesVolumes
     (vertices,geometry);
   vector<double> area_old = CellAreas(vertices,geometry);
-  for(size_t i=0;i<psvs.size();++i)
-    vertices[i] += dt*celerity2velocity(psvs[i].Celerity);
+  transform(psvs.begin(),
+	    psvs.end(),
+	    vertices.begin(),
+	    vertices.begin(),
+	    [&dt](const RiemannSolution& rsol, const double pos)
+	    {return pos+dt*celerity2velocity(rsol.Celerity);});
+  //  for(size_t i=0;i<psvs.size();++i)
+  //    vertices[i] += dt*celerity2velocity(psvs[i].Celerity);
 
   vector<double> volume_new = VerticesVolumes(vertices,geometry);
   vector<double> area_new = CellAreas(vertices,geometry);
