@@ -109,31 +109,7 @@ bool is_nan(double x);
   \param v Array
   \return Smallest term
  */
-double min(vector<double> const& v);
-
-/*! \brief Calculates the maximum term
-  \param v List of numbers
-  \return Maximum term
- */
-template<class MT> MT max_term(vector<MT> const& v)
-{
-  MT res = v[0];
-  for(size_t i=1, endp=v.size();i<endp;++i)
-    res = std::max(res,v[i]);
-  return res;
-}
-
-/*! \brief Calculates the minium term
-  \param v List of numbers
-  \return Minimum term
- */
-template<class MT> MT min_term(vector<MT> const& v)
-{
-  MT res = v[0];
-  for(size_t i=1, endp=v.size();i<endp;++i)
-    res = std::min(res,v[i]);
-  return res;
-}
+//double min(vector<double> const& v);
 
 /*! \brief Array of uniformly spaced real values
   \param vmin Minimum value

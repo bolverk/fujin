@@ -88,14 +88,6 @@ bool is_nan(double x)
 	return x!=x;
 }
 
-double min(vector<double> const& v)
-{
-  double res = v[0];
-  for(size_t i=1, endp = v.size();i<endp;++i)
-    res = min(res,v[i]);
-  return res;
-}
-
 /*! \brief Uniformly spaced grid
   \param vmin Lower bound
   \param vmax Upper bound
@@ -106,37 +98,13 @@ vector<double> linspace(const double vmin,
 			const double vmax,
 			const size_t num)
 {
-  class Linspacer: public Index2Member<double>
-  {
-  public:
-
-    Linspacer(double vmin_i,
-	      double vmax_i,
-	      size_t num_i):
-      vmin_(vmin_i),
-      vmax_(vmax_i),
-      num_(num_i) {}
-
-    size_t getLength(void) const
-    {
-      return num_;
-    }
-
-    double operator()(size_t i) const
-    {
-      return vmin_+(vmax_-vmin_)*static_cast<double>(i)/
-	static_cast<double>(num_-1);
-    }
-
-  private:
-    const double vmin_;
-    const double vmax_;
-    const size_t num_;
-  };
-  
-  Linspacer linspacer(vmin, vmax, num);
-  
-  return serial_generate(linspacer);
+  const double dx = (vmax-vmin)/static_cast<double>(num-1);
+  vector<double> res(num);
+  generate(res.begin(),
+	   res.end(),
+	   [n = 0, &dx, &vmin]() mutable
+	   { return vmin+(n++)*dx; });
+  return res;
 }
 
 /*! \brief Logarithmically spaced grid
