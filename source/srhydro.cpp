@@ -1,5 +1,6 @@
 #include <limits>
 #include <cassert>
+#include <algorithm>
 #include "srhydro.hpp"
 #include "utilities.hpp"
 #include "advanced_hydrodynamic_variables.hpp"
@@ -7,6 +8,8 @@
 #ifdef PARALLEL
 #include "mpi.h"
 #endif // PARALLEL
+
+using std::min_element;
 
 namespace {
 
@@ -372,7 +375,7 @@ double MaxTimeStep(vector<double> const& v_list,
       valid_time_steps.push_back((1-fabs(bc)*ba)*width*g2c/ba);
     }
   }
-  return min_term(valid_time_steps);
+  return *min_element(valid_time_steps.begin(), valid_time_steps.end());
 }
 
 namespace{

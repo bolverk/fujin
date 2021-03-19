@@ -37,11 +37,4 @@ void report_error(const UniversalError& eo,
 	   eo.getData().end(),
 	   [&s](const pair<string, double>& x)
 	   {s << x.first << ": " << x.second << "\n";});
-	     //  for(auto x:eo.getData())
-	     //    s << x.first << ": " << x.second << "\n";
-  /*
-  for(vector<std::pair<string,double> >::const_iterator it = eo.getData().begin();
-      it != eo.getData().end(); ++it)
-    s << it->first << ": " << it->second << "\n";
-  */
 }

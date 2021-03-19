@@ -267,8 +267,6 @@ template<class T> vector<T> operator+(const vector<T>& v1,
 	    res.begin(),
 	    [](const T& t1, const T& t2)
 	    {return t1+t2;});
-  //  for(size_t i=0;i<v2.size();++i)
-  //    res[i] = v1[i] + v2[i];
   return res;
 }
 
@@ -288,8 +286,6 @@ template<class T> vector<T> operator-(const vector<T>& v1,
 	    res.begin(),
 	    [](const T& t1, const T& t2)
 	    {return t1-t2;});
-  //  for(size_t i=0;i<v1.size();++i)
-  //    res[i] = v1[i] - v2[i];
   return res;
 }
 
@@ -307,8 +303,6 @@ template<class S, class T> vector<T> operator*
 	    res.begin(),
 	    [&s](const T& t)
 	    {return s*t;});
-  //  for(size_t i=0;i<v.size();++i)
-  //    res[i] = s*v[i];
   return res;
 }
 
