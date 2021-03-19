@@ -122,8 +122,10 @@ vector<double> linspace
  const double vmax,
  const size_t num);
 
+/*
 vector<double> logspace(double vmin, double vmax, size_t num,
 			double dv_ratio);
+*/
 
 //! \brief A scalar function
 class ScalarFunction 

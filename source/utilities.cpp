@@ -114,6 +114,7 @@ vector<double> linspace(const double vmin,
   \param q ration between consecutive steps
   \return Logarithmically spaced grid
  */
+/*
 vector<double> logspace(double vmin, double vmax, 
 			size_t num, double q)
 {
@@ -125,6 +126,7 @@ vector<double> logspace(double vmin, double vmax,
   }
   return res;
 }
+*/
 
 string int2str(int n)
 {
