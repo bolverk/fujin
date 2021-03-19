@@ -39,37 +39,6 @@ namespace {
     const vector<T>& v_;
   };
 
-  /*! \brief Converts vertices to cell centers
-    \param v Vertices
-    \return Cell centers
-  */
-  vector<double> vertices2cell_centers(vector<double> const& v)
-  {
-    return serial_generate(MidValues<double>(v));
-  }
-
-  //! \brief Interface for the function that calculates area
-  class CalcAreaInterface: public ScalarFunction 
-  {
-  public:
-
-    /*! \brief Class constructor
-      \param geometry_i Geometry
-    */
-    explicit CalcAreaInterface(Geometry const& geometry_i):
-      geometry_(geometry_i) {}
-    
-    double Eval(double x) const
-    {
-      return geometry_.calcArea(x);
-    }
-
-  private:
-
-    //! \brief geometry_ Geometry
-    Geometry const& geometry_;
-  };
-
   /*! \brief Calculates the areas of cells
     \param vertices Position of the vertices
     \param geometry Geometry
@@ -78,9 +47,18 @@ namespace {
   vector<double> CellAreas(vector<double> const& vertices, 
 			   Geometry const& geometry)
   {
-
+    vector<double> res(vertices.size()-1);
+    transform(vertices.begin(),
+	      vertices.end()-1,
+	      vertices.begin()+1,
+	      res.begin(),
+	      [&geometry](const double x, const double y)
+	      {return geometry.calcArea(0.5*(x+y));});
+    return res;
+    /*
     return apply_to_all_members(vertices2cell_centers(vertices),
 				CalcAreaInterface(geometry));
+    */
   }
 
   /*! \brief Volumes contained within vertices
