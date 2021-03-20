@@ -3,17 +3,25 @@
 #include "utilities.hpp"
 #include "universal_error.hpp"
 
+Conserved::Conserved(const array<double, 3>& source):
+  array<double, 3>{source},
+  Mass((*this)[0]),
+  Momentum((*this)[1]),
+  Energy((*this)[2]) {}
+
 Conserved::Conserved(void):
-  Mass(0),
-  Momentum(0),
-  Energy(0) {}
+  Conserved(array<double, 3>()) {}
 
 Conserved::Conserved(double mass,
 		     double momentum,
 		     double energy):
-  Mass(mass),
-  Momentum(momentum),
-  Energy(energy) {}
+  Conserved(array<double, 3>{mass, momentum, energy}) {}
+
+Conserved& Conserved::operator=(const Conserved& source)
+{
+  array<double, 3>::operator=(source);
+  return *this;
+}
 
 NewConserved::NewConserved(void):
   mass(), positive(), negative() {}

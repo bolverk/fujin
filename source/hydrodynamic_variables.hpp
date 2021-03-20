@@ -8,12 +8,14 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 using std::vector;
 using std::string;
+using std::array;
 
 //! \brief Conserved variables
-class Conserved
+class Conserved: public array<double, 3>
 {
 public:
 
@@ -28,15 +30,21 @@ public:
   Conserved(double mass,
 	    double momentum,
 	    double energy);
+
+  Conserved(const array<double, 3>& source);
+
+  Conserved(const Conserved& source);
+
+  Conserved& operator=(const Conserved& source);
   
   //! \brief Mass densty
-  double Mass;
+  double& Mass;
 
   //! \brief Momentum density
-  double Momentum;
+  double& Momentum;
 
   //! \brief Energy density
-  double Energy;
+  double& Energy;
 };
 
 //! \brief New conserved variable. These will not become degenerate at ultra relativistic flows
