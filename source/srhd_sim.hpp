@@ -22,7 +22,7 @@ class SRHDSimulation
 {
 private:
   //! \brief Hydrodynamic state (edges and cells)
-  HydroSnapshot data_;
+  NewHydroSnapshot<vector<double>, vector<Primitive> > data_;
   //! \brief Equation of state
   const EquationOfState& eos_;
   //! \brief Riemann solutions
@@ -81,14 +81,15 @@ public:
     \param interpolation_method Pointer to spatial reconstruction
     \param geometry Geometry
    */
-  SRHDSimulation(const HydroSnapshot& init_cond,
-		 const BoundaryCondition& inner_bc,
-		 const BoundaryCondition& outer_bc,
-		 const EquationOfState& eos,
-		 const RiemannSolver& rs,
-		 const SpatialReconstruction& interpolation_method,
-		 const Geometry& geometry);
-
+  SRHDSimulation
+  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
+   const BoundaryCondition& inner_bc,
+   const BoundaryCondition& outer_bc,
+   const EquationOfState& eos,
+   const RiemannSolver& rs,
+   const SpatialReconstruction& interpolation_method,
+   const Geometry& geometry);
+  
   //! \brief Advances the simulation in time
   void timeAdvance1stOrder(void);
 

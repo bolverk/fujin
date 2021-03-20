@@ -69,7 +69,8 @@ public:
     sr_(),
     bc_(rs_),
     geometry_(),
-    sim_(read_hdf5_snapshot(fname),
+    sim_(NewHydroSnapshot<vector<double>, vector<Primitive> >
+	 (read_hdf5_snapshot(fname)),
 	 bc_, bc_,
 	 eos_, rs_,
 	 sr_, 

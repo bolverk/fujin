@@ -111,7 +111,7 @@ SRHDSimulation::SRHDSimulation
   outerBC_(piOuterBC) {}
 
 SRHDSimulation::SRHDSimulation
-(const HydroSnapshot& init_cond,
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
  const BoundaryCondition& piInnerBC,
  const BoundaryCondition& piOuterBC,
  const EquationOfState& reos,

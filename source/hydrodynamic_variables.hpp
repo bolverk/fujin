@@ -247,6 +247,18 @@ public:
     new_edges((*this).first),
     new_cells((*this).second) {}
 
+  NewHydroSnapshot(const NewHydroSnapshot<CE, CP>& source):
+    NewHydroSnapshot(source.edges, source.cells) {}
+
+  NewHydroSnapshot(const HydroSnapshot& source):
+    NewHydroSnapshot(source.edges, source.cells) {}
+
+  NewHydroSnapshot& operator=(const NewHydroSnapshot& source)
+  {
+    HydroSnapshot::operator=(source);
+    return *this;
+  }
+
   CE& new_edges;
   CP& new_cells;
   

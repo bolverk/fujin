@@ -210,14 +210,15 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
   \param rbc Right boundary conditions
   \return Hydrodynamic data at the end of the time step
 */
-HydroSnapshot BasicTimeAdvance(HydroSnapshot const& data,
-				  SpatialReconstruction const& sr,
-				  RiemannSolver const& rs,
-				  EquationOfState const& eos,
-				  double dt, 
-				  Geometry const& geometry,
-				  BoundaryCondition const& lbc,
-				  BoundaryCondition const& rbc);
+NewHydroSnapshot<vector<double>, vector<Primitive> > BasicTimeAdvance
+(const HydroSnapshot& data,
+ const SpatialReconstruction& sr,
+ const RiemannSolver& rs,
+ const EquationOfState& eos,
+ double dt, 
+ const Geometry& geometry,
+ const BoundaryCondition& lbc,
+ const BoundaryCondition& rbc);
 
 /*! \brief Second order time advance
   \param data Hydrodynamic snapshot

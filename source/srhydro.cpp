@@ -605,14 +605,16 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
   }
 }
 
-HydroSnapshot BasicTimeAdvance(HydroSnapshot const& data,
-			       SpatialReconstruction const& sr,
-			       RiemannSolver const& rs,
-			       EquationOfState const& eos,
-			       double dt, 
-			       Geometry const& geometry,
-			       BoundaryCondition const& lbc,
-			       BoundaryCondition const& rbc)
+NewHydroSnapshot<vector<double>, vector<Primitive> >
+BasicTimeAdvance
+(HydroSnapshot const& data,
+ SpatialReconstruction const& sr,
+ RiemannSolver const& rs,
+ EquationOfState const& eos,
+ double dt, 
+ Geometry const& geometry,
+ BoundaryCondition const& lbc,
+ BoundaryCondition const& rbc)
 {
   HydroSnapshot res(data);
 
@@ -629,7 +631,7 @@ HydroSnapshot BasicTimeAdvance(HydroSnapshot const& data,
   vector<bool> filter = NeedUpdate(fluxes);
   UpdatePrimitives(conserved,eos,filter,res.cells);
 
-  return res;
+  return NewHydroSnapshot<vector<double>, vector<Primitive> >(res.edges, res.cells);
 }
 
 HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
