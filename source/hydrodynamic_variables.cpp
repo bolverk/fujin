@@ -71,39 +71,6 @@ Primitive& Primitive::operator=(const Primitive& source)
   return *this;
 }
 
-namespace {
-
-  template<class T> T unary_op
-  (const T& p1,
-   function<double(double)> func)
-  {
-    T res;
-    transform(p1.begin(),
-	      p1.end(),
-	      res.begin(),
-	      func);
-    return res;
-  }
-}
-
-Primitive operator-(Primitive const& p1,
-		    Primitive const& p2)
-{
-  return bin_op(p1, p2, std::minus<double>());
-}
-
-Primitive operator/(Primitive const& p,
-		    double d)
-{
-  return unary_op(p, [&d](double s){return s/d;});
-}
-
-Primitive operator*(double d,
-		    Primitive const& p)
-{
-  return unary_op(p, [&d](double s){return s*d;});
-}
-
 HydroSnapshot::HydroSnapshot
 (vector<double> const& edges_i,
  vector<Primitive> const& cells_i):
@@ -138,19 +105,4 @@ HydroSnapshot operator*(double d,
 			HydroSnapshot const& hs)
 {
   return HydroSnapshot(d*hs.edges,d*hs.cells);
-}
-
-Conserved operator*(double s, Conserved const& v)
-{
-  return unary_op(v, [&s](double d){return d*s;});
-}
-
-NewConserved operator*(double s, const NewConserved& v)
-{
-  return unary_op(v, [&s](double d){return s*d;});
-}
-
-Conserved operator/(Conserved const& v, double s)
-{
-  return (1/s)*v;
 }

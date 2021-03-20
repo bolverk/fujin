@@ -115,30 +115,6 @@ public:
   double& Celerity;
 };
 
-/*! \brief Subtraction operator
-  \param p1 Left argument
-  \param p2 Right argument
-  \return Difference
- */
-Primitive operator-(Primitive const& p1,
-		    Primitive const& p2);
-
-/*! \brief Division by a scalar
-  \param p Primitive variable
-  \param d Scalar
-  \return ratio
- */
-Primitive operator/(Primitive const& p,
-		    double d);
-
-/*! \brief Multiplication by a scalar
-  \param d Scalar
-  \param p Primitive variable
-  \return Product
- */
-Primitive operator*(double d,
-		    Primitive const& p);
-
 //! \brief Union for grid and primitive variables
 class HydroSnapshot
 {
@@ -213,6 +189,18 @@ template<class T> T bin_op
   return res;
 }
 
+template<class T> T une_op
+(const T& t,
+ function<double(double)> func)
+{
+  T res;
+  transform(t.begin(),
+	    t.end(),
+	    res.begin(),
+	    func);
+  return res;
+}
+
 template<class T> typename std::enable_if<std::is_base_of<array<double,3>, T>::value, T>::type operator+
 (const T& t1,
  const T& t2)
@@ -227,25 +215,25 @@ template<class T> typename std::enable_if<std::is_base_of<array<double,3>, T>::v
   return bin_op(t1, t2, std::minus<double>());
 }
 
-/*! \brief Subtraction of two vectors
-  \param s Scalar
-  \param v vector
-  \return vector
-*/
-Conserved operator*(double s, Conserved const& v);
+template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::value, T>::type operator*
+(const T& t,
+ double s)
+{
+  return une_op(t, [&s](double d){return s*d;});
+}
 
-/*! \brief Subtraction of two vectors
-  \param s Scalar
-  \param v vector
-  \return vector
-*/
-NewConserved operator*(double s, NewConserved const& v);
+template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::value, T>::type operator*
+(double s,
+ const T& t)
+{
+  return une_op(t, [&s](double d){return s*d;});
+}
 
-/*! \brief Scalar division
-  \param s Scalar
-  \param v vector
-  \return vector
-*/
-Conserved operator/(Conserved const& v, double s);
+template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::value, T>::type operator/
+(const T& t,
+ double s)
+{
+  return une_op(t, [&s](double d){return d/s;});
+}
 
 #endif // HYDRODYNAMIC_VARIABLES_HPP
