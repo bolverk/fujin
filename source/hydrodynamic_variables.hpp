@@ -15,6 +15,7 @@ using std::vector;
 using std::string;
 using std::array;
 using std::function;
+using std::pair;
 
 //! \brief Conserved variables
 class Conserved: public array<double, 3>
@@ -116,7 +117,7 @@ public:
 };
 
 //! \brief Union for grid and primitive variables
-class HydroSnapshot
+class HydroSnapshot: public pair<vector<double>, vector<Primitive> >
 {
 public:
 
@@ -139,10 +140,10 @@ public:
   HydroSnapshot& operator=(const HydroSnapshot& source);
 
   //! \brief Grid
-  vector<double> edges;
+  vector<double>& edges;
 
   //! \brief Primitive variables
-  vector<Primitive> cells;
+  vector<Primitive>& cells;
 };
 
 /*! \brief Addition operator

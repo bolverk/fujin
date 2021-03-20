@@ -74,16 +74,17 @@ Primitive& Primitive::operator=(const Primitive& source)
 HydroSnapshot::HydroSnapshot
 (vector<double> const& edges_i,
  vector<Primitive> const& cells_i):
-  edges(edges_i), cells(cells_i) {}
+  pair<vector<double>, vector<Primitive> >{edges_i, cells_i},
+  edges((*this).first),
+  cells((*this).second) {}
 
 HydroSnapshot::HydroSnapshot(HydroSnapshot const& source):
-  edges(source.edges),cells(source.cells) {}
+  HydroSnapshot(source.edges, source.cells) {}
 
 HydroSnapshot& HydroSnapshot::operator=
 (const HydroSnapshot& source)
 {
-  edges = source.edges;
-  cells = source.cells;
+  pair<vector<double>, vector<Primitive> >::operator=(source);
   return *this;
 }
 
