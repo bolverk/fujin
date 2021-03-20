@@ -213,42 +213,19 @@ template<class T> T bin_op
   return res;
 }
 
-template<class T> T operator+
+template<class T> typename std::enable_if<std::is_base_of<array<double,3>, T>::value, T>::type operator+
 (const T& t1,
  const T& t2)
 {
   return bin_op(t1, t2, std::plus<double>());
 }
 
-/*! \brief Addition of two vectors
-  \param v1 First vector
-  \param v2 Second vector
-  \return Vector
-*/
-Conserved operator+(Conserved const& v1, 
-		    Conserved const& v2);
-
-/*! \brief Addition of two new conserved variables
-  \param v1 First set of conserved variables
-  \param v2 Second set of conserved variables
-  \return Vector
-*/
-NewConserved operator+(NewConserved const& v1, 
-		       NewConserved const& v2);
-
-/*! \brief Addition of two vectors
-  \param v1 First vector
-  \param v2 Second vector
-  \return Vector
-*/
-Conserved operator-(Conserved const& v1, Conserved const& v2);
-
-/*! \brief Subtraction of two new conserved variables
-  \param v1 First vector
-  \param v2 Second vector
-  \return Vector
-*/
-NewConserved operator-(NewConserved const& v1, NewConserved const& v2);
+template<class T> typename std::enable_if<std::is_base_of<array<double,3>, T>::value, T>::type operator-
+(const T& t1,
+ const T& t2)
+{
+  return bin_op(t1, t2, std::minus<double>());
+}
 
 /*! \brief Subtraction of two vectors
   \param s Scalar

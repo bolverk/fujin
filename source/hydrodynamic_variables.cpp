@@ -140,28 +140,6 @@ HydroSnapshot operator*(double d,
   return HydroSnapshot(d*hs.edges,d*hs.cells);
 }
 
-Conserved operator+(Conserved const& v1, 
-		    Conserved const& v2)
-{
-  return bin_op(v1, v2, std::plus<double>());
-}
-
-NewConserved operator+(const NewConserved& v1, 
-		       const NewConserved& v2)
-{
-  return bin_op(v1, v2, std::plus<double>());
-}
-
-Conserved operator-(Conserved const& v1, Conserved const& v2)
-{
-  return bin_op(v1, v2, std::minus<double>());
-}
-
-NewConserved operator-(const NewConserved& v1, const NewConserved& v2)
-{
-  return bin_op(v1, v2, std::minus<double>());
-}
-
 Conserved operator*(double s, Conserved const& v)
 {
   return unary_op(v, [&s](double d){return d*s;});
