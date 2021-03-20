@@ -1,7 +1,10 @@
 #include <cassert>
+#include <functional>
 #include "hydrodynamic_variables.hpp"
 #include "utilities.hpp"
 #include "universal_error.hpp"
+
+using std::function;
 
 Conserved::Conserved(const array<double, 3>& source):
   array<double, 3>{source},
@@ -69,28 +72,50 @@ Primitive& Primitive::operator=(const Primitive& source)
   return *this;
 }
 
+namespace {
+  template<class T> T bin_op
+  (const T& p1,
+   const T& p2,
+   function<double(double, double)> func)
+  {
+    T res;
+    transform(p1.begin(),
+	      p1.end(),
+	      p2.begin(),
+	      res.begin(),
+	      func);
+    return res;
+  }
+
+  template<class T> T unary_op
+  (const T& p1,
+   function<double(double)> func)
+  {
+    T res;
+    transform(p1.begin(),
+	      p1.end(),
+	      res.begin(),
+	      func);
+    return res;
+  }
+}
+
 Primitive operator+(Primitive const& p1,
 		    Primitive const& p2)
 {
-  return Primitive(p1.Density+p2.Density,
-		   p1.Pressure+p2.Pressure,
-		   p1.Celerity+p2.Celerity);
+  return bin_op(p1, p2, std::plus<double>());
 }
 
 Primitive operator-(Primitive const& p1,
 		    Primitive const& p2)
 {
-  return Primitive(p1.Density-p2.Density,
-		   p1.Pressure-p2.Pressure,
-		   p1.Celerity-p2.Celerity);
+  return bin_op(p1, p2, std::minus<double>());
 }
 
 Primitive operator/(Primitive const& p,
 		    double d)
 {
-  return Primitive(p.Density/d,
-		   p.Pressure/d,
-		   p.Celerity/d);
+  return unary_op(p, [&d](double s){return s/d;});
 }
 
 Primitive operator*(double d,
@@ -132,7 +157,7 @@ HydroSnapshot operator-(HydroSnapshot const& hs1,
 }
 
 HydroSnapshot operator*(double d,
-			   HydroSnapshot const& hs)
+			HydroSnapshot const& hs)
 {
   return HydroSnapshot(d*hs.edges,d*hs.cells);
 }
