@@ -46,11 +46,11 @@ void write_hdf5_snapshot(const SRHDSimulation& sim,
 	("edges",
      serial_generate(Echo<double>(sim.getHydroSnapshot().edges)))
     ("density",
-     serial_generate(PrimitivePropertyGetter(sim,&Primitive::Density)))
+     serial_generate(PrimitivePropertyGetter(sim,0)))
     ("pressure",
-     serial_generate(PrimitivePropertyGetter(sim,&Primitive::Pressure)))
+     serial_generate(PrimitivePropertyGetter(sim,1)))
     ("celerity",
-     serial_generate(PrimitivePropertyGetter(sim,&Primitive::Celerity)))
+     serial_generate(PrimitivePropertyGetter(sim,2)))
     ("time",
      vector<double>(1,sim.getTime()))
     ("cycle",

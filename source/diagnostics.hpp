@@ -119,10 +119,10 @@ public:
 
   /*! \brief Class constructor
     \param sim Simulation
-    \param ppm Pointer to member
+    \param idx Index to member
   */
   PrimitivePropertyGetter(const SRHDSimulation& sim,
-			  double Primitive::* ppm);
+			  size_t idx);
   
   size_t getLength(void) const;
 
@@ -133,7 +133,7 @@ private:
   const vector<Primitive>& cells_;
 
   //! \brief Pointer to member of primitives
-  double Primitive::* ppm_;
+  const size_t idx_;
 };
 
 /*! \brief Writes all vector member to a file

@@ -46,17 +46,28 @@ NewConserved& NewConserved::operator=(const NewConserved& source)
   return *this;
 }
 
+Primitive::Primitive(const array<double, 3>& source):
+  array<double,3>(source),
+  Density((*this)[0]),
+  Pressure((*this)[1]),
+  Celerity((*this)[2]) {}
+
 Primitive::Primitive(void):
-  Density(0),
-  Pressure(0),
-  Celerity(0) {}
+  Primitive(array<double, 3>()) {}
 
 Primitive::Primitive(double density,
 		     double pressure,
 		     double celerity):
-  Density(density),
-  Pressure(pressure),
-  Celerity(celerity) {}
+  Primitive(array<double, 3>{density,pressure,celerity}) {}
+
+Primitive::Primitive(const Primitive& source):
+  Primitive(array<double, 3>(source)) {}
+
+Primitive& Primitive::operator=(const Primitive& source)
+{
+  array<double, 3>::operator=(source);
+  return *this;
+}
 
 Primitive operator+(Primitive const& p1,
 		    Primitive const& p2)

@@ -81,9 +81,11 @@ public:
 };
 
 //! \brief New primitive variables
-class Primitive
+class Primitive: public array<double, 3>
 {
 public:
+
+  Primitive(const array<double, 3>& source);
 
   //! \brief Null constructor
   Primitive(void);
@@ -97,14 +99,18 @@ public:
 	    double pressure,
 	    double celerity);
 
+  Primitive(const Primitive& source);
+
+  Primitive& operator=(const Primitive& source);
+
   //! \brief Density
-  double Density;
+  double& Density;
 
   //! \brief Pressure
-  double Pressure;
+  double& Pressure;
 
   //! \brief Celerity
-  double Celerity;
+  double& Celerity;
 };
 
 /*! \brief Addition operator

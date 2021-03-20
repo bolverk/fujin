@@ -282,8 +282,8 @@ namespace {
 
 PrimitivePropertyGetter::PrimitivePropertyGetter
 (const SRHDSimulation& sim,
- double Primitive::* ppm):
-  cells_(sim.getHydroSnapshot().cells), ppm_(ppm) {}
+ size_t idx):
+  cells_(sim.getHydroSnapshot().cells), idx_(idx) {}
 
 size_t PrimitivePropertyGetter::getLength(void) const
 {
@@ -292,7 +292,7 @@ size_t PrimitivePropertyGetter::getLength(void) const
 
 double PrimitivePropertyGetter::operator()(size_t i) const
 {
-  return cells_[i].*ppm_;
+  return cells_[i][idx_];
 }
 
 void write_snapshot(SRHDSimulation const& sim,
@@ -301,8 +301,8 @@ void write_snapshot(SRHDSimulation const& sim,
 {
   vector<unique_ptr<Index2Member<double> > > properties;
   properties.push_back(make_unique<CellCenterGetter>(sim));
-  for(auto itm : {&Primitive::Density, &Primitive::Pressure, &Primitive::Celerity})
-    properties.push_back(make_unique<PrimitivePropertyGetter>(sim, itm));
+  for(size_t i=0;i<3;++i)
+    properties.push_back(make_unique<PrimitivePropertyGetter>(sim, i));
   std::ofstream f(fname.c_str());
   f.precision(precision);
   for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
