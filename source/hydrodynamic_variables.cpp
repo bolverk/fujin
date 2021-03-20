@@ -121,9 +121,7 @@ Primitive operator/(Primitive const& p,
 Primitive operator*(double d,
 		    Primitive const& p)
 {
-  return Primitive(d*p.Density,
-		   d*p.Pressure,
-		   d*p.Celerity);
+  return unary_op(p, [&d](double s){return s*d;});
 }
 
 HydroSnapshot::HydroSnapshot
@@ -165,45 +163,33 @@ HydroSnapshot operator*(double d,
 Conserved operator+(Conserved const& v1, 
 		    Conserved const& v2)
 {
-  return Conserved(v1.Mass+v2.Mass,
-		   v1.Momentum+v2.Momentum,
-		   v1.Energy+v2.Energy);
+  return bin_op(v1, v2, std::plus<double>());
 }
 
 NewConserved operator+(const NewConserved& v1, 
 		       const NewConserved& v2)
 {
-  return NewConserved(v1.mass+v2.mass,
-		      v1.positive+v2.positive,
-		      v1.negative+v2.negative);
+  return bin_op(v1, v2, std::plus<double>());
 }
 
 Conserved operator-(Conserved const& v1, Conserved const& v2)
 {
-  return Conserved(v1.Mass-v2.Mass,
-		   v1.Momentum-v2.Momentum,
-		   v1.Energy-v2.Energy);
+  return bin_op(v1, v2, std::minus<double>());
 }
 
 NewConserved operator-(const NewConserved& v1, const NewConserved& v2)
 {
-  return NewConserved(v1.mass-v2.mass,
-		      v1.positive-v2.positive,
-		      v1.negative-v2.negative);
+  return bin_op(v1, v2, std::minus<double>());
 }
 
 Conserved operator*(double s, Conserved const& v)
 {
-  return Conserved(s*v.Mass,
-		   s*v.Momentum,
-		   s*v.Energy);
+  return unary_op(v, [&s](double d){return d*s;});
 }
 
 NewConserved operator*(double s, const NewConserved& v)
 {
-  return NewConserved(s*v.mass,
-		      s*v.positive,
-		      s*v.negative);
+  return unary_op(v, [&s](double d){return s*d;});
 }
 
 Conserved operator/(Conserved const& v, double s)
