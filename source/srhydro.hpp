@@ -43,7 +43,7 @@ public:
     \param hs Hydrodynamic snapshot
     \param geometry Geometry
    */
-  RestMassCalculator(const HydroSnapshot& hs,
+  RestMassCalculator(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
 		     const Geometry& geometry);
 
   size_t getLength(void) const;
@@ -51,7 +51,7 @@ public:
   double operator()(size_t i) const;
 private:
   //! \brief Hydrodynamic snapshot
-  const HydroSnapshot& hs_;
+  const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
 
   //! \brief Geometry
   const Geometry& geometry_;

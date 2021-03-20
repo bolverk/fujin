@@ -81,8 +81,9 @@ double CellVolume(double rl, double rr, Geometry const& geometry)
   return geometry.calcVolume(rr) - geometry.calcVolume(rl);
 }
 
-RestMassCalculator::RestMassCalculator(const HydroSnapshot& hs,
-				       const Geometry& geometry):
+RestMassCalculator::RestMassCalculator
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
+ const Geometry& geometry):
   hs_(hs), geometry_(geometry) {}
 
 size_t RestMassCalculator::getLength(void) const

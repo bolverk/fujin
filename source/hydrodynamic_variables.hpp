@@ -237,15 +237,27 @@ template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::
   return une_op(t, [&s](double d){return d/s;});
 }
 
+#define SCAFFOLDING 1
+
+#if SCAFFOLDING == 1
 template<class CE, class CP> class NewHydroSnapshot: public HydroSnapshot
+#else
+template<class CE, class CP> class NewHydroSnapshot: public pair<CE, CP>
+#endif // SCAFFOLDING
 {
 public:
 
   NewHydroSnapshot(const vector<double>& edges_i,
 		   const vector<Primitive>& cells_i):
+#if SCAFFOLDING == 1
     HydroSnapshot(edges_i, cells_i),
     new_edges((*this).first),
     new_cells((*this).second) {}
+#else
+    pair<CE, CP>(edges_i, cells_i),
+    edges((*this).first),
+    cells((*this).second) {}
+#endif
 
   NewHydroSnapshot(const NewHydroSnapshot<CE, CP>& source):
     NewHydroSnapshot(source.edges, source.cells) {}
@@ -259,8 +271,13 @@ public:
     return *this;
   }
 
+#if SCAFFOLDING == 1
   CE& new_edges;
   CP& new_cells;
+#else
+  CE& edges;
+  CP& cells;
+#endif // SCAFFOLDING
   
 };
 
