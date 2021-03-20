@@ -211,7 +211,7 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
   \return Hydrodynamic data at the end of the time step
 */
 NewHydroSnapshot<vector<double>, vector<Primitive> > BasicTimeAdvance
-(const HydroSnapshot& data,
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
  const SpatialReconstruction& sr,
  const RiemannSolver& rs,
  const EquationOfState& eos,

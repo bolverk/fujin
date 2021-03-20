@@ -188,7 +188,7 @@ void SRHDSimulation::timeAdvance2ndOrder(void)
 #endif // PARALLEL
   const double dt = calcTimeStep();
 
-  const HydroSnapshot mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
+  const NewHydroSnapshot<vector<double>, vector<Primitive> > mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
 					     geometry_,
 					     innerBC_,
 					     outerBC_);

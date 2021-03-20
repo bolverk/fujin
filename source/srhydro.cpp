@@ -608,7 +608,7 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
 
 NewHydroSnapshot<vector<double>, vector<Primitive> >
 BasicTimeAdvance
-(HydroSnapshot const& data,
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
  SpatialReconstruction const& sr,
  RiemannSolver const& rs,
  EquationOfState const& eos,
