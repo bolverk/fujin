@@ -237,4 +237,19 @@ template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::
   return une_op(t, [&s](double d){return d/s;});
 }
 
+template<class CE, class CP> class NewHydroSnapshot: public HydroSnapshot
+{
+public:
+
+  NewHydroSnapshot(const vector<double>& edges_i,
+		   const vector<Primitive>& cells_i):
+    HydroSnapshot(edges_i, cells_i),
+    new_edges((*this).first),
+    new_cells((*this).second) {}
+
+  CE& new_edges;
+  CP& new_cells;
+  
+};
+
 #endif // HYDRODYNAMIC_VARIABLES_HPP
