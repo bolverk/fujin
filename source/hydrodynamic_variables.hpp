@@ -48,18 +48,18 @@ public:
 };
 
 //! \brief New conserved variable. These will not become degenerate at ultra relativistic flows
-class NewConserved
+class NewConserved: public array<double, 3>
 {
 public:
 
   //! \brief Mass density
-  double mass;
+  double& mass;
 
   //! \brief Sum of energy and momentum densities
-  double positive;
+  double& positive;
 
   //! \brief Difference of energy and momentum densities
-  double negative;
+  double& negative;
 
   //! \brief Null constructor. Sets everything to zero.
   NewConserved(void);
@@ -72,6 +72,12 @@ public:
   NewConserved(double mass_i,
 	       double positive_i,
 	       double negative_i);
+
+  NewConserved(const array<double, 3>& source);
+
+  NewConserved(const NewConserved& source);
+
+  NewConserved& operator=(const NewConserved& source);
 };
 
 //! \brief New primitive variables

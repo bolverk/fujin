@@ -23,15 +23,28 @@ Conserved& Conserved::operator=(const Conserved& source)
   return *this;
 }
 
+NewConserved::NewConserved(const array<double, 3>& source):
+  array<double, 3>{source},
+  mass{(*this)[0]},
+  positive{(*this)[1]},
+  negative{(*this)[2]} {}
+
 NewConserved::NewConserved(void):
-  mass(), positive(), negative() {}
+  NewConserved{array<double, 3>()} {}
 
 NewConserved::NewConserved(double mass_i,
 			   double positive_i,
 			   double negative_i):
-  mass(mass_i),
-  positive(positive_i),
-  negative(negative_i) {}
+  NewConserved{array<double, 3>{mass_i, positive_i, negative_i}} {}
+
+NewConserved::NewConserved(const NewConserved& source):
+  NewConserved(array<double, 3>(source)){}
+
+NewConserved& NewConserved::operator=(const NewConserved& source)
+{
+  array<double, 3>::operator=(source);
+  return *this;
+}
 
 Primitive::Primitive(void):
   Density(0),

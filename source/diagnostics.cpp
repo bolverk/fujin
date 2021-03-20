@@ -94,11 +94,11 @@ namespace {
 
     /*! \brief Class constructor
       \param sim Simulation
-      \param pcm Pointer to member
+      \param idx Index to member
      */
     StressCalculator(const SRHDSimulation& sim,
-		     double NewConserved::* pcm):
-      sim_(sim), pcm_(pcm) {}
+		     size_t idx):
+      sim_(sim), idx_(idx) {}
 
     size_t getLength(void) const
     {
@@ -107,14 +107,15 @@ namespace {
 
     double operator()(size_t i) const
     {
-      return sim_.getRestMasses().at(i)*sim_.getConserved().at(i).*pcm_;
+      return sim_.getRestMasses().at(i)*sim_.getConserved().at(i)[idx_];
     }
 
   private:
     //! \brief Simulation
     SRHDSimulation const& sim_;
     //! \brief Pointer to member
-    double NewConserved::* pcm_;
+    size_t idx_;
+    //    double NewConserved::* pcm_;
   };
 
   class CellVolumes: public Index2Member<double>
@@ -205,16 +206,16 @@ double TotalEnergy(SRHDSimulation const& sim)
      (ElementwiseProduct<double,double,double>
       (CellVolumes(sim),
        ElementwiseSum<double>
-       (StressCalculator(sim,&NewConserved::positive),
-	StressCalculator(sim,&NewConserved::negative)))));
+       (StressCalculator(sim,1),
+	StressCalculator(sim,2)))));
   //  return 0.5*(sum_all(StressCalculator(sim,&NewConserved::positive))+
   //	      sum_all(StressCalculator(sim,&NewConserved::negative)));
 }
 
 double TotalMomentum(SRHDSimulation const& sim)
 {
-  return 0.5*(sum_all(StressCalculator(sim,&NewConserved::positive))-
-	      sum_all(StressCalculator(sim,&NewConserved::negative)));
+  return 0.5*(sum_all(StressCalculator(sim,1))-
+	      sum_all(StressCalculator(sim,2)));
 }
 
 //! \brief Auxiliary class for checking whether a list is increasing
