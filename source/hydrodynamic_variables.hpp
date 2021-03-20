@@ -9,10 +9,12 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <functional>
 
 using std::vector;
 using std::string;
 using std::array;
+using std::function;
 
 //! \brief Conserved variables
 class Conserved: public array<double, 3>
@@ -113,14 +115,6 @@ public:
   double& Celerity;
 };
 
-/*! \brief Addition operator
-  \param p1 Left argument
-  \param p2 Right argument
-  \return sum
- */
-Primitive operator+(Primitive const& p1,
-		    Primitive const& p2);
-
 /*! \brief Subtraction operator
   \param p1 Left argument
   \param p2 Right argument
@@ -204,6 +198,27 @@ HydroSnapshot operator*(double d,
   \return Conserved variables
 */
 Conserved Primitive2Conserved_pv(Primitive const& p);
+
+template<class T> T bin_op
+(const T& p1,
+ const T& p2,
+ function<double(double, double)> func)
+{
+  T res;
+  transform(p1.begin(),
+	    p1.end(),
+	    p2.begin(),
+	    res.begin(),
+	    func);
+  return res;
+}
+
+template<class T> T operator+
+(const T& t1,
+ const T& t2)
+{
+  return bin_op(t1, t2, std::plus<double>());
+}
 
 /*! \brief Addition of two vectors
   \param v1 First vector

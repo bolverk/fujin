@@ -1,5 +1,4 @@
 #include <cassert>
-#include <functional>
 #include "hydrodynamic_variables.hpp"
 #include "utilities.hpp"
 #include "universal_error.hpp"
@@ -73,19 +72,6 @@ Primitive& Primitive::operator=(const Primitive& source)
 }
 
 namespace {
-  template<class T> T bin_op
-  (const T& p1,
-   const T& p2,
-   function<double(double, double)> func)
-  {
-    T res;
-    transform(p1.begin(),
-	      p1.end(),
-	      p2.begin(),
-	      res.begin(),
-	      func);
-    return res;
-  }
 
   template<class T> T unary_op
   (const T& p1,
@@ -98,12 +84,6 @@ namespace {
 	      func);
     return res;
   }
-}
-
-Primitive operator+(Primitive const& p1,
-		    Primitive const& p2)
-{
-  return bin_op(p1, p2, std::plus<double>());
 }
 
 Primitive operator-(Primitive const& p1,
