@@ -44,6 +44,9 @@ namespace {
 namespace {
 
   //! \brief Checks if conserved variables and primitives are thermodynamically consistent
+#if SCAFFOLDING != 1
+  template<class CE, class CP>
+#endif // SCAFFOLDING
   class ConservedPrimitiveConsistencyChecker: public Index2Member<bool>
   {
   public:
@@ -52,8 +55,14 @@ namespace {
       \param sim Hydrodynamic simulation
       \param thres Threshold
      */
-    ConservedPrimitiveConsistencyChecker(const SRHDSimulation& sim,
-					 double thres):
+    ConservedPrimitiveConsistencyChecker
+    (
+#if SCAFFOLDING == 1
+     const SRHDSimulation& sim,
+#else
+     const SRHDSimulation<CE, CP>& sim,
+#endif // SCAFFOLDING
+     double thres):
       sim_(sim), thres_(thres) {}
 
     size_t getLength(void) const
@@ -72,7 +81,11 @@ namespace {
 
   private:
     //! \brief Simulation
+#if SCAFFOLDING == 1
     const SRHDSimulation& sim_;
+#else
+    const SRHDSimulation<CE, CP>& sim_;
+#endif // SCAFFOLDING
     //! \brief Threshold
     const double thres_;
   };
