@@ -237,7 +237,7 @@ template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::
   return une_op(t, [&s](double d){return d/s;});
 }
 
-#define SCAFFOLDING 1
+#define SCAFFOLDING 0
 
 #if SCAFFOLDING == 1
 template<class CE, class CP> class NewHydroSnapshot: public HydroSnapshot

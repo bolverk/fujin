@@ -43,13 +43,15 @@ namespace {
     \param hs Hydrodynamic snapshot
     \return Derivatives of the hydrodynamic variables on the edges
    */
-  vector<Primitive> calc_edge_slopes(const HydroSnapshot& hs)
+  vector<Primitive> calc_edge_slopes
+  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs)
   {
     const class DerivativeInterface: public Index2Member<Primitive>
     {
     public:
 
-      explicit DerivativeInterface(const HydroSnapshot& hs_i):
+      explicit DerivativeInterface
+      (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_i):
 	hs_(hs_i) {}
 
       size_t getLength(void) const
@@ -67,7 +69,7 @@ namespace {
       }
 
     private:
-      const HydroSnapshot& hs_;
+      const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
     } deriv_interface(hs);
     return serial_generate(deriv_interface);
   }
@@ -76,7 +78,8 @@ namespace {
     \param hs Hydrodynamic snapshot
     \return List of slopes
    */
-  vector<Primitive> calc_cell_slopes(const HydroSnapshot& hs)
+  vector<Primitive> calc_cell_slopes
+  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs)
   {
     const vector<Primitive> edge_slopes = calc_edge_slopes(hs);
     const class Minmoder: public Index2Member<Primitive>
@@ -117,7 +120,8 @@ VanLeer::interpolateAll
   {
   public:
 
-    explicit Interpolator(const HydroSnapshot& hs_i):
+    explicit Interpolator
+    (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_i):
       hs_(hs_i),
       cell_slopes_(calc_cell_slopes(hs_i)) {}
 
@@ -136,7 +140,7 @@ VanLeer::interpolateAll
     }
 
   private:
-    const HydroSnapshot& hs_;
+    const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
     const vector<Primitive> cell_slopes_;
   } interpolator(hs);
 

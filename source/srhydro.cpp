@@ -387,12 +387,12 @@ namespace{
     \return Fluxes
   */
   vector<RiemannSolution> CalcFluxes
-    (HydroSnapshot const& data,
-     SpatialReconstruction const& sr,
-     RiemannSolver const& rs,
+    (const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+     const SpatialReconstruction& sr,
+     const RiemannSolver& rs,
      double dt,
-     BoundaryCondition const& lbc,
-     BoundaryCondition const& rbc)
+     const BoundaryCondition& lbc,
+     const BoundaryCondition& rbc)
   {
     vector<RiemannSolution> res(data.edges.size());
     vector<Primitive> new_cells(data.cells.size());
@@ -619,7 +619,7 @@ BasicTimeAdvance
  BoundaryCondition const& lbc,
  BoundaryCondition const& rbc)
 {
-  HydroSnapshot res(data);
+  NewHydroSnapshot<vector<double>, vector<Primitive> > res(data);
 
   vector<RiemannSolution> fluxes=
     CalcFluxes(data,sr,rs,dt,lbc,rbc);
@@ -646,7 +646,7 @@ HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
 			     const BoundaryCondition& lbc,
 			     const BoundaryCondition& rbc)
 {
-  const HydroSnapshot mid = BasicTimeAdvance
+  const NewHydroSnapshot<vector<double>, vector<Primitive> > mid = BasicTimeAdvance
     (old, sr, rs, eos, 0.5*dt, geometry, lbc,rbc);
   
   const vector<RiemannSolution> fluxes = CalcFluxes
