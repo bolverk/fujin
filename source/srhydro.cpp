@@ -301,12 +301,14 @@ namespace{
 #endif // PARALLEL
 }
 
-void CalcFluxes(HydroSnapshot const& data,
-		SpatialReconstruction const& sr,
-		RiemannSolver const& rs,
-		double dt, BoundaryCondition const& lbc,
-		BoundaryCondition const& rbc,
-		vector<RiemannSolution>& psvs)
+void CalcFluxes
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+ const SpatialReconstruction& sr,
+ const RiemannSolver& rs,
+ double dt,
+ const BoundaryCondition& lbc,
+ const BoundaryCondition& rbc,
+ vector<RiemannSolution>& psvs)
 {
 #ifdef PARALLEL
   MPI_Request send_left, send_right;

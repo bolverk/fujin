@@ -112,13 +112,14 @@ double MaxTimeStep(vector<double> const& v, vector<Primitive> const& p,
   \param rbc Right boundary conditions
   \param psvs Riemann solutions
 */
-void CalcFluxes(HydroSnapshot const& data,
-		SpatialReconstruction const& sr,
-		RiemannSolver const& rs,
-		double dt, 
-		BoundaryCondition const& lbc,
-		BoundaryCondition const& rbc,
-		vector<RiemannSolution>& psvs);
+void CalcFluxes
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+ const SpatialReconstruction& sr,
+ const RiemannSolver& rs,
+ double dt, 
+ const BoundaryCondition& lbc,
+ const BoundaryCondition& rbc,
+ vector<RiemannSolution>& psvs);
 
 /*! \brief Updates the conserved variables and vertices
   \param psvs Riemann solutions
