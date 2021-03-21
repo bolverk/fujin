@@ -62,7 +62,7 @@ int main(void)
   SimData sim_data;
   SRHDSimulation& sim = sim_data.getSim();
 
-  write_snapshot(sim,"init_cond.txt");
+  //  write_snapshot(sim,"init_cond.txt");
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "initial_"+int2str(get_mpi_rank())+".h5");
 #else
@@ -74,7 +74,7 @@ int main(void)
 	    &SRHDSimulation::timeAdvance,
 	    WriteTime("time.txt"));
 
-  write_snapshot(sim,"snapshot.txt");
+  //  write_snapshot(sim,"snapshot.txt");
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
 #else

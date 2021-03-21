@@ -254,6 +254,7 @@ bool VerticesIncreasingOrder(SRHDSimulation const& sim)
 namespace {
 
   //! \brief Retrieves the centres of cells
+  #if 0
   class CellCenterGetter: public Index2Member<double>
   {
   public:
@@ -278,6 +279,7 @@ namespace {
     //! \brief Grid
     const vector<double> edges_;
   };
+#endif // 0
 }
 
 PrimitivePropertyGetter::PrimitivePropertyGetter
@@ -295,6 +297,7 @@ double PrimitivePropertyGetter::operator()(size_t i) const
   return cells_[i][idx_];
 }
 
+/*
 void write_snapshot(SRHDSimulation const& sim,
 		    string const& fname,
 		    int precision)
@@ -312,6 +315,7 @@ void write_snapshot(SRHDSimulation const& sim,
   }
   f.close();
 }
+*/
 
 void write_number(double num,
 		  string const& fname,

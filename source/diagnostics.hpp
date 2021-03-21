@@ -102,9 +102,11 @@ template <class T> void write_to_file(vector<T> const& v, string const& fname,
   \param fname Name of file
   \param precision Number of digits
  */
+/*
 void write_snapshot(SRHDSimulation const& sim,
 		    string const& fname,
 		    int precision=6);
+*/
 
 /*! \brief Writes a single number to a file
   \param num Number
