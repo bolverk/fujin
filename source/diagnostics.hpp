@@ -118,6 +118,9 @@ void write_number(double num,
 		  int precision=14);
 
 //! \brief Retrieves properties from a list of primitive variables
+#if SCAFFOLDING != 1
+template<class CE, class CP>
+#endif // SCAFFOLDING
 class PrimitivePropertyGetter: public Index2Member<double>
 {
 public:
@@ -126,8 +129,14 @@ public:
     \param sim Simulation
     \param idx Index to member
   */
-  PrimitivePropertyGetter(const SRHDSimulation& sim,
-			  size_t idx);
+  PrimitivePropertyGetter
+  (
+#if SCAFFOLDING == 1
+   const SRHDSimulation& sim,
+#else
+   const SRHDSimulation<CE, CP>& sim,
+#endif // SCAFFOLDING
+   size_t idx);
   
   size_t getLength(void) const;
 
