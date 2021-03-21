@@ -36,35 +36,49 @@ bool ConservedPrimitiveConsistency(Primitive const& p,
   \param thres Threshold
   \return True if all cells are consistent, false otherwise
  */
-bool ConservedPrimitiveConsistency(SRHDSimulation const& sim, 
-				   double thres);
+#if SCAFFOLDING == 1
+bool ConservedPrimitiveConsistency
+(const SRHDSimulation& sim, 
+ double thres);
+#else
+template<class CE, class CP>
+bool ConservedPrimitiveConsistency
+(const SRHDSimulation<CE, CP>& sim, 
+ double thres);
+#endif // SCAFFOLDING
 
 /*! \brief Returns the total energy
   \param sim Hydrodynamic simulation
   \return Total energy
  */
-double TotalEnergy(SRHDSimulation const& sim);
+#if SCAFFOLDING == 1
+double TotalEnergy(const SRHDSimulation& sim);
+#else
+template<class CE, class CP>
+double TotalEnergy(const SRHDSimulation<CE, CP>& sim);
+#endif // SCAFFOLDING
 
 /*! \brief Returns the total momentum
   \param sim Hydrodynamic simulation
   \return Total momentum
  */
+#if SCAFFOLDING == 1
 double TotalMomentum(SRHDSimulation const& sim);
+#else
+template<class CE, class CP>
+double TotalMomentum(SRHDSimulation<CE, CP> const& sim);
+#endif // SCAFFOLDING
 
 /*! \brief Checks that the vertices are in increasing order
   \param sim Reference to simulation
   \return True if they are in increasing order, false otherwise
  */
-bool VerticesIncreasingOrder(SRHDSimulation const& sim);
-
-/*! \brief Retrieves a property of a hydrodynamic cell
-  \param sim Hydrodynamic simulation
-  \param i Cell index
-  \param property Name of propery
-  \return Value of property
- */
-double get_cell_property(SRHDSimulation const& sim,
-			 size_t i, string const& property);
+#if SCAFFOLDING == 1
+bool VerticesIncreasingOrder(const SRHDSimulation& sim);
+#else
+template<class CE, class CP>
+bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim);
+#endif // SCAFFOLDING
 
 /*! \brief Writes list of data to file as ascii
   \param v Data
