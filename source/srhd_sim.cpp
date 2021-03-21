@@ -217,10 +217,11 @@ void SRHDSimulation::timeAdvance2ndOrder(void)
 
 namespace {
 
-  double new_calc_time_step(const HydroSnapshot& data,
-			    const vector<RiemannSolution>& psvs,
-			    const EquationOfState& eos,
-			    const double cfl)
+  double new_calc_time_step
+  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+   const vector<RiemannSolution>& psvs,
+   const EquationOfState& eos,
+   const double cfl)
   {
     double its = 0; // Inverse time step
     for(size_t i=0;i<data.cells.size();++i){
@@ -302,7 +303,8 @@ void SRHDSimulation::calcConservedFromPrimitive(void)
 
 // Diagnostics
 
-const HydroSnapshot& SRHDSimulation::getHydroSnapshot(void) const
+const decltype(SRHDSimulation::data_)&
+SRHDSimulation::getHydroSnapshot(void) const
 {
   return data_;
 }

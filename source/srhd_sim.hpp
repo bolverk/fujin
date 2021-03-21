@@ -126,7 +126,7 @@ public:
   /*! \brief Returns the hydrodynamic snapshot
     \return Hydrodynamic snapshot
    */
-  const HydroSnapshot& getHydroSnapshot(void) const;
+  const decltype(data_)& getHydroSnapshot(void) const;
 
   /*! \brief Returns a list of Riemann solutions
     \return Riemann solutions
