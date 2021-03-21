@@ -109,7 +109,7 @@ VanLeer::VanLeer(void) {}
 
 vector<std::pair<Primitive,Primitive> > 
 VanLeer::interpolateAll
-(const HydroSnapshot& hs,
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
  double /*dt*/) const
 {
   const class Interpolator: 

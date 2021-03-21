@@ -14,7 +14,8 @@ namespace {
     /*! \brief Class constructor
       \param hs HydroSnapshot
      */
-    explicit Interpolator(const HydroSnapshot& hs):
+    explicit Interpolator
+    (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs):
       hs_(hs) {}
 
     size_t getLength(void) const
@@ -30,12 +31,12 @@ namespace {
 
   private:
     //! \brief Hydrodynamic snapshot
-    const HydroSnapshot& hs_;
+    const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
   };
 }
 
 vector<std::pair<Primitive,Primitive> > PCM::interpolateAll
-(const HydroSnapshot& hs,
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
  double /*dt*/) const
 {
   return serial_generate(Interpolator(hs));

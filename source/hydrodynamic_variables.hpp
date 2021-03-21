@@ -267,7 +267,11 @@ public:
 
   NewHydroSnapshot& operator=(const NewHydroSnapshot& source)
   {
+#if SCAFFOLDING == 1
     HydroSnapshot::operator=(source);
+#else
+    pair<CE, CP>::operator=(source);
+#endif // SCAFFOLDING
     return *this;
   }
 
