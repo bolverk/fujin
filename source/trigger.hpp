@@ -9,6 +9,9 @@
 #include "srhd_sim.hpp"
 
 //! \brief Trigger for diagnostics
+#if SCAFFOLDING != 1
+template<class CE, class CP>
+#endif // SCAFFOLDING
 class Trigger
 {
 public:
@@ -17,8 +20,12 @@ public:
     \param sim Simulation
     \return True if condition is met, false otherwise
    */
+#if SCAFFOLDING == 1
   virtual bool operator()(const SRHDSimulation& sim) = 0;
-
+#else 
+  virtual bool operator()(const SRHDSimulation<CE, CP>& sim) = 0;
+#endif // SCAFFOLDING
+  
   /*! \brief Returns the number of times trigger returned true
     \return Number of times trigger returned true
    */

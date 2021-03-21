@@ -12,8 +12,16 @@
   \param sim Simulation
   \param fname File name
  */
-void write_hdf5_snapshot(const SRHDSimulation& sim,
-			 const string& fname);
+#if SCAFFOLDING != 1
+template<class CE, class CP>
+#endif // SCAFFOLDING
+void write_hdf5_snapshot
+#if SCAFFOLDING == 1
+(const SRHDSimulation& sim,
+#else
+ (const SRHDSimulation<CE, CP>& sim,
+#endif // SCAFFOLDING
+ const string& fname);
 
 /*! \brief Read an hdf5 snapshot
   \param fname File name
