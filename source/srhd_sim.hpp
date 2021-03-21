@@ -15,10 +15,16 @@
 #include "boundary_condition.hpp"
 #include "geometry.hpp"
 
+#define SCAFFOLDING 1
+
 /*! \brief Special relativistic hydrodynamic simulation
   \details The simulation is based on <a href="http://adsabs.harvard.edu/abs/2000A%26A...358.1157D"> F. Daigne & R. Moskovitch, "Gamma-ray bursts from internal shocks in a relativistic wind: a hydrodynamical study", A&A, v. 358 p 1157-1166 (2000) </a>
  */
+#if SCAFFOLDING == 1
 class SRHDSimulation
+#else
+template<class CE, class CP> class SRHDSimulation
+#endif // SCAFFOLDING
 {
 private:
   //! \brief Hydrodynamic state (edges and cells)
