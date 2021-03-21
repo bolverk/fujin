@@ -97,17 +97,6 @@ template <class T> void write_to_file(vector<T> const& v, string const& fname,
   f.close();
 }
 
-/*! \brief Writes a certain cell property to a file
-  \param sim Hydrodynamic simulation
-  \param property Name of propery
-  \param fname Name of output file
-  \param precision Number of digits
- */
-void write_cells_property(SRHDSimulation const& sim,
-			  string const& property,
-			  string const& fname,
-			  int precision = 6);
-
 /*! \brief Writes grid and cells to a file
   \param sim Hydrodynamic simulation
   \param fname Name of file
