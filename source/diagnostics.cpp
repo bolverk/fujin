@@ -370,7 +370,6 @@ PrimitivePropertyGetter::PrimitivePropertyGetter
 (const SRHDSimulation& sim,
  size_t idx):
   cells_(sim.getHydroSnapshot().cells), idx_(idx) {}
-#endif 
 
 size_t PrimitivePropertyGetter::getLength(void) const
 {
@@ -381,6 +380,7 @@ double PrimitivePropertyGetter::operator()(size_t i) const
 {
   return cells_[i][idx_];
 }
+#endif 
 
 /*
 void write_snapshot(SRHDSimulation const& sim,
