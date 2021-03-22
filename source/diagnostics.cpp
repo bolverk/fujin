@@ -91,16 +91,31 @@ namespace {
   };
 }
 
+#if SCAFFOLDING != 1
+template<class CE, class CP>
+#endif // SCAFFOLDING
 bool ConservedPrimitiveConsistency
-(SRHDSimulation const& sim, 
+(
+ #if SCAFFOLDING == 1
+ const SRHDSimulation& sim,
+ #else
+ const SRHDSimulation<CE, CP>& sim,
+#endif // SCAFFOLDING
  double thres)
 {
+#if SCAFFOLDING == 1
   return all_true(ConservedPrimitiveConsistencyChecker(sim,thres));
+#else
+  return all_true(ConservedPrimitiveConsistencyChecker<CE,CP>(sim,thres));
+#endif // SCAFFOLDING
 }
 
 namespace {
 
   //! \brief Calculates the stresses
+#if SCAFFOLDING != 1
+  template<class CE, class CP>
+#endif // SCAFFOLDING
   class StressCalculator: public Index2Member<double>
   {
   public:
@@ -109,8 +124,14 @@ namespace {
       \param sim Simulation
       \param idx Index to member
      */
-    StressCalculator(const SRHDSimulation& sim,
-		     size_t idx):
+    StressCalculator
+    (
+#if SCAFFOLDING == 1
+     const SRHDSimulation& sim,
+#else
+     const SRHDSimulation<CE, CP>& sim,
+#endif // SCAFFOLDING     
+     size_t idx):
       sim_(sim), idx_(idx) {}
 
     size_t getLength(void) const
@@ -125,7 +146,11 @@ namespace {
 
   private:
     //! \brief Simulation
-    SRHDSimulation const& sim_;
+#if SCAFFOLDING == 1
+    const SRHDSimulation& sim_;
+#else
+    const SRHDSimulation<CE, CP>& sim_;
+#endif // SCAFFOLDING
     //! \brief Pointer to member
     size_t idx_;
     //    double NewConserved::* pcm_;
