@@ -18,6 +18,8 @@
 
 using namespace std;
 
+#if SCAFFOLDING == 1
+
 double SRHDSimulation::getArea(size_t i) const
 {
   const double r = 0.5*(data_.edges.at(i)+data_.edges.at(i+1));
@@ -334,3 +336,5 @@ const EquationOfState& SRHDSimulation::getEOS(void) const
 {
   return eos_;
 }
+
+#endif // SCAFFOLDING
