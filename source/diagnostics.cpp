@@ -323,7 +323,12 @@ private:
   const Index2Member<T>& i2m_;
 };
 
-bool VerticesIncreasingOrder(SRHDSimulation const& sim)
+#if SCAFFOLDING == 1
+bool VerticesIncreasingOrder(const SRHDSimulation& sim)
+#else
+  template<class CE, class CP>
+  bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim)
+#endif // SCAFFOLDING
 {
   return all_true
     (IsIncreasing<double>(Echo<double>(sim.getHydroSnapshot().edges)));
