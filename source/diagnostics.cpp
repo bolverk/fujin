@@ -280,10 +280,20 @@ double TotalEnergy(SRHDSimulation const& sim)
   //	      sum_all(StressCalculator(sim,&NewConserved::negative)));
 }
 
-double TotalMomentum(SRHDSimulation const& sim)
+#if SCAFFOLDING == 1
+double TotalMomentum(const SRHDSimulation& sim)
+  #else
+  template<class CE, class CP>
+  double TotalMomentum(const SRHDSimulation<CE, CP>& sim)
+#endif // SCAFFOLDING
 {
+  #if SCAFFOLDING == 1
   return 0.5*(sum_all(StressCalculator(sim,1))-
 	      sum_all(StressCalculator(sim,2)));
+  #else
+  return 0.5*(sum_all(StressCalculator<CE, CP>(sim,1))-
+	      sum_all(StressCalculator<CE, CP>(sim,2)));
+#endif // SCAFFOLDING
 }
 
 //! \brief Auxiliary class for checking whether a list is increasing
