@@ -251,15 +251,31 @@ namespace {
   };
 }
 
+#if SCAFFOLDING == 1
 double TotalEnergy(SRHDSimulation const& sim)
+#else
+  template<class CE, class CP>
+  double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
+#endif // SCAFFOLDING
 {
   return 0.5*
     (sum_all
      (ElementwiseProduct<double,double,double>
-      (CellVolumes(sim),
+      (
+      #if SCAFFOLDING == 1
+      CellVolumes(sim),
+       #else
+      CellVolumes<CE,CP>(sim),
+#endif // SCAFFOLDING
        ElementwiseSum<double>
+      #if SCAFFOLDING == 1
        (StressCalculator(sim,1),
-	StressCalculator(sim,2)))));
+	StressCalculator(sim,2))
+      #else
+      (StressCalculator<CE, CP>(sim,1),
+       StressCalculator<CE, CP>(sim,2))
+#endif // SCAFFOLDING
+       )));
   //  return 0.5*(sum_all(StressCalculator(sim,&NewConserved::positive))+
   //	      sum_all(StressCalculator(sim,&NewConserved::negative)));
 }
