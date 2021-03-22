@@ -81,7 +81,12 @@ public:
 #if SCAFFOLDING == 1
   bool operator()(const SRHDSimulation& sim) const;
 #else
-  bool operator()(const SRHDSimulation<CE, CP>& sim) const;
+  bool operator()(const SRHDSimulation<CE, CP>& sim) const
+  {
+    if(max_iter_>0)
+      assert(sim.getCycle()<max_iter_);
+    return sim.getTime()>tf_;
+  }
 #endif // SCAFFOLDING
   
 
@@ -141,7 +146,10 @@ public:
 #if SCAFFOLDING == 1
   void operator()(const SRHDSimulation& sim) const;
 #else
-  void operator()(const SRHDSimulation<CE, CP>& sim) const;
+  void operator()(const SRHDSimulation<CE, CP>& sim) const
+  {
+    write_number(sim.getTime(),fname_.c_str());
+  }
 #endif // SCAFFOLDING
 
 private:

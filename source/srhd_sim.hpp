@@ -242,12 +242,26 @@ public:
   /*! \brief Returns the time
   \return Time
   */
+#if SCAFFOLDING == 1
   double getTime(void) const;
+#else
+  double getTime(void) const
+  {
+  return time_;
+  }
+#endif // SCAFFOLDING
 
   /*! \brief Returns cycle number
     \return Cycle number
    */
+#if SCAFFOLDING == 1
   int getCycle(void) const;
+#else
+  int getCycle(void) const
+  {
+    return cycle_;
+  }
+#endif // SCAFFOLDING
 
   /*! \brief Returns the rest masses
     \return Rest masses
