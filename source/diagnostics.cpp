@@ -365,10 +365,12 @@ namespace {
 #endif // 0
 }
 
+#if SCAFFOLDING == 1
 PrimitivePropertyGetter::PrimitivePropertyGetter
 (const SRHDSimulation& sim,
  size_t idx):
   cells_(sim.getHydroSnapshot().cells), idx_(idx) {}
+#endif 
 
 size_t PrimitivePropertyGetter::getLength(void) const
 {
