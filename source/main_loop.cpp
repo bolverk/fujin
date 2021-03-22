@@ -3,6 +3,8 @@
 #include "universal_error.hpp"
 #include "diagnostics.hpp"
 
+#if SCAFFOLDING == 1
+
 TerminationCondition::~TerminationCondition(void) {}
 
 IterationTermination::IterationTermination(int max_iter):
@@ -69,3 +71,5 @@ void main_loop(SRHDSimulation& sim,
     diag_func(sim);
   }
 }
+
+#endif // SCAFFOLDING
