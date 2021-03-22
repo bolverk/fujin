@@ -37,20 +37,36 @@ namespace {
   };
 }
 
+#if SCAFFOLDING == 1
 void write_hdf5_snapshot(const SRHDSimulation& sim,
 			 const string& fname)
+#else
+  template<class CE, class CP>
+  void write_hdf5_snapshot
+  (const SRHDSimulation<CE, CP>& sim,
+   const string& fname)
+#endif // SCAFFOLDING
 {
   (HDF5Shortcut(fname))
     ("position",
      serial_generate(MidValues(Echo<double>(sim.getHydroSnapshot().edges))))
 	("edges",
      serial_generate(Echo<double>(sim.getHydroSnapshot().edges)))
+    #if SCAFFOLDING == 1
     ("density",
      serial_generate(PrimitivePropertyGetter(sim,0)))
     ("pressure",
      serial_generate(PrimitivePropertyGetter(sim,1)))
     ("celerity",
      serial_generate(PrimitivePropertyGetter(sim,2)))
+    #else
+    ("density",
+     serial_generate(PrimitivePropertyGetter<CE, CP>(sim,0)))
+    ("pressure",
+     serial_generate(PrimitivePropertyGetter<CE, CP>(sim,1)))
+    ("celerity",
+     serial_generate(PrimitivePropertyGetter<CE, CP>(sim,2)))
+#endif // SCAFFOLDING
     ("time",
      vector<double>(1,sim.getTime()))
     ("cycle",
