@@ -156,11 +156,21 @@ namespace {
     //    double NewConserved::* pcm_;
   };
 
+#if SCAFFOLDING != 1
+  template<class CE, class CP>
+#endif // SCAFFOLDING
   class CellVolumes: public Index2Member<double>
   {
   public:
 
-    explicit CellVolumes(const SRHDSimulation& sim):
+    explicit CellVolumes
+    (
+#if SCAFFOLDING == 1
+     const SRHDSimulation& sim
+#else
+     const SRHDSimulation<CE, CP>& sim
+#endif // SCAFFOLDING
+     ):
       sim_(sim) {}
 
     size_t getLength(void) const
@@ -174,7 +184,11 @@ namespace {
     }
 
   private:
+#if SCAFFOLDING == 1
     const SRHDSimulation& sim_;
+#else
+    const SRHDSimulation<CE, CP>& sim_;
+#endif // SCAFFOLDING
   };
 
   template<class T> class ElementwiseSum:
