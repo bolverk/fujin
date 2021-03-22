@@ -87,7 +87,11 @@ namespace {
 	 sr_,
 	 geometry_) {}
 
+#if SCAFFOLDING == 1
     SRHDSimulation& getSim(void)
+#else
+      SRHDSimulation<vector<double>, vector<Primitive> >& getSim(void)
+#endif // SCAFFOLDING
     {
       return sim_;
     }
@@ -99,7 +103,11 @@ namespace {
     const Periodic bc_;
     VanLeer sr_;
     const Planar geometry_;
+#if SCAFFOLDING == 1
     SRHDSimulation sim_;
+#else
+    SRHDSimulation<vector<double>, vector<Primitive> > sim_;
+#endif // SCAFFOLDING
   };
 }
 
@@ -109,7 +117,11 @@ int main(void)
   MPI_Init(NULL, NULL);
 #endif // PARALLEL
   SimData sim_data;
+#if SCAFFOLDING == 1
   SRHDSimulation& sim = sim_data.getSim();
+#else
+  SRHDSimulation<vector<double>, vector<Primitive> >& sim = sim_data.getSim();
+#endif // SCAFFOLDING
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "initial_"+int2str(get_mpi_rank())+".h5");
@@ -117,10 +129,17 @@ int main(void)
   write_hdf5_snapshot(sim, "initial.h5");
 #endif // PARALLEL
 
+#if SCAFFOLDING == 1
   main_loop(sim,
 	    SafeTimeTermination(10,1e6),
 	    &SRHDSimulation::timeAdvance,
 	    WriteTime("time.txt"));
+#else
+  main_loop(sim,
+	    SafeTimeTermination<vector<double>, vector<Primitive> >(10,1e6),
+	    &SRHDSimulation<vector<double>, vector<Primitive> >::timeAdvance,
+	    WriteTime<vector<double>, vector<Primitive> >("time.txt"));
+#endif // SCAFFOLDING
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
