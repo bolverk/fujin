@@ -23,7 +23,11 @@ public:
 virtual bool operator()(const SRHDSimulation<CE, CP>& sim) const = 0;
 #endif // SCAFFOLDING
 
+#if SCAFFOLDING == 1
   virtual ~TerminationCondition(void);
+#else
+virtual ~TerminationCondition(void) {}
+#endif // SCAFFOLDING
 };
 
 //! \brief Terminates the simulation after a certain number of iterations
@@ -65,8 +69,14 @@ public:
     \param tf Termination time
     \param max_iter Upper limit on number of iterations
    */
+#if SCAFFOLDING == 1
   SafeTimeTermination(double tf,
 		      int max_iter);
+#else
+  SafeTimeTermination(double tf,
+		      int max_iter):
+    tf_(tf), max_iter_(max_iter) {}
+#endif // SCAFFOLDING
 
 #if SCAFFOLDING == 1
   bool operator()(const SRHDSimulation& sim) const;
@@ -102,7 +112,11 @@ public:
 virtual void operator()(const SRHDSimulation<CE, CP>& sim) const = 0;
 #endif // SCAFFOLDING 
 
+#if SCAFFOLDING == 1
   virtual ~DiagnosticFunction(void);
+#else
+virtual ~DiagnosticFunction(void) {};
+#endif // SCAFFOLDING
 };
 
 //! \brief Writes the time each step
@@ -117,7 +131,12 @@ public:
   /*! \brief Class constructor
     \param fname File name
    */
+#if SCAFFOLDING == 1
   explicit WriteTime(const string& fname);
+#else
+  explicit WriteTime(const string& fname):
+    fname_(fname) {}
+#endif // SCAFFOLDING
 
 #if SCAFFOLDING == 1
   void operator()(const SRHDSimulation& sim) const;

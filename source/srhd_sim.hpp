@@ -6,6 +6,8 @@
 #ifndef SRHD_SIM_HPP
 #define SRHD_SIM_HPP 1
 
+#define SCAFFOLDING 1
+
 #include <vector>
 #include "riemann_solver.hpp"
 #include "spatial_distribution.hpp"
@@ -14,8 +16,36 @@
 #include "spatial_reconstruction.hpp"
 #include "boundary_condition.hpp"
 #include "geometry.hpp"
+#if SCAFFOLDING != 1
+#include <cassert>
+#include "srhydro.hpp"
+#endif // SCAFFOLDING
 
-#define SCAFFOLDING 1
+#if SCAFFOLDING != 1
+double new_calc_time_step
+(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+ const vector<RiemannSolution>& psvs,
+ const EquationOfState& eos,
+ const double cfl)
+{
+  double its = 0; // Inverse time step
+  for(size_t i=0;i<data.cells.size();++i){
+    const double width = data.edges[i+1] - data.edges[i];
+    const Primitive& cell = data.cells[i];
+    const double ba = eos.dp2ba(cell.Density,
+				cell.Pressure);
+    const double bc = celerity2velocity(data.cells[i].Celerity);
+    const double bl = celerity2velocity(psvs[i].Celerity);
+    const double br = celerity2velocity(psvs[i+1].Celerity);
+    if(RelVelAdd(bc,ba)>br)
+      its = fmax(its, (bc-br+ba*(1-bc*br))/(width*(1+bc*ba)));
+    if(bl>RelVelAdd(bc,-ba))
+      its = fmax(its, (bl-bc+ba*(1-bc*bl))/(width*(1-bc*ba)));
+    its = fmax(its, 2*fabs(bl-br)/width);
+  }
+  return cfl/its;
+}
+#endif // SCAFFOLDING
 
 /*! \brief Special relativistic hydrodynamic simulation
   \details The simulation is based on <a href="http://adsabs.harvard.edu/abs/2000A%26A...358.1157D"> F. Daigne & R. Moskovitch, "Gamma-ray bursts from internal shocks in a relativistic wind: a hydrodynamical study", A&A, v. 358 p 1157-1166 (2000) </a>
@@ -103,7 +133,61 @@ public:
   void timeAdvance2ndOrder(void);
 
   //! \brief Advances the simulation in time
+#if SCAFFOLDING == 1
   void timeAdvance(void);
+#else
+  void timeAdvance(void)
+{
+  CalcFluxes(data_,
+	     sr_,rs_,0,
+	     innerBC_,
+	     outerBC_,
+	     psvs_);
+
+#ifdef PARALLEL
+  const double dt_candidate =
+    new_calc_time_step(data_,
+		       psvs_,
+		       eos_,
+		       cfl_);
+  double temp = dt_candidate;
+  MPI_Allreduce(&dt_candidate,
+		&temp,
+		1,
+		MPI_DOUBLE,
+		MPI_MIN,
+		MPI_COMM_WORLD);
+  const double dt = temp;
+  spdlog::debug("dt = {0}", dt);
+#else
+  const double dt = new_calc_time_step(data_,
+				       psvs_,
+				       eos_,
+				       cfl_);
+#endif // PARALLEL
+
+  update_new_conserved(psvs_,
+		       data_.cells,
+		       restMass_,
+		       dt, geometry_,
+		       data_.edges,
+		       consVars_);
+
+  for(size_t i=1;i<data_.edges.size();++i)
+    assert(data_.edges[i]>data_.edges[i-1]);
+  for_each(consVars_.begin(),
+	   consVars_.end(),
+	   [](const NewConserved& cv)
+	   {assert(cv.mass>0);});
+
+  const vector<bool> filter = NeedUpdate(psvs_);
+
+  UpdatePrimitives(consVars_, eos_, filter, data_.cells);
+
+  time_ += dt;
+  cycle_++;
+}
+#endif // SCAFFOLDING
 
   /*! \brief Calculates the conserved variables from the primitives 
    */
