@@ -136,11 +136,32 @@ public:
 #else
    const SRHDSimulation<CE, CP>& sim,
 #endif // SCAFFOLDING
-   size_t idx);
-  
-  size_t getLength(void) const;
+   size_t idx)
+#if SCAFFOLDING == 1
+    ;
+#else
+  :
+  cells_(sim.getHydroSnapshot().cells),
+    idx_(idx) {}    
+#endif // SCAFFOLDING
 
+#if SCAFFOLDING ==1
+  size_t getLength(void) const;
+#else
+  size_t getLength(void) const
+  {
+    return cells_.size();
+  }
+#endif // SCAFFOLDING  
+
+#if SCAFFOLDING == 1
   double operator()(size_t i) const;
+#else
+  double operator()(size_t i) const
+  {
+    return cells_[i][idx_];
+  }
+#endif // SCAFFOLDING  
 
 private:
   //! \brief List of primitive variables

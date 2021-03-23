@@ -227,7 +227,13 @@ void main_loop
 (SRHDSimulation<CE, CP>& sim,
  TerminationCondition<CE, CP> const& term_cond,
  void (SRHDSimulation<CE, CP>::*time_advance_method)(void),
- DiagnosticFunction<CE, CP> const& diag_func);
+ DiagnosticFunction<CE, CP> const& diag_func)
+{
+  while(!term_cond(sim)){
+    (sim.*time_advance_method)();
+    diag_func(sim);
+  }
+}
 #endif // SCAFFOLDING
 
 #endif // MAIN_LOOP_HPP

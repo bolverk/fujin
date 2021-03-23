@@ -216,7 +216,14 @@ public:
   /*! \brief Returns the hydrodynamic snapshot
     \return Hydrodynamic snapshot
    */
-  const decltype(data_)& getHydroSnapshot(void) const;
+  const decltype(data_)& getHydroSnapshot(void) const
+#if SCAFFOLDING == 1
+    ;
+#else
+  {
+    return data_;
+  }
+#endif // SCAFFOLDING
 
   /*! \brief Returns a list of Riemann solutions
     \return Riemann solutions
