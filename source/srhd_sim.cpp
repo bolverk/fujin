@@ -44,6 +44,7 @@ namespace{
   }
 #endif // PARALLEL
 
+#if SCAFFOLDING == 1
   vector<double> distribute_vertices
     (const vector<double>& vertices)
   {
@@ -77,6 +78,7 @@ namespace{
     return vertices;
 #endif // PARALLEL
   }
+#endif // SCAFFOLDING
 }
 
 #ifdef PARALLEL
