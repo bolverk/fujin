@@ -145,13 +145,13 @@ public:
     ;
 #else
   :
-  data_(distribute_vertices(vertices),
-	InitCells(distribute_vertices(vertices),
+  data_(distribute_vertices1(vertices),
+	InitCells(distribute_vertices1(vertices),
 		  density_distribution,
 		  pressure_distribution,
 		  proper_velocity_distribution)),
   eos_(eos), 
-  psvs_(distribute_vertices(vertices).size(),
+  psvs_(distribute_vertices1(vertices).size(),
 	RiemannSolution()),
   rs_(riemann_solver), 
   sr_(interpolation_method),
