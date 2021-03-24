@@ -3,9 +3,11 @@
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include "srhd_sim.hpp"
+#include "diagnostics.hpp"
 
 //! \brief Base class for the condition for when to terminate the simulation
 #if SCAFFOLDING == 1
+
 class TerminationCondition
 #else
 template<class CE, class CP> class TerminationCondition

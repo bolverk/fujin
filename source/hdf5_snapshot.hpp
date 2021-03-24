@@ -12,6 +12,7 @@
 #if SCAFFOLDING != 1
 #include <H5Cpp.h>
 #include "hdf5_utils.hpp"
+#include "diagnostics.hpp"
 
 using namespace H5;
 
