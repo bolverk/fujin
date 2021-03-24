@@ -16,6 +16,11 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#if SCAFFOLDING != 1
+using CE = vector<double>;
+using CP = vector<Primitive>;
+#endif // SCAFFOLDING
+
 using namespace std;
 
 int main()
@@ -40,14 +45,18 @@ int main()
   RigidWall bc(rs);
   const Spherical geometry;
 
-  SRHDSimulation sim(vertex,
-		     dd, dp, dv,
-		     bc,
-		     bc,
-		     eos,
-		     rs,
-		     sr,
-		     geometry);
+  SRHDSimulation
+#if SCAFFOLDING != 1
+    <CE, CP>
+#endif // SCAFFOLDING
+    sim(vertex,
+	dd, dp, dv,
+	bc,
+	bc,
+	eos,
+	rs,
+	sr,
+	geometry);
 
   // Write data to file
   ofstream f;
