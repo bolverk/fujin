@@ -32,7 +32,7 @@ def main():
     import numpy
     from glob import glob
 
-    res = numpy.loadtxt('res.txt')
+    #res = numpy.loadtxt('res.txt')
 
     if len(glob('final_*.h5'))>1:
         final = consolidate('final_*.h5')

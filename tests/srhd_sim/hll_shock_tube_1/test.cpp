@@ -17,7 +17,13 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#if SCAFFOLDING != 1
+using CE = vector<double>;
+using CP = vector<Primitive>;
+#endif // SCAFFOLDING
+
 namespace {
+  /*
   void WriteMidVals(SRHDSimulation const& sim, string fname)
   {
     std::ofstream f(fname.c_str());
@@ -26,6 +32,7 @@ namespace {
     f << celerity2velocity(p.Celerity) << "\n";
     f.close();
   }
+  */
 
   class SimData
   {
@@ -47,7 +54,7 @@ namespace {
 	   sr_,
 	   geometry_) {}
 
-    SRHDSimulation& getSim(void)
+    auto& getSim(void)
     {
       return sim_;
     }
@@ -58,7 +65,11 @@ namespace {
     const RigidWall bc_;
     PCM sr_;
     const Planar geometry_;
-    SRHDSimulation sim_;
+    SRHDSimulation
+    #if SCAFFOLDING != 1
+    <CE, CP>
+#endif // SCAFFOLDING
+    sim_;
   };
 }
 
@@ -70,15 +81,22 @@ int main()
   MPI_Init(NULL, NULL);
 #endif // PARALLEL
   SimData sim_data;
-  SRHDSimulation& sim = sim_data.getSim();
+  auto& sim = sim_data.getSim();
 
+  #if SCAFFOLDING == 1
   main_loop(sim,
 	    IterationTermination(50),
 	    &SRHDSimulation::timeAdvance,
 	    WriteTime("time.txt"));
+  #else
+    main_loop(sim,
+	      IterationTermination<CE,CP>(50),
+	      &SRHDSimulation<CE, CP>::timeAdvance,
+	      WriteTime<CE,CP>("time.txt"));
+#endif // SCAFFOLDING
 
   // Output
-  WriteMidVals(sim,"res.txt");
+  //WriteMidVals(sim,"res.txt");
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");
 #else
