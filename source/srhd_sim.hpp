@@ -285,7 +285,15 @@ template<class CE, class CP> class SRHDSimulation
       \param Index Cell index
       \return Area
     */
+  #if SCAFFOLDING == 1
     double getArea(size_t Index) const;
+  #else
+  double getArea(size_t i) const
+  {
+    const double r = 0.5*(data_.edges.at(i)+data_.edges.at(i+1));
+    return geometry_.calcArea(r);
+  }
+#endif // SCAFFOLDING
 
     /*! \brief Returns the time
       \return Time
