@@ -16,12 +16,9 @@
 #include "spatial_reconstruction.hpp"
 #include "boundary_condition.hpp"
 #include "geometry.hpp"
-#if SCAFFOLDING != 1
 #include <cassert>
 #include "srhydro.hpp"
-#endif // SCAFFOLDING
 
-#if SCAFFOLDING != 1
 template<class CE, class CP> double new_calc_time_step
 (const NewHydroSnapshot<CE, CP>& data,
  const vector<RiemannSolution>& psvs,
@@ -49,16 +46,10 @@ template<class CE, class CP> double new_calc_time_step
 vector<double> distribute_vertices1
 (const vector<double>& vertices);
 
-#endif // SCAFFOLDING
-
 /*! \brief Special relativistic hydrodynamic simulation
   \details The simulation is based on <a href="http://adsabs.harvard.edu/abs/2000A%26A...358.1157D"> F. Daigne & R. Moskovitch, "Gamma-ray bursts from internal shocks in a relativistic wind: a hydrodynamical study", A&A, v. 358 p 1157-1166 (2000) </a>
 */
-#if SCAFFOLDING == 1
-class SRHDSimulation
-#else
 template<class CE, class CP> class SRHDSimulation
-#endif // SCAFFOLDING
   {
   private:
     //! \brief Hydrodynamic state (edges and cells)
@@ -110,11 +101,7 @@ template<class CE, class CP> class SRHDSimulation
 		   const EquationOfState& eos,
 		   const RiemannSolver& riemann_solver,
 		   const SpatialReconstruction& interpolation_method,
-		   const Geometry& geometry)
-#if SCAFFOLDING == 1
-      ;
-#else
-    :
+		   const Geometry& geometry):
     data_(distribute_vertices1(vertices),
 	  InitCells(distribute_vertices1(vertices),
 		    density_distribution,
@@ -133,7 +120,6 @@ template<class CE, class CP> class SRHDSimulation
       cycle_(0),
       innerBC_(inner_bc), 
       outerBC_(outer_bc) {}
-#endif // SCAFFOLDING
 
     /*! \brief Class constructor
       \param init_cond Initial conditions
@@ -144,16 +130,6 @@ template<class CE, class CP> class SRHDSimulation
       \param interpolation_method Pointer to spatial reconstruction
       \param geometry Geometry
     */
-  #if SCAFFOLDING == 1
-    SRHDSimulation
-      (const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
-       const BoundaryCondition& inner_bc,
-       const BoundaryCondition& outer_bc,
-       const EquationOfState& eos,
-       const RiemannSolver& rs,
-       const SpatialReconstruction& interpolation_method,
-       const Geometry& geometry);
-#else
   SRHDSimulation
   (const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
    const BoundaryCondition& piInnerBC,
@@ -176,12 +152,8 @@ template<class CE, class CP> class SRHDSimulation
   cycle_(0),
   innerBC_(piInnerBC), 
   outerBC_(piOuterBC) {}
-#endif // SCAFFOLDING
   
     //! \brief Advances the simulation in time
-#if SCAFFOLDING == 1
-    void timeAdvance1stOrder(void);
-#else
   void timeAdvance1stOrder(void)
   {
 #ifdef PARALLEL
@@ -203,12 +175,8 @@ template<class CE, class CP> class SRHDSimulation
   time_ += dt;
   cycle_++;
 }
-#endif // SCAFFOLDING
 
     //! \brief Advances the simulation in time
-#if SCAFFOLDING == 1
-    void timeAdvance2ndOrder(void);
-#else
   void timeAdvance2ndOrder(void)
   {
 #ifdef PARALLEL
@@ -242,12 +210,8 @@ template<class CE, class CP> class SRHDSimulation
   time_ += dt;
   cycle_++;
 }
-#endif // SCAFFOLDING
 
     //! \brief Advances the simulation in time
-#if SCAFFOLDING == 1
-    void timeAdvance(void);
-#else
     void timeAdvance(void)
     {
       CalcFluxes(data_,
@@ -299,7 +263,6 @@ template<class CE, class CP> class SRHDSimulation
       time_ += dt;
       cycle_++;
     }
-#endif // SCAFFOLDING
 
     /*! \brief Calculates the conserved variables from the primitives 
      */
@@ -317,39 +280,27 @@ template<class CE, class CP> class SRHDSimulation
       \param Index Cell index
       \return Time step
     */
-  #if SCAFFOLDING == 1
-    double calcTimeStepForCell(size_t Index) const;
-  #else
   double calcTimeStepForCell(size_t i)
   {
     return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
   }
-#endif // SCAFFOLDING
 
     /*! \brief Return the volume bounded by a certain vertex
       \param Index Vertex index
       \return Volume
     */
-#if SCAFFOLDING == 1
-    double getVolume(size_t Index) const;
-#else
   double getVolume(size_t i) const
   {
     return geometry_.calcVolume(data_.edges.at(i));
   }
-#endif // SCAFFOLDING
 
     /*! \brief Returns the hydrodynamic snapshot
       \return Hydrodynamic snapshot
     */
     const decltype(data_)& getHydroSnapshot(void) const
-#if SCAFFOLDING == 1
-      ;
-#else
     {
       return data_;
     }
-#endif // SCAFFOLDING
 
     /*! \brief Returns a list of Riemann solutions
       \return Riemann solutions
@@ -359,76 +310,52 @@ template<class CE, class CP> class SRHDSimulation
     /*! \brief Returns the conserved variables
       \return Conserved variables
     */
-  #if SCAFFOLDING == 1
-    const vector<NewConserved>& getConserved(void) const;
-  #else
   const vector<NewConserved>& getConserved(void) const
   {
     return consVars_;
   }
-#endif // SCAFFOLDING
 
     /*! \brief Calculates the time step
       \return Time step
     */
-  #if SCAFFOLDING == 1
-    double calcTimeStep(void) const;
-  #else
   double calcTimeStep(void) const
   {
     return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
   }
-#endif // SCAFFOLDING
 
     /*! \brief Calculates the area at a certain cell centre
       \param Index Cell index
       \return Area
     */
-  #if SCAFFOLDING == 1
-    double getArea(size_t Index) const;
-  #else
   double getArea(size_t i) const
   {
     const double r = 0.5*(data_.edges.at(i)+data_.edges.at(i+1));
     return geometry_.calcArea(r);
   }
-#endif // SCAFFOLDING
 
     /*! \brief Returns the time
       \return Time
     */
-#if SCAFFOLDING == 1
-    double getTime(void) const;
-#else
     double getTime(void) const
     {
       return time_;
     }
-#endif // SCAFFOLDING
 
     /*! \brief Returns cycle number
       \return Cycle number
     */
-#if SCAFFOLDING == 1
-    int getCycle(void) const;
-#else
     int getCycle(void) const
     {
       return cycle_;
     }
-#endif // SCAFFOLDING
 
     /*! \brief Returns the rest masses
       \return Rest masses
     */
-#if SCAFFOLDING == 1
-    const vector<double>&  getRestMasses(void) const;
-#else
   const vector<double>&  getRestMasses(void) const
   {
     return restMass_;
   }
-#endif // SCAFFOLDING
 
     /*! \brief Returns the equation of state
       \return Equation of state
