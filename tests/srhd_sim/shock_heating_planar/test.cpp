@@ -23,6 +23,11 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#if SCAFFOLDING != 1
+using CE = vector<double>;
+using CP = vector<Primitive>;
+#endif // SCAFFOLDING
+
 using namespace std;
 
 class SimData
@@ -45,7 +50,7 @@ public:
 	 eos_,rs_,sr_,
 	 geometry_) {}
 
-  SRHDSimulation& GetSim(void)
+  auto& GetSim(void)
   {
     return sim_;
   }
@@ -62,12 +67,20 @@ private:
   //PCM sr_;
   VanLeer sr_;
   const Planar geometry_;
-  SRHDSimulation sim_;
+  SRHDSimulation
+#if SCAFFOLDING != 1
+  <CE, CP>
+#endif // SCAFFOLDING
+  sim_;
 };
 
 namespace {
 
-  void main_loop(SRHDSimulation& sim)
+  void main_loop(SRHDSimulation
+#if SCAFFOLDING != 1
+		 <CE, CP>
+#endif // SCAFFOLDING
+		 & sim)
   {
     double tf = 0.5;
 
@@ -77,7 +90,12 @@ namespace {
     }
   }
 
-  void Output(SRHDSimulation const& sim)
+  void Output
+  (const SRHDSimulation
+#if SCAFFOLDING != 1
+   <CE, CP>
+#endif // SCAFFOLDING
+   & sim)
   {
     ofstream f("res.txt");
     f << sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2].Pressure << "\n";
@@ -97,7 +115,7 @@ int main()
 		 FE_UNDERFLOW);
 
   SimData simd;
-  SRHDSimulation& sim = simd.GetSim();
+  auto& sim = simd.GetSim();
 
   main_loop(sim);
 

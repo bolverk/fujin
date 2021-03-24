@@ -6,7 +6,7 @@
 #ifndef SRHD_SIM_HPP
 #define SRHD_SIM_HPP 1
 
-#define SCAFFOLDING 1
+#define SCAFFOLDING 0
 
 #include <vector>
 #include "riemann_solver.hpp"
@@ -144,6 +144,7 @@ template<class CE, class CP> class SRHDSimulation
       \param interpolation_method Pointer to spatial reconstruction
       \param geometry Geometry
     */
+  #if SCAFFOLDING == 1
     SRHDSimulation
       (const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
        const BoundaryCondition& inner_bc,
@@ -152,6 +153,30 @@ template<class CE, class CP> class SRHDSimulation
        const RiemannSolver& rs,
        const SpatialReconstruction& interpolation_method,
        const Geometry& geometry);
+#else
+  SRHDSimulation
+  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
+   const BoundaryCondition& piInnerBC,
+   const BoundaryCondition& piOuterBC,
+   const EquationOfState& reos,
+   const RiemannSolver& rRiemannSolver,
+   const SpatialReconstruction& pInterpolationMethod,
+   const Geometry& geometry):
+  data_(init_cond),
+  eos_(reos), 
+  psvs_(init_cond.edges.size(),
+	RiemannSolution()),
+  rs_(rRiemannSolver), 
+  sr_(pInterpolationMethod),
+  cfl_(1./3.), 
+  consVars_(primitives_to_new_conserveds(data_.cells,reos)),
+  restMass_(serial_generate(RestMassCalculator(data_,geometry))),
+  geometry_(geometry),
+  time_(0),
+  cycle_(0),
+  innerBC_(piInnerBC), 
+  outerBC_(piOuterBC) {}
+#endif // SCAFFOLDING
   
     //! \brief Advances the simulation in time
 #if SCAFFOLDING == 1
