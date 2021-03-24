@@ -172,15 +172,30 @@ public:
   /*! \brief Class constructor
     \param fname File name
    */
-  explicit TotalEnergyHistory(string const& fname);
+#if SCAFFOLDING == 1
+    explicit TotalEnergyHistory(string const& fname);
+#else
+  explicit TotalEnergyHistory(string const& fname):
+  fname_(fname), energy_() {}
+#endif // SCAFFOLDING
 
 #if SCAFFOLDING == 1
   void operator()(const SRHDSimulation& sim) const;
 #else
-  void operator()(const SRHDSimulation<CE, CP>& sim) const;
+  void operator()(const SRHDSimulation<CE, CP>& sim) const
+  {
+    energy_.push_back(TotalEnergy(sim));
+  }
 #endif // SCAFFOLDING
 
+#if SCAFFOLDING == 1
   ~TotalEnergyHistory(void);
+#else
+  ~TotalEnergyHistory(void)
+  {
+    write_to_file(energy_,fname_.c_str());
+  }
+#endif // SCAFFOLDING
 
 private:
 

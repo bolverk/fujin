@@ -36,8 +36,10 @@ void WriteTime::operator()(SRHDSimulation const& sim) const
   write_number(sim.getTime(),fname_.c_str());
 }
 
+#if SCAFFOLDING == 1
 TotalEnergyHistory::TotalEnergyHistory(string const& fname):
   fname_(fname), energy_() {}
+#endif // SCAFFOLDING
 
 void TotalEnergyHistory::operator()(SRHDSimulation const& sim) const
 {

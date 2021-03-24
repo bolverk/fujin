@@ -55,7 +55,17 @@ bool ConservedPrimitiveConsistency
 double TotalEnergy(const SRHDSimulation& sim);
 #else
 template<class CE, class CP>
-double TotalEnergy(const SRHDSimulation<CE, CP>& sim);
+double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
+{
+    return 0.5*
+    (sum_all
+     (ElementwiseProduct<double,double,double>
+      (
+      CellVolumes<CE,CP>(sim),
+       ElementwiseSum<double>
+      (StressCalculator<CE, CP>(sim,1),
+       StressCalculator<CE, CP>(sim,2)))));
+}
 #endif // SCAFFOLDING
 
 /*! \brief Returns the total momentum
