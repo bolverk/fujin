@@ -13,21 +13,43 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#if SCAFFOLDING != 1
+using CE = vector<double>;
+using CP = vector<Primitive>;
+#endif // SCAFFOLDING
+
 using namespace std;
 
 namespace {
 
-  void main_loop(SRHDSimulation& sim,
-		 const int& inum,
-		 const string& outname,
-		 const bool write_file=true)
+  void main_loop
+  (SRHDSimulation
+#if SCAFFOLDING != 1
+   <CE, CP>
+#endif // SCAFFOLDING
+   & sim,
+   const int& inum,
+   const string& outname,
+   const bool write_file=true)
   {
     //    SafeTimeTermination term_cond(tf, 1e5);
-    IterationTermination term_cond(inum);
-    WriteTime diag("time.txt");
+    IterationTermination
+#if SCAFFOLDING != 1
+      <CE, CP>
+#endif // SCAFFOLDING
+      term_cond(inum);
+    WriteTime
+#if SCAFFOLDING != 1
+      <CE, CP>
+#endif // SCAFFOLDING
+      diag("time.txt");
     main_loop(sim,
 	      term_cond,
-	      &SRHDSimulation::timeAdvance,
+	      &SRHDSimulation
+#if SCAFFOLDING != 1
+	      <CE, CP>
+#endif // SCAFFOLDING
+	      ::timeAdvance,
 	      diag);
     if(write_file)
       write_hdf5_snapshot(sim,outname);
@@ -76,7 +98,7 @@ public:
 	 sr_, 
 	 geometry_) {}
 
-  SRHDSimulation& getSim(void)
+  auto& getSim(void)
   {
     return sim_;
   }
@@ -93,15 +115,24 @@ private:
   PCM sr_;
   RigidWall bc_;
   const Planar geometry_;
-  SRHDSimulation sim_;
+  SRHDSimulation
+#if SCAFFOLDING != 1
+  <CE, CP>
+#endif // SCAFFOLDING
+  sim_;
 };
 
 namespace {
 
-  void main_loop_weh(SRHDSimulation& sim,
-		     const int& inum,
-		     const string& outname,
-		     const bool& write_file=true)
+  void main_loop_weh
+  (SRHDSimulation
+#if SCAFFOLDING != 1
+   <CE, CP>
+#endif // SCAFFOLDING
+   & sim,
+   const int& inum,
+   const string& outname,
+   const bool& write_file=true)
   {
     try{
       main_loop(sim, inum, outname, write_file);
@@ -121,7 +152,7 @@ int main()
 #endif // PARALLEL
   {
     SimData sim_data;
-    SRHDSimulation& sim = sim_data.getSim();
+    auto& sim = sim_data.getSim();
 
 #ifdef PARALLEL
     main_loop_weh(sim, 300, "continuous_"+int2str(get_mpi_rank())+".h5");
@@ -132,7 +163,7 @@ int main()
 
   {
     SimData sim_data;
-    SRHDSimulation& sim = sim_data.getSim();
+    auto& sim = sim_data.getSim();
 
 #ifdef PARALLEL
     main_loop_weh(sim, 150, "checkpoint_"+int2str(get_mpi_rank())+".h5");
@@ -147,7 +178,7 @@ int main()
 #else
     SimData sim_data("checkpoint.h5");
 #endif // PARALLEL
-    SRHDSimulation& sim = sim_data.getSim();
+    auto& sim = sim_data.getSim();
 
 #ifdef PARALLEL
     main_loop_weh(sim, 149, "interrupted_"+int2str(get_mpi_rank())+".h5");

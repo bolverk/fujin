@@ -20,6 +20,11 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#if SCAFFOLDING != 1
+using CE = vector<double>;
+using CP = vector<Primitive>;
+#endif // SCAFFOLDING
+
 using namespace std;
 
 int main()
@@ -46,7 +51,11 @@ int main()
   const double tf = 0.3;
   Planar geometry;
 
-  SRHDSimulation sim(vertex,
+  SRHDSimulation
+#if SCAFFOLDING != 1
+    <CE, CP>
+#endif // SCAFFOLDING
+    sim(vertex,
 		     dd, dp, dv,
 		     LeftBC,
 		     RightBC,
