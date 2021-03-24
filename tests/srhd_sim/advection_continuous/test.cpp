@@ -15,6 +15,11 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#if SCAFFOLDING != 1
+using CE = vector<double>;
+using CP = vector<Primitive>;  
+#endif 
+
 using namespace std;
 
 namespace {
@@ -39,7 +44,7 @@ namespace {
 	   sr_,
 	   geometry_) {}
 
-    SRHDSimulation& getSim(void)
+    auto& getSim(void)
     {
       return sim_;
     }
@@ -50,7 +55,11 @@ namespace {
     const Periodic bc_;
     VanLeer sr_;
     const Planar geometry_;
-    SRHDSimulation sim_;
+    SRHDSimulation
+#if SCAFFOLDING != 1
+    <CE, CP>
+#endif // SCAFFOLDING
+    sim_;
   };
 }
 
@@ -60,7 +69,7 @@ int main(void)
   MPI_Init(NULL, NULL);
 #endif // PARALLEL
   SimData sim_data;
-  SRHDSimulation& sim = sim_data.getSim();
+  auto& sim = sim_data.getSim();
 
   //  write_snapshot(sim,"init_cond.txt");
 #ifdef PARALLEL
@@ -69,10 +78,18 @@ int main(void)
   write_hdf5_snapshot(sim, "initial.h5");
 #endif // PARALLEL
 
+#if SCAFFOLDING == 1
   main_loop(sim,
 	    SafeTimeTermination(2,1e6),
 	    &SRHDSimulation::timeAdvance,
 	    WriteTime("time.txt"));
+#else
+    main_loop
+      (sim,
+       SafeTimeTermination<CE,CP>(2,1e6),
+       &SRHDSimulation<CE,CP>::timeAdvance,
+       WriteTime<CE,CP>("time.txt"));
+#endif // SCAFFOLDING
 
   //  write_snapshot(sim,"snapshot.txt");
 #ifdef PARALLEL
