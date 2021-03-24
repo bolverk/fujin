@@ -47,6 +47,113 @@ bool ConservedPrimitiveConsistency
  double thres);
 #endif // SCAFFOLDING
 
+#if SCAFFOLDING != 1
+template<class CE, class CP> class CellVolumes: public Index2Member<double>
+{
+public:
+
+  explicit CellVolumes(const SRHDSimulation<CE, CP>& sim):
+    sim_(sim) {}
+
+  size_t getLength(void) const
+  {
+    return sim_.getHydroSnapshot().cells.size();
+  }
+
+  double operator()(size_t i) const
+  {
+    return sim_.getVolume(i);
+  }
+
+private:
+
+  const SRHDSimulation<CE, CP>& sim_;
+};
+
+template<class CE, class CP> class StressCalculator: public Index2Member<double>
+{
+public:
+
+  StressCalculator(const SRHDSimulation<CE, CP>& sim,
+		   size_t idx):
+    sim_(sim), idx_(idx) {}
+
+  size_t getLength(void) const
+  {
+    return sim_.getHydroSnapshot().cells.size();
+  }
+
+  double operator()(size_t i) const
+  {
+    return sim_.getRestMasses().at(i)*sim_.getConserved().at(i)[idx_];
+  }
+
+private:
+
+  const SRHDSimulation<CE, CP>& sim_;
+  const size_t idx_;
+};
+
+  template<class T> class ElementwiseSum:
+    public Index2Member<T>
+  {
+  public:
+
+    ElementwiseSum
+    (const Index2Member<T>& list_1,
+     const Index2Member<T>& list_2):
+      list_1_(list_1),
+      list_2_(list_2)
+    {
+      assert(list_1.getLength()==list_2.getLength());
+    }
+
+    size_t getLength(void) const
+    {
+      return list_1_.getLength();
+    }
+
+    T operator()(size_t i) const
+    {
+      return list_1_(i) + list_2_(i);
+    }
+
+  private:
+    const Index2Member<T>& list_1_;
+    const Index2Member<T>& list_2_;
+  };
+
+  template<class T1, class T2, class T3>
+  class ElementwiseProduct:
+    public Index2Member<T3>
+  {
+  public:
+
+    ElementwiseProduct
+    (const Index2Member<T1>& list_1,
+     const Index2Member<T2>& list_2):
+      list_1_(list_1),
+      list_2_(list_2)
+    {
+      assert(list_1.getLength()==list_2.getLength());
+    }
+
+    size_t getLength(void) const
+    {
+      return list_1_.getLength();
+    }
+
+    T3 operator()(size_t i) const
+    {
+      return list_1_(i)*list_2_(i);
+    }
+
+  private:
+    const Index2Member<T1>& list_1_;
+    const Index2Member<T2>& list_2_;
+  };
+#endif // SCAFFOLDING
+
 /*! \brief Returns the total energy
   \param sim Hydrodynamic simulation
   \return Total energy

@@ -112,10 +112,9 @@ bool ConservedPrimitiveConsistency
 
 namespace {
 
+  #if SCAFFOLDING == 1
+
   //! \brief Calculates the stresses
-#if SCAFFOLDING != 1
-  template<class CE, class CP>
-#endif // SCAFFOLDING
   class StressCalculator: public Index2Member<double>
   {
   public:
@@ -126,11 +125,7 @@ namespace {
      */
     StressCalculator
     (
-#if SCAFFOLDING == 1
      const SRHDSimulation& sim,
-#else
-     const SRHDSimulation<CE, CP>& sim,
-#endif // SCAFFOLDING     
      size_t idx):
       sim_(sim), idx_(idx) {}
 
@@ -146,15 +141,13 @@ namespace {
 
   private:
     //! \brief Simulation
-#if SCAFFOLDING == 1
     const SRHDSimulation& sim_;
-#else
-    const SRHDSimulation<CE, CP>& sim_;
-#endif // SCAFFOLDING
     //! \brief Pointer to member
     size_t idx_;
     //    double NewConserved::* pcm_;
   };
+
+#endif // SCAFFOLDING
 
 #if SCAFFOLDING != 1
   template<class CE, class CP>
@@ -191,6 +184,7 @@ namespace {
 #endif // SCAFFOLDING
   };
 
+  #if SCAFFOLDING == 1
   template<class T> class ElementwiseSum:
     public Index2Member<T>
   {
@@ -219,6 +213,7 @@ namespace {
     const Index2Member<T>& list_1_;
     const Index2Member<T>& list_2_;
   };
+#endif // SCAFFOLDING
 
   template<class T1, class T2, class T3>
   class ElementwiseProduct:
