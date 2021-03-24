@@ -154,7 +154,31 @@ template<class CE, class CP> class SRHDSimulation
        const Geometry& geometry);
   
     //! \brief Advances the simulation in time
+#if SCAFFOLDING == 1
     void timeAdvance1stOrder(void);
+#else
+  void timeAdvance1stOrder(void)
+  {
+#ifdef PARALLEL
+  const double dt_candidate = calcTimeStep();
+  double temp = dt_candidate;
+  MPI_Allreduce(&dt_candidate,&temp,1,
+		MPI_DOUBLE,
+		MPI_MIN,
+		MPI_COMM_WORLD);
+  const double dt = temp;
+  spdlog::debug("dt = {0}",dt);
+#else
+  const double dt = calcTimeStep();
+#endif // PARALLEL
+
+  data_ = BasicTimeAdvance(data_,sr_,rs_,eos_,dt,geometry_,
+			   innerBC_, outerBC_);
+
+  time_ += dt;
+  cycle_++;
+}
+#endif // SCAFFOLDING
 
     //! \brief Advances the simulation in time
     void timeAdvance2ndOrder(void);
@@ -232,7 +256,14 @@ template<class CE, class CP> class SRHDSimulation
       \param Index Cell index
       \return Time step
     */
+  #if SCAFFOLDING == 1
     double calcTimeStepForCell(size_t Index) const;
+  #else
+  double calcTimeStepForCell(size_t i)
+  {
+    return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
+  }
+#endif // SCAFFOLDING
 
     /*! \brief Return the volume bounded by a certain vertex
       \param Index Vertex index
@@ -279,7 +310,14 @@ template<class CE, class CP> class SRHDSimulation
     /*! \brief Calculates the time step
       \return Time step
     */
+  #if SCAFFOLDING == 1
     double calcTimeStep(void) const;
+  #else
+  double calcTimeStep(void) const
+  {
+    return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
+  }
+#endif // SCAFFOLDING
 
     /*! \brief Calculates the area at a certain cell centre
       \param Index Cell index
