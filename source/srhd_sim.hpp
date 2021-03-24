@@ -238,7 +238,14 @@ template<class CE, class CP> class SRHDSimulation
       \param Index Vertex index
       \return Volume
     */
+#if SCAFFOLDING == 1
     double getVolume(size_t Index) const;
+#else
+  double getVolume(size_t i) const
+  {
+    return geometry_.calcVolume(data_.edges.at(i));
+  }
+#endif // SCAFFOLDING
 
     /*! \brief Returns the hydrodynamic snapshot
       \return Hydrodynamic snapshot
@@ -260,7 +267,14 @@ template<class CE, class CP> class SRHDSimulation
     /*! \brief Returns the conserved variables
       \return Conserved variables
     */
+  #if SCAFFOLDING == 1
     const vector<NewConserved>& getConserved(void) const;
+  #else
+  const vector<NewConserved>& getConserved(void) const
+  {
+    return consVars_;
+  }
+#endif // SCAFFOLDING
 
     /*! \brief Calculates the time step
       \return Time step
@@ -300,7 +314,14 @@ template<class CE, class CP> class SRHDSimulation
     /*! \brief Returns the rest masses
       \return Rest masses
     */
+#if SCAFFOLDING == 1
     const vector<double>&  getRestMasses(void) const;
+#else
+  const vector<double>&  getRestMasses(void) const
+  {
+    return restMass_;
+  }
+#endif // SCAFFOLDING
 
     /*! \brief Returns the equation of state
       \return Equation of state

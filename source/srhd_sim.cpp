@@ -194,10 +194,12 @@ const vector<double>& SRHDSimulation::getRestMasses(void) const
   return restMass_;
 }
 
+#if SCAFFOLDING == 1
 double SRHDSimulation::getVolume(size_t i) const
 {
   return geometry_.calcVolume(data_.edges.at(i));
 }
+#endif // SCAFFOLDING
 
 void SRHDSimulation::timeAdvance1stOrder(void)
 {

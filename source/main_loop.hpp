@@ -44,12 +44,20 @@ public:
   /*! \brief Class constructor
     \param max_iter Number of iterations
    */
+#if SCAFFOLDING == 1
   explicit IterationTermination(int max_iter);
+#else
+  explicit IterationTermination(int max_iter):
+    max_iter_(max_iter) {}
+#endif // SCAFFOLDING
 
 #if SCAFFOLDING == 1
   bool operator()(const SRHDSimulation& sim) const;
 #else
-  bool operator()(const SRHDSimulation<CE, CP>& sim) const;
+  bool operator()(const SRHDSimulation<CE, CP>& sim) const
+  {
+    return sim.getCycle()>max_iter_;
+  }
 #endif // SCAFFOLDING
 
 private:
