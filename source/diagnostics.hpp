@@ -183,7 +183,11 @@ double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
 double TotalMomentum(SRHDSimulation const& sim);
 #else
 template<class CE, class CP>
-double TotalMomentum(SRHDSimulation<CE, CP> const& sim);
+double TotalMomentum(SRHDSimulation<CE, CP> const& sim)
+{
+  return 0.5*(sum_all(StressCalculator<CE, CP>(sim,1))-
+	      sum_all(StressCalculator<CE, CP>(sim,2)));
+}
 #endif // SCAFFOLDING
 
 /*! \brief Checks that the vertices are in increasing order

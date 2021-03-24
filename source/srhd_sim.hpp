@@ -181,7 +181,43 @@ template<class CE, class CP> class SRHDSimulation
 #endif // SCAFFOLDING
 
     //! \brief Advances the simulation in time
+#if SCAFFOLDING == 1
     void timeAdvance2ndOrder(void);
+#else
+  void timeAdvance2ndOrder(void)
+  {
+#ifdef PARALLEL
+  throw("Not implemented yet");
+#endif // PARALLEL
+  const double dt = calcTimeStep();
+
+  const NewHydroSnapshot<vector<double>, vector<Primitive> > mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
+					     geometry_,
+					     innerBC_,
+					     outerBC_);
+
+  CalcFluxes(mid,
+	     sr_,rs_,dt,
+	     innerBC_,
+	     outerBC_,
+	     psvs_);
+
+  const vector<bool> filter = NeedUpdate(psvs_);
+
+  update_new_conserved(psvs_,
+		       data_.cells,
+		       restMass_,
+		       dt, 
+		       geometry_,
+		       data_.edges,
+		       consVars_);
+
+  UpdatePrimitives(consVars_, eos_, filter, data_.cells);
+
+  time_ += dt;
+  cycle_++;
+}
+#endif // SCAFFOLDING
 
     //! \brief Advances the simulation in time
 #if SCAFFOLDING == 1
