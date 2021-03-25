@@ -81,16 +81,21 @@ double CellVolume(double rl, double rr, Geometry const& geometry)
   return geometry.calcVolume(rr) - geometry.calcVolume(rl);
 }
 
+/*
 RestMassCalculator::RestMassCalculator
 (const NewHydroSnapshot<simple_vector, simple_vector>& hs,
  const Geometry& geometry):
   hs_(hs), geometry_(geometry) {}
+*/
 
+/*
 size_t RestMassCalculator::getLength(void) const
 {
   return hs_.cells.size();
 }
+*/
 
+/*
 double RestMassCalculator::operator()(size_t i) const
 {
   const double lf = celerity2lorentz_factor(hs_.cells[i].Celerity);
@@ -98,6 +103,7 @@ double RestMassCalculator::operator()(size_t i) const
     geometry_.calcVolume(hs_.edges[i]);
   return hs_.cells[i].Density*vol*lf;
 }
+*/
 
 namespace {
 
@@ -626,7 +632,7 @@ BasicTimeAdvance
     CalcFluxes(data,sr,rs,dt,lbc,rbc);
 
   const vector<double> rest_masses = serial_generate
-    (RestMassCalculator(data, geometry));
+    (RestMassCalculator<simple_vector, simple_vector>(data, geometry));
 
   vector<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
   UpdateConserved(fluxes,rest_masses,dt,geometry,
@@ -654,7 +660,7 @@ HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
     (mid, sr, rs, dt, lbc, rbc);
 
   const vector<double> rest_masses = serial_generate
-    (RestMassCalculator(old,geometry));
+    (RestMassCalculator<simple_vector, simple_vector>(old,geometry));
   vector<Conserved> conserved = Primitives2Conserveds(old.cells,eos);
   HydroSnapshot res = old;
   UpdateConserved(fluxes,rest_masses,dt,geometry,

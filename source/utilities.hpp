@@ -189,13 +189,16 @@ private:
   const vector<T>& v_;
 };
 
+template<class T> using simple_vector=vector<T>;
+
 /*! \brief Generates a vector
   \param i2m Lazy list
   \return stl vector
  */
-template<class T> vector<T> serial_generate(const Index2Member<T>& i2m)
+template<class T, template<class> class C=simple_vector> vector<T>
+  serial_generate(const Index2Member<T>& i2m)
 {
-  vector<T> res(i2m.getLength());
+  C<T> res(i2m.getLength());
   size_t n = 0;
   generate(res.begin(),
 	   res.end(),

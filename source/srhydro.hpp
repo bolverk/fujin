@@ -38,6 +38,7 @@ double CellVolume(double rl, double rr,
 vector<double> CalcRestMasses(const HydroSnapshot& hs,
 			      const Geometry& geometry);
 */
+template<template<class> class CE, template<class> class CP>
 class RestMassCalculator: public Index2Member<double>
 {
 public:
@@ -46,12 +47,22 @@ public:
     \param hs Hydrodynamic snapshot
     \param geometry Geometry
    */
-  RestMassCalculator(const NewHydroSnapshot<simple_vector, simple_vector>& hs,
-		     const Geometry& geometry);
+  RestMassCalculator(const NewHydroSnapshot<CE, CP>& hs,
+		     const Geometry& geometry):
+    hs_(hs), geometry_(geometry) {}
 
-  size_t getLength(void) const;
+  size_t getLength(void) const
+  {
+    return hs_.cells.size();
+  }
 
-  double operator()(size_t i) const;
+  double operator()(size_t i) const
+  {
+    const double lf = celerity2lorentz_factor(hs_.cells[i].Celerity);
+    const double vol = geometry_.calcVolume(hs_.edges[i+1])-
+      geometry_.calcVolume(hs_.edges[i]);
+    return hs_.cells[i].Density*vol*lf;
+  }
 private:
   //! \brief Hydrodynamic snapshot
   const NewHydroSnapshot<simple_vector, simple_vector>& hs_;
