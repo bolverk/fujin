@@ -7,9 +7,6 @@
 #define HDF5_SNAPSHOT_HPP 1
 
 #include "srhd_sim.hpp"
-
-
-#if SCAFFOLDING != 1
 #include <H5Cpp.h>
 #include "hdf5_utils.hpp"
 #include "diagnostics.hpp"
@@ -41,25 +38,15 @@ using namespace H5;
     //! \brief Source list
     const Index2Member<double>& i2m_;
   };
-#endif // SCAFFOLDING
 
 /*! \brief Writes simulation data to hdf5
   \param sim Simulation
   \param fname File name
  */
-#if SCAFFOLDING != 1
 template<class CE, class CP>
-#endif // SCAFFOLDING
 void write_hdf5_snapshot
-#if SCAFFOLDING == 1
-(const SRHDSimulation& sim,
-#else
  (const SRHDSimulation<CE, CP>& sim,
-#endif // SCAFFOLDING
- const string& fname)
- #if SCAFFOLDING == 1
- ;
- #else
+  const string& fname)
  {
    (HDF5Shortcut(fname))
     ("position",
@@ -77,7 +64,6 @@ void write_hdf5_snapshot
     ("cycle",
      vector<double>(1,sim.getCycle()));
  }
- #endif 
 
 /*! \brief Read an hdf5 snapshot
   \param fname File name

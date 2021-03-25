@@ -37,28 +37,6 @@ namespace {
   };
 }
 
-#if SCAFFOLDING == 1
-void write_hdf5_snapshot(const SRHDSimulation& sim,
-			 const string& fname)
-{
-  (HDF5Shortcut(fname))
-    ("position",
-     serial_generate(MidValues(Echo<double>(sim.getHydroSnapshot().edges))))
-	("edges",
-     serial_generate(Echo<double>(sim.getHydroSnapshot().edges)))
-    ("density",
-     serial_generate(PrimitivePropertyGetter(sim,0)))
-    ("pressure",
-     serial_generate(PrimitivePropertyGetter(sim,1)))
-    ("celerity",
-     serial_generate(PrimitivePropertyGetter(sim,2)))
-    ("time",
-     vector<double>(1,sim.getTime()))
-    ("cycle",
-     vector<double>(1,sim.getCycle()));
-}
-#endif // SCAFFOLDING
-
 namespace {
   template<class T> vector<T> read_vector_from_hdf5
   (const Group& file,
