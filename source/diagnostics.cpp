@@ -44,9 +44,7 @@ namespace {
 namespace {
 
   //! \brief Checks if conserved variables and primitives are thermodynamically consistent
-#if SCAFFOLDING != 1
   template<class CE, class CP>
-#endif // SCAFFOLDING
   class ConservedPrimitiveConsistencyChecker: public Index2Member<bool>
   {
   public:
@@ -57,11 +55,7 @@ namespace {
      */
     ConservedPrimitiveConsistencyChecker
     (
-#if SCAFFOLDING == 1
-     const SRHDSimulation& sim,
-#else
      const SRHDSimulation<CE, CP>& sim,
-#endif // SCAFFOLDING
      double thres):
       sim_(sim), thres_(thres) {}
 
@@ -81,89 +75,30 @@ namespace {
 
   private:
     //! \brief Simulation
-#if SCAFFOLDING == 1
-    const SRHDSimulation& sim_;
-#else
     const SRHDSimulation<CE, CP>& sim_;
-#endif // SCAFFOLDING
     //! \brief Threshold
     const double thres_;
   };
 }
 
-#if SCAFFOLDING != 1
 template<class CE, class CP>
-#endif // SCAFFOLDING
 bool ConservedPrimitiveConsistency
 (
- #if SCAFFOLDING == 1
- const SRHDSimulation& sim,
- #else
  const SRHDSimulation<CE, CP>& sim,
-#endif // SCAFFOLDING
  double thres)
 {
-#if SCAFFOLDING == 1
-  return all_true(ConservedPrimitiveConsistencyChecker(sim,thres));
-#else
   return all_true(ConservedPrimitiveConsistencyChecker<CE,CP>(sim,thres));
-#endif // SCAFFOLDING
 }
 
 namespace {
 
-  #if SCAFFOLDING == 1
-
-  //! \brief Calculates the stresses
-  class StressCalculator: public Index2Member<double>
-  {
-  public:
-
-    /*! \brief Class constructor
-      \param sim Simulation
-      \param idx Index to member
-     */
-    StressCalculator
-    (
-     const SRHDSimulation& sim,
-     size_t idx):
-      sim_(sim), idx_(idx) {}
-
-    size_t getLength(void) const
-    {
-      return sim_.getHydroSnapshot().cells.size();
-    }
-
-    double operator()(size_t i) const
-    {
-      return sim_.getRestMasses().at(i)*sim_.getConserved().at(i)[idx_];
-    }
-
-  private:
-    //! \brief Simulation
-    const SRHDSimulation& sim_;
-    //! \brief Pointer to member
-    size_t idx_;
-    //    double NewConserved::* pcm_;
-  };
-
-#endif // SCAFFOLDING
-
-#if SCAFFOLDING != 1
   template<class CE, class CP>
-#endif // SCAFFOLDING
   class CellVolumes: public Index2Member<double>
   {
   public:
 
     explicit CellVolumes
-    (
-#if SCAFFOLDING == 1
-     const SRHDSimulation& sim
-#else
-     const SRHDSimulation<CE, CP>& sim
-#endif // SCAFFOLDING
-     ):
+    (const SRHDSimulation<CE, CP>& sim):
       sim_(sim) {}
 
     size_t getLength(void) const
@@ -177,43 +112,8 @@ namespace {
     }
 
   private:
-#if SCAFFOLDING == 1
-    const SRHDSimulation& sim_;
-#else
     const SRHDSimulation<CE, CP>& sim_;
-#endif // SCAFFOLDING
   };
-
-  #if SCAFFOLDING == 1
-  template<class T> class ElementwiseSum:
-    public Index2Member<T>
-  {
-  public:
-
-    ElementwiseSum
-    (const Index2Member<T>& list_1,
-     const Index2Member<T>& list_2):
-      list_1_(list_1),
-      list_2_(list_2)
-    {
-      assert(list_1.getLength()==list_2.getLength());
-    }
-
-    size_t getLength(void) const
-    {
-      return list_1_.getLength();
-    }
-
-    T operator()(size_t i) const
-    {
-      return list_1_(i) + list_2_(i);
-    }
-
-  private:
-    const Index2Member<T>& list_1_;
-    const Index2Member<T>& list_2_;
-  };
-#endif // SCAFFOLDING
 
   template<class T1, class T2, class T3>
   class ElementwiseProduct:
@@ -246,28 +146,6 @@ namespace {
   };
 }
 
-#if SCAFFOLDING == 1
-double TotalEnergy(SRHDSimulation const& sim)
-{
-  return 0.5*
-    (sum_all
-     (ElementwiseProduct<double,double,double>
-      (
-      CellVolumes(sim),
-       ElementwiseSum<double>
-       (StressCalculator(sim,1),
-	StressCalculator(sim,2)))));
-}
-#endif // SCAFFOLDING
-
-#if SCAFFOLDING == 1
-double TotalMomentum(const SRHDSimulation& sim)
-{
-  return 0.5*(sum_all(StressCalculator(sim,1))-
-	      sum_all(StressCalculator(sim,2)));
-}
-#endif // SCAFFOLDING
-
 //! \brief Auxiliary class for checking whether a list is increasing
 template<class T> class IsIncreasing: public Index2Member<bool>
 {
@@ -295,84 +173,12 @@ private:
   const Index2Member<T>& i2m_;
 };
 
-#if SCAFFOLDING == 1
-bool VerticesIncreasingOrder(const SRHDSimulation& sim)
-#else
-  template<class CE, class CP>
-  bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim)
-#endif // SCAFFOLDING
+template<class CE, class CP>
+bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim)
 {
   return all_true
     (IsIncreasing<double>(Echo<double>(sim.getHydroSnapshot().edges)));
 }
-
-namespace {
-
-  //! \brief Retrieves the centres of cells
-  #if 0
-  class CellCenterGetter: public Index2Member<double>
-  {
-  public:
-
-    /*! \brief Class constructor
-      \param sim Simulation
-     */
-    explicit CellCenterGetter(const SRHDSimulation& sim):
-      edges_(sim.getHydroSnapshot().edges) {}
-
-    size_t getLength(void) const
-    {
-      return edges_.size()-1;
-    }
-
-    double operator()(size_t i) const
-    {
-      return 0.5*(edges_[i]+edges_[i+1]);
-    }
-
-  private:
-    //! \brief Grid
-    const vector<double> edges_;
-  };
-#endif // 0
-}
-
-#if SCAFFOLDING == 1
-PrimitivePropertyGetter::PrimitivePropertyGetter
-(const SRHDSimulation& sim,
- size_t idx):
-  cells_(sim.getHydroSnapshot().cells), idx_(idx) {}
-
-size_t PrimitivePropertyGetter::getLength(void) const
-{
-  return cells_.size();
-}
-
-double PrimitivePropertyGetter::operator()(size_t i) const
-{
-  return cells_[i][idx_];
-}
-#endif 
-
-/*
-void write_snapshot(SRHDSimulation const& sim,
-		    string const& fname,
-		    int precision)
-{
-  vector<unique_ptr<Index2Member<double> > > properties;
-  properties.push_back(make_unique<CellCenterGetter>(sim));
-  for(size_t i=0;i<3;++i)
-    properties.push_back(make_unique<PrimitivePropertyGetter>(sim, i));
-  std::ofstream f(fname.c_str());
-  f.precision(precision);
-  for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i){
-    for(auto &p : properties)
-      f << (*p)(i) << " ";
-    f << "\n";
-  }
-  f.close();
-}
-*/
 
 void write_number(double num,
 		  string const& fname,
