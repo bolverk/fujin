@@ -111,8 +111,6 @@ namespace van_leer
   }
 }
 
-template<class T> using simple_vector = vector<T>;
-
 /*! \brief Spatial reconstruction based on Van Leer's method
   \details The description of the method is available in <a href="http://www.sciencedirect.com/science/article/pii/S0021999197957041">B. Van Leer, 'Towards the Ultimate Conservative Difference Scheme', J. Comp. Phys. 135, 229-248 (1977) </a>
 */
