@@ -4,6 +4,8 @@
 #include "utilities.hpp"
 #include "advanced_hydrodynamic_variables.hpp"
 
+#if 0
+
 namespace {
 
   /*! \brief returns the sign of a number
@@ -108,7 +110,7 @@ namespace {
   }
 }
 
-VanLeer::VanLeer(void) {}
+//VanLeer::VanLeer(void) {}
 
 vector<std::pair<Primitive,Primitive> > 
 VanLeer::interpolateAll
@@ -146,3 +148,5 @@ VanLeer::interpolateAll
 
   return serial_generate(interpolator);
 }
+
+#endif // 0

@@ -40,7 +40,7 @@ int main()
   Step dv(velocity2celerity(0.9),0.0,0.5);
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
-  VanLeer sr;
+  VanLeer<simple_vector, simple_vector> sr;
   FreeFlow LeftBC;
   RigidWall RightBC(rs);
   const double tf = 0.3;

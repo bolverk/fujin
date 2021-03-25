@@ -39,7 +39,7 @@ int main()
   IdealGasRiemannSolver rs(g);
   HLL rs2(eos);
   PCM<simple_vector, simple_vector> sr;
-  VanLeer sr2;
+  VanLeer<simple_vector, simple_vector> sr2;
   RigidWall bc(rs);
   double tf = 0.8;
   const Planar geometry;

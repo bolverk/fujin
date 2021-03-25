@@ -41,7 +41,7 @@ int main()
   Uniform dv(0.0); 
   IdealGas eos(g);
   HLL rs(eos);
-  VanLeer sr;
+  VanLeer<simple_vector, simple_vector> sr;
   RigidWall bc(rs);
   const Planar geometry;
 

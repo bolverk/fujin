@@ -103,7 +103,7 @@ namespace {
   void interpolation_snapshot(size_t np)
   {
     PCM<simple_vector, simple_vector> pcm;
-    VanLeer plm;
+    VanLeer<simple_vector, simple_vector> plm;
     vector<double> edges = linspace(0,1,np);
     SineWave density(0.5,1,0,1);
     Uniform pressure(1);
@@ -129,7 +129,7 @@ namespace {
   void interpolation_comparison(void)
   {
     PCM<simple_vector, simple_vector> pcm;
-    VanLeer plm;
+    VanLeer<simple_vector, simple_vector> plm;
     vector<size_t> np_range = arange(100,1001,100);
     vector<double> l1_pcm = test_series(pcm,np_range);
     vector<double> l1_plm = test_series(plm,np_range);

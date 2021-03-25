@@ -31,7 +31,7 @@ int main()
   Uniform dv(0.0);
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
-  VanLeer sr;
+  VanLeer<simple_vector, simple_vector> sr;
   const Planar geometry;
   RigidWall bc(rs);
 

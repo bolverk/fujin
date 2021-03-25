@@ -49,7 +49,7 @@ namespace {
     const IdealGas eos_;
     const HLL rs_;
     const Periodic bc_;
-    VanLeer sr_;
+    VanLeer<simple_vector, simple_vector> sr_;
     const Planar geometry_;
     SRHDSimulation<simple_vector, simple_vector> sim_;
   };

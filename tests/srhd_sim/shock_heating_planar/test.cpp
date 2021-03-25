@@ -60,7 +60,7 @@ private:
   RigidWall left_bc_;
   FreeFlow right_bc_;
   //PCM sr_;
-  VanLeer sr_;
+  VanLeer<simple_vector, simple_vector> sr_;
   const Planar geometry_;
   SRHDSimulation<simple_vector, simple_vector> sim_;
 };
