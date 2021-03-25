@@ -121,11 +121,11 @@ template<class CE, class CP> class SRHDSimulation
 
     /*! \brief Class constructor
       \param init_cond Initial conditions
-      \param inner_bc Inner boundary conditions
-      \param outer_bc Outer boundary conditions
-      \param eos Equation of state
-      \param rs Riemann solver
-      \param interpolation_method Pointer to spatial reconstruction
+      \param piInnerBC Inner boundary conditions
+      \param piOuterBC Outer boundary conditions
+      \param reos Equation of state
+      \param rRiemannSolver Riemann solver
+      \param pInterpolationMethod Pointer to spatial reconstruction
       \param geometry Geometry
     */
   SRHDSimulation
@@ -275,16 +275,17 @@ template<class CE, class CP> class SRHDSimulation
     // Diagnostics
 
     /*! \brief Calculates the time step for a certain cell
-      \param Index Cell index
+      \param i Cell index
       \return Time step
     */
   double calcTimeStepForCell(size_t i)
   {
-    return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
+    return MaxTimeStep(data_.edges[i+1]-data_.edges[i],
+		       data_.cells[i],eos_);
   }
 
     /*! \brief Return the volume bounded by a certain vertex
-      \param Index Vertex index
+      \param i Vertex index
       \return Volume
     */
   double getVolume(size_t i) const
@@ -322,7 +323,7 @@ template<class CE, class CP> class SRHDSimulation
   }
 
     /*! \brief Calculates the area at a certain cell centre
-      \param Index Cell index
+      \param i Cell index
       \return Area
     */
   double getArea(size_t i) const

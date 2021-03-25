@@ -27,11 +27,8 @@ bool ConservedPrimitiveConsistency(Primitive const& p,
 }
 
 namespace {
-  /*! \brief Check if all members are true
-    \param flags Lazy list of booleans
-    \return true if all are true, false otherwise
-   */
-  bool all_true(const Index2Member<bool>& flags)
+  /*
+  static bool all_true(const Index2Member<bool>& flags)
   {
     for(size_t i=0;i<flags.getLength();++i){
       if(!flags(i))
@@ -39,6 +36,7 @@ namespace {
     }
     return true;
   }
+  */
 }
 
 namespace {
@@ -52,7 +50,7 @@ namespace {
     /*! \brief Class constructor
       \param sim Hydrodynamic simulation
       \param thres Threshold
-     */
+    */
     ConservedPrimitiveConsistencyChecker
     (
      const SRHDSimulation<CE, CP>& sim,
@@ -81,6 +79,7 @@ namespace {
   };
 }
 
+/*
 template<class CE, class CP>
 bool ConservedPrimitiveConsistency
 (
@@ -89,6 +88,7 @@ bool ConservedPrimitiveConsistency
 {
   return all_true(ConservedPrimitiveConsistencyChecker<CE,CP>(sim,thres));
 }
+*/
 
 namespace {
 
@@ -153,7 +153,7 @@ public:
 
   /*! \brief Class constructor
     \param i2m Lazy list
-   */
+  */
   explicit IsIncreasing(const Index2Member<T>& i2m):
     i2m_(i2m) {}
 
@@ -173,12 +173,14 @@ private:
   const Index2Member<T>& i2m_;
 };
 
+/*
 template<class CE, class CP>
 bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim)
 {
   return all_true
     (IsIncreasing<double>(Echo<double>(sim.getHydroSnapshot().edges)));
 }
+*/
 
 void write_number(double num,
 		  string const& fname,
@@ -190,15 +192,17 @@ void write_number(double num,
   f.close();
 }
 
-void write_vector(const vector<double>& list,
-		  const string& fname,
-		  int precision)
-{
+/*
+  void write_vector(const vector<double>& list,
+  const string& fname,
+  int precision)
+  {
   std::ofstream f(fname.c_str());
   f.precision(precision);
   BOOST_FOREACH(double itm, list)
-    {
-      f << itm << "\n";
-    }
+  {
+  f << itm << "\n";
+  }
   f.close();
-}
+  }
+*/

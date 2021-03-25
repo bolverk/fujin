@@ -13,7 +13,7 @@ public:
   /*! \brief Returns true if the simulation should stop
     \param sim Reference to the simulation
     \return True if simulation should stop
-   */
+  */
   virtual bool operator()(const SRHDSimulation<CE, CP>& sim) const = 0;
 
   virtual ~TerminationCondition(void) {}
@@ -26,7 +26,7 @@ public:
 
   /*! \brief Class constructor
     \param max_iter Number of iterations
-   */
+  */
   explicit IterationTermination(int max_iter):
     max_iter_(max_iter) {}
 
@@ -49,7 +49,7 @@ public:
   /*! \brief Class constructor
     \param tf Termination time
     \param max_iter Upper limit on number of iterations
-   */
+  */
   SafeTimeTermination(double tf,
 		      int max_iter):
     tf_(tf), max_iter_(max_iter) {}
@@ -77,10 +77,10 @@ public:
 
   /*! \brief Perform diagnostic
     \param sim Reference to simulation
-   */
-virtual void operator()(const SRHDSimulation<CE, CP>& sim) const = 0;
+  */
+  virtual void operator()(const SRHDSimulation<CE, CP>& sim) const = 0;
 
-virtual ~DiagnosticFunction(void) {};
+  virtual ~DiagnosticFunction(void) {}
 };
 
 //! \brief Writes the time each step
@@ -90,7 +90,7 @@ public:
 
   /*! \brief Class constructor
     \param fname File name
-   */
+  */
   explicit WriteTime(const string& fname):
     fname_(fname) {}
 
@@ -112,9 +112,9 @@ public:
 
   /*! \brief Class constructor
     \param fname File name
-   */
+  */
   explicit TotalEnergyHistory(string const& fname):
-  fname_(fname), energy_() {}
+    fname_(fname), energy_() {}
 
   void operator()(const SRHDSimulation<CE, CP>& sim) const
   {

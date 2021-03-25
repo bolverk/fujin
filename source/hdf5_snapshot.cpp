@@ -9,35 +9,6 @@
 using namespace H5;
 
 namespace {
-
-  //! \brief Calculates the average of every consecutive pair of terms
-  class MidValues: public Index2Member<double>
-  {
-  public:
-
-    /*! \brief Class constructor
-      \param i2m Source list
-     */
-    explicit MidValues(const Index2Member<double>& i2m):
-      i2m_(i2m) {}
-
-    size_t getLength(void) const
-    {
-      return i2m_.getLength() - 1;
-    }
-
-    double operator()(size_t i) const
-    {
-      return 0.5*(i2m_(i)+i2m_(i+1));
-    }
-  private:
-
-    //! \brief Source list
-    const Index2Member<double>& i2m_;
-  };
-}
-
-namespace {
   template<class T> vector<T> read_vector_from_hdf5
   (const Group& file,
    const string& field,
