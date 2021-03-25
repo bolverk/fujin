@@ -14,7 +14,7 @@ def consolidate(fname):
     import h5py
     import numpy
 
-    with h5py.File(fname) as f:
+    with h5py.File(fname, 'r') as f:
         res = dict((key,numpy.array(f[key])) for key in f)
     return res
 
