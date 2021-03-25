@@ -48,7 +48,7 @@ namespace {
   private:
     const IdealGas eos_;
     const IdealGasRiemannSolver rs_;
-    PCM sr_;
+    PCM<simple_vector, simple_vector> sr_;
     const Planar geometry_;
     const RigidWall bc_;
     SRHDSimulation<simple_vector,simple_vector> sim_;

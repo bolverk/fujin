@@ -44,7 +44,7 @@ int main()
   Step dv(0,-win,rsr); 
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
-  PCM sr;
+  PCM<simple_vector, simple_vector> sr;
   RigidWall LeftBC(rs);
   FreeFlow RightBC;
   const double tf = 0.5;

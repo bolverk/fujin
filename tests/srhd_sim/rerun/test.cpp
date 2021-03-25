@@ -91,7 +91,7 @@ private:
   IdealGas eos_;
   //  IdealGasRiemannSolver rs_;
   HLL rs_;
-  PCM sr_;
+  PCM<simple_vector, simple_vector> sr_;
   RigidWall bc_;
   const Planar geometry_;
   SRHDSimulation<simple_vector, simple_vector> sim_;

@@ -47,7 +47,7 @@ namespace {
     const IdealGas eos_;
     const HLL rs_;
     const RigidWall bc_;
-    PCM sr_;
+    PCM<simple_vector, simple_vector> sr_;
     const Planar geometry_;
     SRHDSimulation<simple_vector, simple_vector> sim_;
   };

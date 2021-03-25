@@ -75,7 +75,7 @@ namespace {
     IdealGas eos_;
     HLL rs_;
     RigidWall bc_;
-    PCM sr_;
+    PCM<simple_vector, simple_vector> sr_;
     const Spherical geometry_;
     SRHDSimulation<simple_vector, simple_vector> sim_;
   };

@@ -2,6 +2,8 @@
 #include "advanced_hydrodynamic_variables.hpp"
 #include "utilities.hpp"
 
+#if 0
+
 PCM::PCM(void) {}
 
 namespace {
@@ -41,3 +43,5 @@ vector<std::pair<Primitive,Primitive> > PCM::interpolateAll
 {
   return serial_generate(Interpolator(hs));
 }
+
+#endif // 0 

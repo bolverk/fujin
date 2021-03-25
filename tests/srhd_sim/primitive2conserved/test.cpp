@@ -37,7 +37,7 @@ int main()
   Uniform dv(0.0);
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
-  PCM sr;
+  PCM<simple_vector, simple_vector> sr;
   RigidWall bc(rs);
   const Spherical geometry;
 
