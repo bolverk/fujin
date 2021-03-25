@@ -36,18 +36,11 @@ bool ConservedPrimitiveConsistency(Primitive const& p,
   \param thres Threshold
   \return True if all cells are consistent, false otherwise
  */
-#if SCAFFOLDING == 1
-bool ConservedPrimitiveConsistency
-(const SRHDSimulation& sim, 
- double thres);
-#else
 template<class CE, class CP>
 bool ConservedPrimitiveConsistency
 (const SRHDSimulation<CE, CP>& sim, 
  double thres);
-#endif // SCAFFOLDING
 
-#if SCAFFOLDING != 1
 template<class CE, class CP> class CellVolumes: public Index2Member<double>
 {
 public:
@@ -152,15 +145,11 @@ private:
     const Index2Member<T1>& list_1_;
     const Index2Member<T2>& list_2_;
   };
-#endif // SCAFFOLDING
 
 /*! \brief Returns the total energy
   \param sim Hydrodynamic simulation
   \return Total energy
  */
-#if SCAFFOLDING == 1
-double TotalEnergy(const SRHDSimulation& sim);
-#else
 template<class CE, class CP>
 double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
 {
@@ -173,33 +162,24 @@ double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
       (StressCalculator<CE, CP>(sim,1),
        StressCalculator<CE, CP>(sim,2)))));
 }
-#endif // SCAFFOLDING
 
 /*! \brief Returns the total momentum
   \param sim Hydrodynamic simulation
   \return Total momentum
  */
-#if SCAFFOLDING == 1
-double TotalMomentum(SRHDSimulation const& sim);
-#else
 template<class CE, class CP>
 double TotalMomentum(SRHDSimulation<CE, CP> const& sim)
 {
   return 0.5*(sum_all(StressCalculator<CE, CP>(sim,1))-
 	      sum_all(StressCalculator<CE, CP>(sim,2)));
 }
-#endif // SCAFFOLDING
 
 /*! \brief Checks that the vertices are in increasing order
   \param sim Reference to simulation
   \return True if they are in increasing order, false otherwise
  */
-#if SCAFFOLDING == 1
-bool VerticesIncreasingOrder(const SRHDSimulation& sim);
-#else
 template<class CE, class CP>
 bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim);
-#endif // SCAFFOLDING
 
 /*! \brief Writes list of data to file as ascii
   \param v Data
@@ -239,9 +219,7 @@ void write_number(double num,
 		  int precision=14);
 
 //! \brief Retrieves properties from a list of primitive variables
-#if SCAFFOLDING != 1
 template<class CE, class CP>
-#endif // SCAFFOLDING
 class PrimitivePropertyGetter: public Index2Member<double>
 {
 public:
@@ -251,38 +229,20 @@ public:
     \param idx Index to member
   */
   PrimitivePropertyGetter
-  (
-#if SCAFFOLDING == 1
-   const SRHDSimulation& sim,
-#else
-   const SRHDSimulation<CE, CP>& sim,
-#endif // SCAFFOLDING
-   size_t idx)
-#if SCAFFOLDING == 1
-    ;
-#else
-  :
+  (const SRHDSimulation<CE, CP>& sim,
+   size_t idx):
   cells_(sim.getHydroSnapshot().cells),
     idx_(idx) {}    
-#endif // SCAFFOLDING
 
-#if SCAFFOLDING ==1
-  size_t getLength(void) const;
-#else
   size_t getLength(void) const
   {
     return cells_.size();
   }
-#endif // SCAFFOLDING  
 
-#if SCAFFOLDING == 1
-  double operator()(size_t i) const;
-#else
   double operator()(size_t i) const
   {
     return cells_[i][idx_];
   }
-#endif // SCAFFOLDING  
 
 private:
   //! \brief List of primitive variables
@@ -297,8 +257,10 @@ private:
   \param fname Name of file
   \param precision Precision
  */
+/*
 void write_vector(const vector<double>& list,
 		  const string& fname,
 		  int precision=14);
+*/
 
 #endif // DIAGNOSTICS_HPP
