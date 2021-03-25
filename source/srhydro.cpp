@@ -231,7 +231,8 @@ vector<NewConserved> primitives_to_new_conserveds
   return serial_generate(Primitive2NewConservedConverter(p_list,eos));
 }
 
-double MaxTimeStep(double width, Primitive const& p, 
+
+double MaxTimeStepSingle(double width, Primitive const& p, 
 		   const EquationOfState& eos)
 {
   const double sound_speed = eos.dp2ba(p.Density, p.Pressure);
@@ -240,12 +241,11 @@ double MaxTimeStep(double width, Primitive const& p,
   return width*(1-sound_speed*fabs(b_c))*g2_c/sound_speed;
 }
 
+/*
 double MaxTimeStep(vector<double> const& v_list, 
 		   vector<Primitive> const& p_list,
 		   const EquationOfState& eos)
 {
-  //  return min(MaxTimeSteps(v,p,eos));
-  //  return min(MaxTimeStepCalculator(v,p,eos));
   vector<double> valid_time_steps;
   for(size_t i=0;i<p_list.size();++i){
     const Primitive p = p_list[i];
@@ -261,6 +261,7 @@ double MaxTimeStep(vector<double> const& v_list,
   }
   return *min_element(valid_time_steps.begin(), valid_time_steps.end());
 }
+*/
 
 namespace{
 #ifdef PARALLEL

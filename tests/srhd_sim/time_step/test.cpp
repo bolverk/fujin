@@ -15,6 +15,12 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+//#define N 100
+//template<class T> using CE = array<T, N+1>;
+//template<class T> using CP = array<T, N>;
+//template<class T> using CE = vector<T>;
+//template<class T> using CP = vector<T>;
+
 namespace {
   void WritecalcTimeStep
   (const SRHDSimulation<simple_vector, simple_vector>

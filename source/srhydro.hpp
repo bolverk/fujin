@@ -15,6 +15,7 @@
 #include "boundary_condition.hpp"
 #include "geometry.hpp"
 #include "utilities.hpp"
+#include <cassert>
 
 template<class T> using simple_vector = vector<T>;
 
@@ -93,7 +94,7 @@ vector<NewConserved> primitives_to_new_conserveds
   \param eos Equation of state
   \return Max time step
 */
-double MaxTimeStep(double width, Primitive const& p,
+double MaxTimeStepSingle(double width, Primitive const& p,
 		   const EquationOfState& eos );
 
 /*! \brief Calculates the maximum time step according to CFL condition, for the entire grid
@@ -102,8 +103,35 @@ double MaxTimeStep(double width, Primitive const& p,
   \param eos Equation of state
   \return Max time step
 */
+/*
 double MaxTimeStep(vector<double> const& v, vector<Primitive> const& p,
 		   const EquationOfState& eos);
+*/
+
+template<template<class> class CE, template<class> class CP>
+double MaxTimeStep
+(const CE<double>& v_list,
+ const CP<Primitive>& p_list,
+ const EquationOfState& eos)
+{
+  //  vector<double> valid_time_steps;
+  double res = 0;
+  for(size_t i=0;i<p_list.size();++i){
+    const Primitive p = p_list[i];
+    const double ba = eos.dp2ba(p.Density, p.Pressure);
+    if(std::numeric_limits<double>::epsilon()<ba){
+      const double width = v_list[i+1] - v_list[i];
+      assert(width>std::numeric_limits<double>::epsilon());
+      //      valid_time_steps.push_back(width/max_speed);
+      const double bc = celerity2velocity(p.Celerity);
+      const double g2c = 1.+pow(p.Celerity,2);
+      //      valid_time_steps.push_back((1-fabs(bc)*ba)*width*g2c/ba);
+      res = fmax(res, 1/((1-fabs(bc)*ba)*width*g2c/ba));
+    }
+  }
+  //  return *min_element(valid_time_steps.begin(), valid_time_steps.end());
+  return 1.0/res;
+}
 
 /*! \brief Calculates the hydrodyanmic fluxes
   \param data Hydrodynamic data (grid + cells)

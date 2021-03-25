@@ -319,7 +319,7 @@ template<template<class> class CE, template<class> class CP> class SRHDSimulatio
     */
   double calcTimeStep(void) const
   {
-    return cfl_*MaxTimeStep(data_.edges, data_.cells,eos_);
+    return cfl_*MaxTimeStep<CE, CP>(data_.edges, data_.cells,eos_);
   }
 
     /*! \brief Calculates the area at a certain cell centre
