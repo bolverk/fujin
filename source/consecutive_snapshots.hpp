@@ -8,13 +8,9 @@
 #include "trigger.hpp"
 #include "filename_pattern.hpp"
 
-#if SCAFFOLDING != 1
 template<class CE, class CP>
-#endif // SCAFFOLDING
 class ConsecutiveSnapshots: public DiagnosticFunction
-#if SCAFFOLDING != 1
 <CE, CP>
-#endif // SCAFFOLDING
 {
 public:
 
@@ -23,27 +19,20 @@ public:
     \param fnp File name generator
   */
   ConsecutiveSnapshots
-#if SCAFFOLDING == 1
-  (Trigger& trigger,
-#else
    (Trigger<CE, CP>& trigger,
-#endif // SCAFFOLDING		       
-    FileNamePattern& fnp);
+    FileNamePattern& fnp):
+     trigger_(trigger), fnp_(fnp) {}    
 
-#if SCAFFOLDING == 1   
-  void operator()(const SRHDSimulation& sim) const;
-#else
-   void operator()(const SRHDSimulation<CE, CP>& sim) const;
-#endif // SCAFFOLDING
+   void operator()(const SRHDSimulation<CE, CP>& sim) const
+  {
+    if(trigger_(sim))
+      write_hdf5_snapshot(sim, fnp_(trigger_.getCount()));
+  }
 
 private:
 
   //! \brief Snapshot trigger
-#if SCAFFOLDING == 1
-  Trigger& trigger_;
-#else
    Trigger<CE, CP>& trigger_;
-#endif // SCAFFOLDING
 
   //! \brief Generator for snapshot file name
   FileNamePattern& fnp_;

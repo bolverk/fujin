@@ -6,8 +6,6 @@
 #ifndef SRHD_SIM_HPP
 #define SRHD_SIM_HPP 1
 
-#define SCAFFOLDING 0
-
 #include <vector>
 #include "riemann_solver.hpp"
 #include "spatial_distribution.hpp"
