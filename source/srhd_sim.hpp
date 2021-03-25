@@ -51,7 +51,7 @@ template<class CE, class CP> class SRHDSimulation
   {
   private:
     //! \brief Hydrodynamic state (edges and cells)
-    NewHydroSnapshot<vector<double>, vector<Primitive> > data_;
+    NewHydroSnapshot<CE, CP> data_;
     //! \brief Equation of state
     const EquationOfState& eos_;
     //! \brief Riemann solutions
