@@ -15,9 +15,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;  
-
 using namespace std;
 
 namespace {
@@ -53,7 +50,7 @@ namespace {
     const Periodic bc_;
     VanLeer sr_;
     const Planar geometry_;
-    SRHDSimulation<CE, CP> sim_;
+    SRHDSimulation<simple_vector, simple_vector> sim_;
   };
 }
 
@@ -74,9 +71,9 @@ int main(void)
 
     main_loop
       (sim,
-       SafeTimeTermination<CE,CP>(2,1e6),
-       &SRHDSimulation<CE,CP>::timeAdvance,
-       WriteTime<CE,CP>("time.txt"));
+       SafeTimeTermination<simple_vector,simple_vector>(2,1e6),
+       &SRHDSimulation<simple_vector,simple_vector>::timeAdvance,
+       WriteTime<simple_vector,simple_vector>("time.txt"));
 
   //  write_snapshot(sim,"snapshot.txt");
 #ifdef PARALLEL

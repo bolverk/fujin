@@ -16,6 +16,8 @@
 #include "geometry.hpp"
 #include "utilities.hpp"
 
+template<class T> using simple_vector = vector<T>;
+
 /*! \brief Calculates the volume of the cell
   \param rl Radius of inner cell interface
   \param rr Radius of outer cell interface
@@ -43,7 +45,7 @@ public:
     \param hs Hydrodynamic snapshot
     \param geometry Geometry
    */
-  RestMassCalculator(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
+  RestMassCalculator(const NewHydroSnapshot<simple_vector, simple_vector>& hs,
 		     const Geometry& geometry);
 
   size_t getLength(void) const;
@@ -51,7 +53,7 @@ public:
   double operator()(size_t i) const;
 private:
   //! \brief Hydrodynamic snapshot
-  const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
+  const NewHydroSnapshot<simple_vector, simple_vector>& hs_;
 
   //! \brief Geometry
   const Geometry& geometry_;
@@ -113,7 +115,7 @@ double MaxTimeStep(vector<double> const& v, vector<Primitive> const& p,
   \param psvs Riemann solutions
 */
 void CalcFluxes
-(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+(const NewHydroSnapshot<simple_vector, simple_vector>& data,
  const SpatialReconstruction& sr,
  const RiemannSolver& rs,
  double dt, 
@@ -211,8 +213,8 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
   \param rbc Right boundary conditions
   \return Hydrodynamic data at the end of the time step
 */
-NewHydroSnapshot<vector<double>, vector<Primitive> > BasicTimeAdvance
-(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
+(const NewHydroSnapshot<simple_vector, simple_vector>& data,
  const SpatialReconstruction& sr,
  const RiemannSolver& rs,
  const EquationOfState& eos,

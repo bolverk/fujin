@@ -19,9 +19,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 namespace {
@@ -57,7 +54,7 @@ namespace {
     const RigidWall bc_;
     PCM sr_;
     const Planar geometry_;
-    SRHDSimulation<CE, CP> sim_;
+    SRHDSimulation<simple_vector, simple_vector> sim_;
   };
 }
 
@@ -71,14 +68,14 @@ int main()
 
   main_loop
     (sim,
-     SafeTimeTermination<CE,CP>(0.303,1e6),
-     &SRHDSimulation<CE,CP>::timeAdvance,
-     WriteTime<CE,CP>("time.txt"));
+     SafeTimeTermination<simple_vector,simple_vector>(0.303,1e6),
+     &SRHDSimulation<simple_vector,simple_vector>::timeAdvance,
+     WriteTime<simple_vector,simple_vector>("time.txt"));
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
 #else
-  write_hdf5_snapshot<CE, CP>(sim,"final.h5");
+  write_hdf5_snapshot<simple_vector, simple_vector>(sim,"final.h5");
 #endif // PARALLEL
 
   ofstream("test_terminated_normally.res").close();

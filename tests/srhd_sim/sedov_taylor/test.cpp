@@ -19,15 +19,11 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-//using CE = array<double, 1000>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 namespace {
   double get_position_max_pressure
-  (const SRHDSimulation<CE, CP>& sim)
+  (const SRHDSimulation<simple_vector, simple_vector>& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
     double rpmax = sim.getHydroSnapshot().edges.at(1);
@@ -42,7 +38,7 @@ namespace {
   }
 
   double get_max_pressure
-  (const SRHDSimulation<CE, CP>& sim)
+  (const SRHDSimulation<simple_vector, simple_vector>& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
     for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i)
@@ -81,17 +77,17 @@ namespace {
     RigidWall bc_;
     PCM sr_;
     const Spherical geometry_;
-    SRHDSimulation<CE, CP> sim_;
+    SRHDSimulation<simple_vector, simple_vector> sim_;
   };
 
-  class ShockFrontTracker: public DiagnosticFunction<CE, CP>
+  class ShockFrontTracker: public DiagnosticFunction<simple_vector, simple_vector>
   {
   public:
     
     ShockFrontTracker(const string& fname):
       fname_(fname), positions_(), pressures_(), times_() {}
 
-    void operator()(const SRHDSimulation<CE, CP>& sim) const
+    void operator()(const SRHDSimulation<simple_vector, simple_vector>& sim) const
     {
       times_.push_back(sim.getTime());
       pressures_.push_back(get_max_pressure(sim));
@@ -115,7 +111,7 @@ namespace {
     mutable vector<double> times_;
   };
 
-  void my_main_loop(SRHDSimulation<CE, CP>& sim)
+  void my_main_loop(SRHDSimulation<simple_vector, simple_vector>& sim)
   {
 #ifdef PARALLEL
     ShockFrontTracker sft("rpmax_"+int2str(get_mpi_rank())+".txt");
@@ -123,8 +119,8 @@ namespace {
     ShockFrontTracker
       sft("rpmax.txt");
 #endif // PARALLEL
-    SafeTimeTermination<CE, CP> stt(50, 1e6);
-    main_loop(sim, stt, &SRHDSimulation<CE, CP>::timeAdvance, sft);
+    SafeTimeTermination<simple_vector, simple_vector> stt(50, 1e6);
+    main_loop(sim, stt, &SRHDSimulation<simple_vector, simple_vector>::timeAdvance, sft);
   }
 }
 

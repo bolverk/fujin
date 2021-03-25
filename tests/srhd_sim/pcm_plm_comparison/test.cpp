@@ -18,9 +18,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 int main()
@@ -47,7 +44,7 @@ int main()
   double tf = 0.8;
   const Planar geometry;
 
-  SRHDSimulation<CE, CP> sim
+  SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,
      dd, dp, dv,
      bc, bc,
@@ -55,7 +52,7 @@ int main()
      rs,
      sr,
      geometry);
-  SRHDSimulation<CE, CP> sim2
+  SRHDSimulation<simple_vector, simple_vector> sim2
     (vertex,
       dd, dp, dv,
       bc, bc,
@@ -72,8 +69,8 @@ int main()
     sim2.timeAdvance();
 
   // Write data to file
-  write_hdf5_snapshot<CE, CP>(sim, "pcm.h5");
-  write_hdf5_snapshot<CE, CP>(sim, "plm.h5");
+  write_hdf5_snapshot<simple_vector, simple_vector>(sim, "pcm.h5");
+  write_hdf5_snapshot<simple_vector, simple_vector>(sim, "plm.h5");
 
   // Finalise
   ofstream("test_terminated_normally.res").close();

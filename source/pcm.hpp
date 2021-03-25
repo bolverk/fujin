@@ -3,6 +3,8 @@
 
 #include "spatial_reconstruction.hpp"
 
+template<class T> using simple_vector = vector<T>;
+
 //! \brief Piecewise constant interpolation
 class PCM: public SpatialReconstruction
 {
@@ -14,7 +16,7 @@ public:
 
   vector<std::pair<Primitive,Primitive> > 
   interpolateAll
-  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
+  (const NewHydroSnapshot<simple_vector, simple_vector>& hs,
    double dt) const;
 };
 

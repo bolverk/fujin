@@ -44,14 +44,14 @@ namespace {
     \return Derivatives of the hydrodynamic variables on the edges
    */
   vector<Primitive> calc_edge_slopes
-  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs)
+  (const NewHydroSnapshot<simple_vector, simple_vector>& hs)
   {
     const class DerivativeInterface: public Index2Member<Primitive>
     {
     public:
 
       explicit DerivativeInterface
-      (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_i):
+      (const NewHydroSnapshot<simple_vector, simple_vector>& hs_i):
 	hs_(hs_i) {}
 
       size_t getLength(void) const
@@ -69,7 +69,7 @@ namespace {
       }
 
     private:
-      const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
+      const NewHydroSnapshot<simple_vector, simple_vector>& hs_;
     } deriv_interface(hs);
     return serial_generate(deriv_interface);
   }
@@ -79,7 +79,7 @@ namespace {
     \return List of slopes
    */
   vector<Primitive> calc_cell_slopes
-  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs)
+  (const NewHydroSnapshot<simple_vector, simple_vector>& hs)
   {
     const vector<Primitive> edge_slopes = calc_edge_slopes(hs);
     const class Minmoder: public Index2Member<Primitive>
@@ -112,7 +112,7 @@ VanLeer::VanLeer(void) {}
 
 vector<std::pair<Primitive,Primitive> > 
 VanLeer::interpolateAll
-(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
+(const NewHydroSnapshot<simple_vector, simple_vector>& hs,
  double /*dt*/) const
 {
   const class Interpolator: 
@@ -121,7 +121,7 @@ VanLeer::interpolateAll
   public:
 
     explicit Interpolator
-    (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_i):
+    (const NewHydroSnapshot<simple_vector, simple_vector>& hs_i):
       hs_(hs_i),
       cell_slopes_(calc_cell_slopes(hs_i)) {}
 
@@ -140,7 +140,7 @@ VanLeer::interpolateAll
     }
 
   private:
-    const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs_;
+    const NewHydroSnapshot<simple_vector, simple_vector>& hs_;
     const vector<Primitive> cell_slopes_;
   } interpolator(hs);
 

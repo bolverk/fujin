@@ -20,20 +20,17 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 namespace {
 
-  void main_loop(SRHDSimulation<CE, CP>& sim)
+  void main_loop(SRHDSimulation<simple_vector, simple_vector>& sim)
   {
-    SafeTimeTermination<CE, CP> term_cond(0.4, 1e5);
-    WriteTime<CE, CP> diag("time.txt");
+    SafeTimeTermination<simple_vector, simple_vector> term_cond(0.4, 1e5);
+    WriteTime<simple_vector, simple_vector> diag("time.txt");
     main_loop(sim,
 	      term_cond,
-	      &SRHDSimulation<CE, CP>::timeAdvance,
+	      &SRHDSimulation<simple_vector, simple_vector>::timeAdvance,
 	      diag);
 #ifdef PARALLEL
     write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
@@ -84,12 +81,12 @@ private:
   PCM sr_;
   RigidWall bc_;
   const Planar geometry_;
-  SRHDSimulation<CE, CP> sim_;
+  SRHDSimulation<simple_vector, simple_vector> sim_;
 };
 
 namespace {
 
-  void main_loop_weh(SRHDSimulation<CE, CP>& sim)
+  void main_loop_weh(SRHDSimulation<simple_vector, simple_vector>& sim)
   {
     try{
       main_loop(sim);

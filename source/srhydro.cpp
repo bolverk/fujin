@@ -82,7 +82,7 @@ double CellVolume(double rl, double rr, Geometry const& geometry)
 }
 
 RestMassCalculator::RestMassCalculator
-(const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
+(const NewHydroSnapshot<simple_vector, simple_vector>& hs,
  const Geometry& geometry):
   hs_(hs), geometry_(geometry) {}
 
@@ -302,7 +302,7 @@ namespace{
 }
 
 void CalcFluxes
-(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+(const NewHydroSnapshot<simple_vector, simple_vector>& data,
  const SpatialReconstruction& sr,
  const RiemannSolver& rs,
  double dt,
@@ -387,7 +387,7 @@ namespace{
     \return Fluxes
   */
   vector<RiemannSolution> CalcFluxes
-    (const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+    (const NewHydroSnapshot<simple_vector, simple_vector>& data,
      const SpatialReconstruction& sr,
      const RiemannSolver& rs,
      double dt,
@@ -608,9 +608,9 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
   }
 }
 
-NewHydroSnapshot<vector<double>, vector<Primitive> >
+NewHydroSnapshot<simple_vector, simple_vector>
 BasicTimeAdvance
-(const NewHydroSnapshot<vector<double>, vector<Primitive> >& data,
+(const NewHydroSnapshot<simple_vector, simple_vector>& data,
  SpatialReconstruction const& sr,
  RiemannSolver const& rs,
  EquationOfState const& eos,
@@ -619,7 +619,7 @@ BasicTimeAdvance
  BoundaryCondition const& lbc,
  BoundaryCondition const& rbc)
 {
-  NewHydroSnapshot<vector<double>, vector<Primitive> > res(data);
+  NewHydroSnapshot<simple_vector, simple_vector> res(data);
 
   vector<RiemannSolution> fluxes=
     CalcFluxes(data,sr,rs,dt,lbc,rbc);
@@ -634,7 +634,7 @@ BasicTimeAdvance
   vector<bool> filter = NeedUpdate(fluxes);
   UpdatePrimitives(conserved,eos,filter,res.cells);
 
-  return NewHydroSnapshot<vector<double>, vector<Primitive> >(res.edges, res.cells);
+  return NewHydroSnapshot<simple_vector, simple_vector>(res.edges, res.cells);
 }
 
 HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
@@ -646,7 +646,7 @@ HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
 			     const BoundaryCondition& lbc,
 			     const BoundaryCondition& rbc)
 {
-  const NewHydroSnapshot<vector<double>, vector<Primitive> > mid = BasicTimeAdvance
+  const NewHydroSnapshot<simple_vector, simple_vector> mid = BasicTimeAdvance
     (old, sr, rs, eos, 0.5*dt, geometry, lbc,rbc);
   
   const vector<RiemannSolution> fluxes = CalcFluxes

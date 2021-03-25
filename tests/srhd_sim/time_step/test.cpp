@@ -15,12 +15,9 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 namespace {
   void WritecalcTimeStep
-  (const SRHDSimulation<CE, CP>
+  (const SRHDSimulation<simple_vector, simple_vector>
    & sim,
    string const& fname)
   {
@@ -54,7 +51,7 @@ int main()
   RigidWall bc(rs);
   const Spherical geometry;
 
-  SRHDSimulation<CE, CP>sim
+  SRHDSimulation<simple_vector, simple_vector>sim
     (vertex,
      dd, dp, dv,
      bc, bc,

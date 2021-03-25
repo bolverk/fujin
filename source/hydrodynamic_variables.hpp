@@ -237,13 +237,13 @@ template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::
   return une_op(t, [&s](double d){return d/s;});
 }
 
-template<class CE, class CP> class NewHydroSnapshot: public pair<CE, CP>
+template<template<class> class CE, template<class> class CP> class NewHydroSnapshot: public pair<CE<double>, CP<Primitive> >
 {
 public:
 
   NewHydroSnapshot(const vector<double>& edges_i,
 		   const vector<Primitive>& cells_i):
-    pair<CE, CP>(edges_i, cells_i),
+    pair<CE<double>, CP<Primitive> >(edges_i, cells_i),
     edges((*this).first),
     cells((*this).second) {}
 
@@ -255,12 +255,12 @@ public:
 
   NewHydroSnapshot& operator=(const NewHydroSnapshot& source)
   {
-    pair<CE, CP>::operator=(source);
+    pair<CE<double>, CP<Primitive> >::operator=(source);
     return *this;
   }
 
-  CE& edges;
-  CP& cells;  
+  CE<double>& edges;
+  CP<Primitive>& cells;  
 };
 
 #endif // HYDRODYNAMIC_VARIABLES_HPP

@@ -17,8 +17,7 @@
 
 using namespace std;
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
+template<class T> using simple_vector = vector<T>;
 
 namespace {
   class SimData
@@ -52,7 +51,7 @@ namespace {
     const Periodic bc_;
     VanLeer sr_;
     const Planar geometry_;
-    SRHDSimulation<CE, CP> sim_;
+    SRHDSimulation<simple_vector, simple_vector> sim_;
   };
 }
 
@@ -72,9 +71,9 @@ int main(void)
 
   main_loop
     (sim,
-     SafeTimeTermination<CE,CP>(2,1e6),
-     &SRHDSimulation<CE,CP>::timeAdvance,
-     WriteTime<CE,CP>("time.txt"));
+     SafeTimeTermination<simple_vector,simple_vector>(2,1e6),
+     &SRHDSimulation<simple_vector,simple_vector>::timeAdvance,
+     WriteTime<simple_vector,simple_vector>("time.txt"));
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");

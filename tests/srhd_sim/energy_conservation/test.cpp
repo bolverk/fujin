@@ -17,9 +17,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 namespace {
 
   class SimData
@@ -54,7 +51,7 @@ namespace {
     PCM sr_;
     const Planar geometry_;
     const RigidWall bc_;
-    SRHDSimulation<CE,CP> sim_;
+    SRHDSimulation<simple_vector,simple_vector> sim_;
   };
 }
 
@@ -71,13 +68,13 @@ int main()
 
   // Main process
   main_loop(sim,
-	    IterationTermination<CE, CP>(10),
-	    &SRHDSimulation<CE,CP>::timeAdvance,
+	    IterationTermination<simple_vector, simple_vector>(10),
+	    &SRHDSimulation<simple_vector,simple_vector>::timeAdvance,
 #ifdef PARALLEL
 	    TotalEnergyHistory("res_"+int2str(get_mpi_rank())+".txt"));
 #else
 
-  TotalEnergyHistory<CE, CP>("res.txt"));
+  TotalEnergyHistory<simple_vector, simple_vector>("res.txt"));
 
 #endif // PARALLEL
 

@@ -17,21 +17,7 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 namespace {
-  /*
-  void WriteMidVals(SRHDSimulation const& sim, string fname)
-  {
-    std::ofstream f(fname.c_str());
-    const Primitive p = sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2];
-    f << p.Pressure << "\n";
-    f << celerity2velocity(p.Celerity) << "\n";
-    f.close();
-  }
-  */
-
   class SimData
   {
   public:
@@ -63,7 +49,7 @@ namespace {
     const RigidWall bc_;
     PCM sr_;
     const Planar geometry_;
-    SRHDSimulation<CE, CP> sim_;
+    SRHDSimulation<simple_vector, simple_vector> sim_;
   };
 }
 
@@ -78,9 +64,9 @@ int main()
   auto& sim = sim_data.getSim();
 
     main_loop(sim,
-	      IterationTermination<CE,CP>(50),
-	      &SRHDSimulation<CE, CP>::timeAdvance,
-	      WriteTime<CE,CP>("time.txt"));
+	      IterationTermination<simple_vector,simple_vector>(50),
+	      &SRHDSimulation<simple_vector, simple_vector>::timeAdvance,
+	      WriteTime<simple_vector,simple_vector>("time.txt"));
 
   // Output
   //WriteMidVals(sim,"res.txt");

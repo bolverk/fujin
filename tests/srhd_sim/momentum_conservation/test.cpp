@@ -16,9 +16,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 namespace {
   void WriteVector(vector<double> const& v, string const& fname)
   {
@@ -54,7 +51,7 @@ int main()
   RigidWall bc(rs);
   const Planar geometry;
 
-  SRHDSimulation<CE, CP> sim
+  SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,
      dd, dp, dv,
      bc, bc,

@@ -45,7 +45,7 @@ private:
   \param sim Simulation
   \param fname File name
 */
-template<class CE, class CP>
+template<template<class> class CE, template<class> class CP>
 void write_hdf5_snapshot
 (const SRHDSimulation<CE, CP>& sim,
  const string& fname)

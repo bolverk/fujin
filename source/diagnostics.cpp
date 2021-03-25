@@ -42,7 +42,7 @@ namespace {
 namespace {
 
   //! \brief Checks if conserved variables and primitives are thermodynamically consistent
-  template<class CE, class CP>
+  template<template<class> class CE, template<class> class CP>
   class ConservedPrimitiveConsistencyChecker: public Index2Member<bool>
   {
   public:
@@ -92,7 +92,7 @@ bool ConservedPrimitiveConsistency
 
 namespace {
 
-  template<class CE, class CP>
+  template<template<class> class CE, template<class> class CP>
   class CellVolumes: public Index2Member<double>
   {
   public:

@@ -13,25 +13,22 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 namespace {
 
   void main_loop
-  (SRHDSimulation<CE, CP>& sim,
+  (SRHDSimulation<simple_vector, simple_vector>& sim,
    const int& inum,
    const string& outname,
    const bool write_file=true)
   {
     //    SafeTimeTermination term_cond(tf, 1e5);
-    IterationTermination <CE, CP> term_cond(inum);
-    WriteTime<CE, CP> diag("time.txt");
+    IterationTermination <simple_vector, simple_vector> term_cond(inum);
+    WriteTime<simple_vector, simple_vector> diag("time.txt");
     main_loop(sim,
 	      term_cond,
-	      &SRHDSimulation<CE, CP>::timeAdvance,
+	      &SRHDSimulation<simple_vector, simple_vector>::timeAdvance,
 	      diag);
     if(write_file)
       write_hdf5_snapshot(sim,outname);
@@ -73,7 +70,7 @@ public:
     sr_(),
     bc_(rs_),
     geometry_(),
-    sim_(NewHydroSnapshot<vector<double>, vector<Primitive> >
+    sim_(NewHydroSnapshot<simple_vector, simple_vector>
 	 (read_hdf5_snapshot(fname)),
 	 bc_, bc_,
 	 eos_, rs_,
@@ -97,13 +94,13 @@ private:
   PCM sr_;
   RigidWall bc_;
   const Planar geometry_;
-  SRHDSimulation<CE, CP> sim_;
+  SRHDSimulation<simple_vector, simple_vector> sim_;
 };
 
 namespace {
 
   void main_loop_weh
-  (SRHDSimulation <CE, CP>& sim,
+  (SRHDSimulation <simple_vector, simple_vector>& sim,
    const int& inum,
    const string& outname,
    const bool& write_file=true)

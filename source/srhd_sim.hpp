@@ -17,7 +17,7 @@
 #include <cassert>
 #include "srhydro.hpp"
 
-template<class CE, class CP> double new_calc_time_step
+template<template<class> class CE, template<class> class CP> double new_calc_time_step
 (const NewHydroSnapshot<CE, CP>& data,
  const vector<RiemannSolution>& psvs,
  const EquationOfState& eos,
@@ -47,7 +47,7 @@ vector<double> distribute_vertices1
 /*! \brief Special relativistic hydrodynamic simulation
   \details The simulation is based on <a href="http://adsabs.harvard.edu/abs/2000A%26A...358.1157D"> F. Daigne & R. Moskovitch, "Gamma-ray bursts from internal shocks in a relativistic wind: a hydrodynamical study", A&A, v. 358 p 1157-1166 (2000) </a>
 */
-template<class CE, class CP> class SRHDSimulation
+template<template<class> class CE, template<class> class CP> class SRHDSimulation
   {
   private:
     //! \brief Hydrodynamic state (edges and cells)
@@ -129,7 +129,7 @@ template<class CE, class CP> class SRHDSimulation
       \param geometry Geometry
     */
   SRHDSimulation
-  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& init_cond,
+  (const NewHydroSnapshot<simple_vector, simple_vector>& init_cond,
    const BoundaryCondition& piInnerBC,
    const BoundaryCondition& piOuterBC,
    const EquationOfState& reos,
@@ -182,7 +182,7 @@ template<class CE, class CP> class SRHDSimulation
 #endif // PARALLEL
   const double dt = calcTimeStep();
 
-  const NewHydroSnapshot<vector<double>, vector<Primitive> > mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
+  const NewHydroSnapshot<simple_vector, simple_vector> mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
 					     geometry_,
 					     innerBC_,
 					     outerBC_);

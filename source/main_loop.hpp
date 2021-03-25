@@ -6,7 +6,8 @@
 #include "diagnostics.hpp"
 
 //! \brief Base class for the condition for when to terminate the simulation
-template<class CE, class CP> class TerminationCondition
+template<template<class> class CE, template<class> class CP>
+class TerminationCondition
 {
 public:
   
@@ -20,7 +21,8 @@ public:
 };
 
 //! \brief Terminates the simulation after a certain number of iterations
-template<class CE, class CP> class IterationTermination: public TerminationCondition<CE, CP>
+template<template<class> class CE, template<class> class CP>
+class IterationTermination: public TerminationCondition<CE, CP>
 {
 public:
 
@@ -42,7 +44,8 @@ private:
 };
 
 //! \brief Terminates the simulation after a certain amount of virtual time
-template<class CE, class CP> class SafeTimeTermination: public TerminationCondition<CE, CP>
+template<template<class> class CE, template<class> class CP>
+class SafeTimeTermination: public TerminationCondition<CE, CP>
 {
 public:
 
@@ -71,7 +74,8 @@ private:
 };
 
 //! \brief Base class for diagnostic function
-template<class CE, class CP> class DiagnosticFunction
+template<template<class> class CE, template<class> class CP>
+class DiagnosticFunction
 {
 public:
 
@@ -84,7 +88,8 @@ public:
 };
 
 //! \brief Writes the time each step
-template<class CE, class CP> class WriteTime: public DiagnosticFunction<CE, CP>
+template<template<class> class CE, template<class> class CP>
+class WriteTime: public DiagnosticFunction<CE, CP>
 {
 public:
 
@@ -106,7 +111,8 @@ private:
 };
 
 //! \brief Returns the history of the energy
-template<class CE, class CP> class TotalEnergyHistory: public DiagnosticFunction<CE, CP>
+template<template<class> class CE, template<class> class CP>
+class TotalEnergyHistory: public DiagnosticFunction<CE, CP>
 {
 public:
 
@@ -136,7 +142,8 @@ private:
 };
 
 //! \brief Container for multiple diagnostics
-template<class CE, class CP> class MultipleDiagnostics: public DiagnosticFunction<CE, CP>
+template<template<class> class CE, template<class> class CP>
+class MultipleDiagnostics: public DiagnosticFunction<CE, CP>
 {
 public:
 
@@ -148,7 +155,7 @@ public:
   boost::ptr_vector<DiagnosticFunction<CE, CP> > diag_list;
 };
 
-template <class CE, class CP>
+template <template<class> class CE, template<class> class CP>
 void main_loop
 (SRHDSimulation<CE, CP>& sim,
  TerminationCondition<CE, CP> const& term_cond,

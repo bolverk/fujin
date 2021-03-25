@@ -15,7 +15,7 @@ public:
   VanLeer(void);
 
   vector<std::pair<Primitive,Primitive> > interpolateAll
-  (const NewHydroSnapshot<vector<double>, vector<Primitive> >& hs,
+  (const NewHydroSnapshot<simple_vector, simple_vector>& hs,
    double dt) const;
 };
 

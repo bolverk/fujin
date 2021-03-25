@@ -36,12 +36,12 @@ bool ConservedPrimitiveConsistency(Primitive const& p,
   \param thres Threshold
   \return True if all cells are consistent, false otherwise
  */
-template<class CE, class CP>
+template<template<class> class CE, template<class> class CP>
 bool ConservedPrimitiveConsistency
 (const SRHDSimulation<CE, CP>& sim, 
  double thres);
 
-template<class CE, class CP> class CellVolumes: public Index2Member<double>
+template<template<class> class CE, template<class> class CP> class CellVolumes: public Index2Member<double>
 {
 public:
 
@@ -63,7 +63,7 @@ private:
   const SRHDSimulation<CE, CP>& sim_;
 };
 
-template<class CE, class CP> class StressCalculator: public Index2Member<double>
+template<template<class> class CE, template<class> class CP> class StressCalculator: public Index2Member<double>
 {
 public:
 
@@ -150,7 +150,7 @@ private:
   \param sim Hydrodynamic simulation
   \return Total energy
  */
-template<class CE, class CP>
+template<template<class> class CE, template<class> class CP>
 double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
 {
     return 0.5*
@@ -167,7 +167,7 @@ double TotalEnergy(const SRHDSimulation<CE, CP>& sim)
   \param sim Hydrodynamic simulation
   \return Total momentum
  */
-template<class CE, class CP>
+template<template<class> class CE, template<class> class CP>
 double TotalMomentum(SRHDSimulation<CE, CP> const& sim)
 {
   return 0.5*(sum_all(StressCalculator<CE, CP>(sim,1))-
@@ -178,7 +178,7 @@ double TotalMomentum(SRHDSimulation<CE, CP> const& sim)
   \param sim Reference to simulation
   \return True if they are in increasing order, false otherwise
  */
-template<class CE, class CP>
+template<template<class> class CE, template<class> class CP>
 bool VerticesIncreasingOrder(const SRHDSimulation<CE, CP>& sim);
 
 /*! \brief Writes list of data to file as ascii
@@ -219,7 +219,7 @@ void write_number(double num,
 		  int precision=14);
 
 //! \brief Retrieves properties from a list of primitive variables
-template<class CE, class CP>
+template<template<class> class CE, template<class> class CP>
 class PrimitivePropertyGetter: public Index2Member<double>
 {
 public:

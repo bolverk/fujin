@@ -20,9 +20,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 namespace {
@@ -129,7 +126,7 @@ int main()
   const double tf = 0.8;
   Planar geometry;
 
-  SRHDSimulation<CE, CP> sim
+  SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,
      dd, dp, dv,
      bc, bc,

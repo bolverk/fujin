@@ -17,9 +17,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 int main()
@@ -45,7 +42,7 @@ int main()
   RigidWall bc(rs);
   const Spherical geometry;
 
-  SRHDSimulation<CE, CP> sim
+  SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,
      dd, dp, dv,
      bc,

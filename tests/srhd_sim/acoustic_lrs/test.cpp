@@ -17,8 +17,7 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
+template<class T> using simple_vector = vector<T>;
 
 using namespace std;
 
@@ -102,7 +101,7 @@ namespace {
     const Periodic bc_;
     VanLeer sr_;
     const Planar geometry_;
-    SRHDSimulation<CE,CP> sim_;
+    SRHDSimulation<simple_vector, simple_vector> sim_;
   };
 }
 
@@ -120,11 +119,11 @@ int main(void)
   write_hdf5_snapshot(sim, "initial.h5");
 #endif // PARALLEL
 
-  main_loop<CE, CP>
+  main_loop
     (sim,
-     SafeTimeTermination<CE, CP>(10,1e6),
-     &SRHDSimulation<CE, CP>::timeAdvance,
-     WriteTime<CE, CP>("time.txt"));
+     SafeTimeTermination<simple_vector, simple_vector>(10,1e6),
+     &SRHDSimulation<simple_vector, simple_vector>::timeAdvance,
+     WriteTime<simple_vector, simple_vector>("time.txt"));
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");

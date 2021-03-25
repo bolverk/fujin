@@ -23,9 +23,6 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-using CE = vector<double>;
-using CP = vector<Primitive>;
-
 using namespace std;
 
 class SimData
@@ -65,12 +62,12 @@ private:
   //PCM sr_;
   VanLeer sr_;
   const Planar geometry_;
-  SRHDSimulation<CE, CP> sim_;
+  SRHDSimulation<simple_vector, simple_vector> sim_;
 };
 
 namespace {
 
-  void main_loop(SRHDSimulation<CE, CP>& sim)
+  void main_loop(SRHDSimulation<simple_vector, simple_vector>& sim)
   {
     double tf = 0.5;
 
@@ -81,7 +78,7 @@ namespace {
   }
 
   void Output
-  (const SRHDSimulation<CE, CP>& sim)
+  (const SRHDSimulation<simple_vector, simple_vector>& sim)
   {
     ofstream f("res.txt");
     f << sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2].Pressure << "\n";
