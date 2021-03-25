@@ -3,7 +3,7 @@
   See following article for more detail
   W. Zhang, A. MacFadyen, "RAM: A Relativistic Adaptive mesh refinement Hydrodynamics Code", 
   The Astrophysical Journal Supplement Series, 164:255-279, 2006 May.
- */
+*/
 
 #include <fstream>
 #include <vector>
@@ -20,10 +20,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
@@ -39,10 +37,10 @@ int main()
 		 FE_UNDERFLOW);
 
   /*
-  vector<double> vertex;
-  const size_t n = 101;
-  vertex.resize(n);
-  for (size_t i=0; i<n; i++)
+    vector<double> vertex;
+    const size_t n = 101;
+    vertex.resize(n);
+    for (size_t i=0; i<n; i++)
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
   */
   const vector<double> vertex = linspace(0,1,101);
@@ -62,18 +60,15 @@ int main()
   const double tf = 0.2;
   const Planar geometry;
 
-  SRHDSimulation
-    #if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim(vertex,
-		     dd, dp, dv,
-		     LeftBC,
-		     RightBC,
-		     eos,
-		     rs,
-		     sr,
-		     geometry);
+  SRHDSimulation<CE, CP> sim
+    (vertex,
+     dd, dp, dv,
+     LeftBC,
+     RightBC,
+     eos,
+     rs,
+     sr,
+     geometry);
 
   // Main process
   while(sim.getTime()<tf){
@@ -98,5 +93,5 @@ int main()
   MPI_Finalize();
 #endif // PARALLEL
 
- return 0;
+  return 0;
 }

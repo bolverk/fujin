@@ -17,10 +17,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 namespace {
   /*
@@ -65,11 +63,7 @@ namespace {
     const RigidWall bc_;
     PCM sr_;
     const Planar geometry_;
-    SRHDSimulation
-    #if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim_;
+    SRHDSimulation<CE, CP> sim_;
   };
 }
 
@@ -83,17 +77,10 @@ int main()
   SimData sim_data;
   auto& sim = sim_data.getSim();
 
-  #if SCAFFOLDING == 1
-  main_loop(sim,
-	    IterationTermination(50),
-	    &SRHDSimulation::timeAdvance,
-	    WriteTime("time.txt"));
-  #else
     main_loop(sim,
 	      IterationTermination<CE,CP>(50),
 	      &SRHDSimulation<CE, CP>::timeAdvance,
 	      WriteTime<CE,CP>("time.txt"));
-#endif // SCAFFOLDING
 
   // Output
   //WriteMidVals(sim,"res.txt");

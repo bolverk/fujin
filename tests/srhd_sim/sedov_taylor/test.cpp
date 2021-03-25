@@ -19,20 +19,15 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
+//using CE = array<double, 1000>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
 namespace {
   double get_position_max_pressure
-  (const SRHDSimulation
-#if SCAFFOLDING != 1
-   <CE, CP>
-#endif // SCAFFOLDING
-   & sim)
+  (const SRHDSimulation<CE, CP>& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
     double rpmax = sim.getHydroSnapshot().edges.at(1);
@@ -47,11 +42,7 @@ namespace {
   }
 
   double get_max_pressure
-  (const SRHDSimulation
-#if SCAFFOLDING != 1
-   <CE, CP>
-#endif // SCAFFOLDING
-   & sim)
+  (const SRHDSimulation<CE, CP>& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
     for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i)
@@ -90,28 +81,17 @@ namespace {
     RigidWall bc_;
     PCM sr_;
     const Spherical geometry_;
-    SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim_;
+    SRHDSimulation<CE, CP> sim_;
   };
 
-  class ShockFrontTracker: public DiagnosticFunction
-#if SCAFFOLDING != 1
-  <CE, CP>
-#endif // SCAFFOLDING
+  class ShockFrontTracker: public DiagnosticFunction<CE, CP>
   {
   public:
     
     ShockFrontTracker(const string& fname):
       fname_(fname), positions_(), pressures_(), times_() {}
 
-    void operator()(const SRHDSimulation
-#if SCAFFOLDING != 1
-		    <CE, CP>
-#endif // SCAFFOLDING
-		    & sim) const
+    void operator()(const SRHDSimulation<CE, CP>& sim) const
     {
       times_.push_back(sim.getTime());
       pressures_.push_back(get_max_pressure(sim));
@@ -135,11 +115,7 @@ namespace {
     mutable vector<double> times_;
   };
 
-  void my_main_loop(SRHDSimulation
-#if SCAFFOLDING != 1
-		    <CE, CP>
-#endif // SCAFFOLDING
-		    & sim)
+  void my_main_loop(SRHDSimulation<CE, CP>& sim)
   {
 #ifdef PARALLEL
     ShockFrontTracker sft("rpmax_"+int2str(get_mpi_rank())+".txt");
@@ -147,16 +123,8 @@ namespace {
     ShockFrontTracker
       sft("rpmax.txt");
 #endif // PARALLEL
-    SafeTimeTermination
-#if SCAFFOLDING != 1
-      <CE, CP>
-#endif // SCAFFOLDING
-      stt(50, 1e6);
-    main_loop(sim, stt, &SRHDSimulation
-#if SCAFFOLDING != 1
-	      <CE, CP>
-#endif // SCAFFOLDING
-	      ::timeAdvance, sft);
+    SafeTimeTermination<CE, CP> stt(50, 1e6);
+    main_loop(sim, stt, &SRHDSimulation<CE, CP>::timeAdvance, sft);
   }
 }
 

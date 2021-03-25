@@ -16,10 +16,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
@@ -50,17 +48,14 @@ int main()
   RigidWall bc(rs);
   const Planar geometry;
 
-  SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim(vertex,
-		     dd, dp, dv,
-		     bc, bc,
-		     eos,
-		     rs,
-		     sr,
-		     geometry);
+  SRHDSimulation<CE, CP> sim
+    (vertex,
+     dd, dp, dv,
+     bc, bc,
+     eos,
+     rs,
+     sr,
+     geometry);
 
   // Main process
   while(sim.getTime()<0.7){

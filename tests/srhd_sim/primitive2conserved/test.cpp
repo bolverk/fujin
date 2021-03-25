@@ -1,6 +1,6 @@
 /*
   Checks that the file does compile
- */
+*/
 
 #include <iostream>
 #include <fstream>
@@ -16,10 +16,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
@@ -46,18 +44,15 @@ int main()
   RigidWall bc(rs);
   const Spherical geometry;
 
-  SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim(vertex,
-		     dd, dp, dv,
-		     bc,
-		     bc,
-		     eos,
-		     rs,
-		     sr,
-		     geometry);
+  SRHDSimulation<CE, CP> sim
+    (vertex,
+     dd, dp, dv,
+     bc,
+     bc,
+     eos,
+     rs,
+     sr,
+     geometry);
 
   const Primitive hs(1.0,0.1, velocity2celerity(0.2));
   Conserved cv = Primitive2Conserved(hs, eos);
@@ -66,12 +61,12 @@ int main()
 #ifdef PARALLEL
   if(get_mpi_rank()==0){
 #endif // PARALLEL
-  ofstream f;
-  f.open("res.txt");
-  f << cv.Mass << endl;
-  f << cv.Momentum << endl;
-  f << cv.Energy << endl;
-  f.close();
+    ofstream f;
+    f.open("res.txt");
+    f << cv.Mass << endl;
+    f << cv.Momentum << endl;
+    f << cv.Energy << endl;
+    f.close();
 #ifdef PARALLEL
   }
 #endif // PARALLEL

@@ -17,10 +17,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
@@ -47,36 +45,33 @@ int main()
   RigidWall bc(rs);
   const Spherical geometry;
 
-  SRHDSimulation
-    #if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim(vertex,
-		     dd, dp, dv,
-		     bc,
-		     bc,
-		     eos,
-		     rs,
-		     sr,
-		     geometry);
+  SRHDSimulation<CE, CP> sim
+    (vertex,
+     dd, dp, dv,
+     bc,
+     bc,
+     eos,
+     rs,
+     sr,
+     geometry);
 
   // Write data to file
 #ifdef PARALLEL
   if(get_mpi_rank()==0){
 #endif // PARALLEL
-  ofstream f;
-  f.open("res.txt");
-  double vol1 = 0;
-  double vol2 = 0;
-  for (size_t i=0;i<sim.getHydroSnapshot().cells.size();i++)
-    {
-      vol1 = sim.getVolume(i+1)-sim.getVolume(i);
-      vol2 = sim.getArea(i)*
-	(sim.getHydroSnapshot().edges[i+1]-
-	 sim.getHydroSnapshot().edges[i]);
-      f<<vol1<<" "<<vol2<<endl;
-    }
-  f.close();
+    ofstream f;
+    f.open("res.txt");
+    double vol1 = 0;
+    double vol2 = 0;
+    for (size_t i=0;i<sim.getHydroSnapshot().cells.size();i++)
+      {
+	vol1 = sim.getVolume(i+1)-sim.getVolume(i);
+	vol2 = sim.getArea(i)*
+	  (sim.getHydroSnapshot().edges[i+1]-
+	   sim.getHydroSnapshot().edges[i]);
+	f<<vol1<<" "<<vol2<<endl;
+      }
+    f.close();
 #ifdef PARALLEL
   }
 #endif // PARALLEL

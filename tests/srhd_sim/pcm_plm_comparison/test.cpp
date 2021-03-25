@@ -18,10 +18,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
@@ -49,28 +47,22 @@ int main()
   double tf = 0.8;
   const Planar geometry;
 
-  SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim(vertex,
-		     dd, dp, dv,
-		     bc, bc,
-		     eos,
-		     rs,
-		     sr,
-		     geometry);
-  SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim2(vertex,
-		      dd, dp, dv,
-		      bc, bc,
-		      eos,
-		      rs2,
-		      sr2,
-		      geometry);
+  SRHDSimulation<CE, CP> sim
+    (vertex,
+     dd, dp, dv,
+     bc, bc,
+     eos,
+     rs,
+     sr,
+     geometry);
+  SRHDSimulation<CE, CP> sim2
+    (vertex,
+      dd, dp, dv,
+      bc, bc,
+      eos,
+      rs2,
+      sr2,
+      geometry);
 
   // Main process
   while(sim.getTime()<tf)
@@ -80,21 +72,8 @@ int main()
     sim2.timeAdvance();
 
   // Write data to file
-#ifdef PARALLEL
-  write_hdf5_snapshot(sim, "pcm_"+int2str(get_mpi_rank())+".h5");
-  write_hdf5_snapshot(sim, "plm_"+int2str(get_mpi_rank())+".h5");
-#else
-  write_hdf5_snapshot
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    (sim, "pcm.h5");
-  write_hdf5_snapshot
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    (sim, "plm.h5");
-#endif // PARALLEL
+  write_hdf5_snapshot<CE, CP>(sim, "pcm.h5");
+  write_hdf5_snapshot<CE, CP>(sim, "plm.h5");
 
   // Finalise
   ofstream("test_terminated_normally.res").close();

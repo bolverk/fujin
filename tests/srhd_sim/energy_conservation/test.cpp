@@ -17,10 +17,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 namespace {
 
@@ -56,11 +54,7 @@ namespace {
     PCM sr_;
     const Planar geometry_;
     const RigidWall bc_;
-    SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE,CP>
-#endif // SCAFFOLDING
-    sim_;
+    SRHDSimulation<CE,CP> sim_;
   };
 }
 
@@ -77,25 +71,13 @@ int main()
 
   // Main process
   main_loop(sim,
-	    IterationTermination
-#if SCAFFOLDING != 1
-	    <CE, CP>
-#endif // SCAFFOLDING
-	    (10),
-	    &SRHDSimulation
-#if SCAFFOLDING != 1
-	    <CE,CP>
-#endif // SCAFFOLDING
-	    ::timeAdvance,
+	    IterationTermination<CE, CP>(10),
+	    &SRHDSimulation<CE,CP>::timeAdvance,
 #ifdef PARALLEL
 	    TotalEnergyHistory("res_"+int2str(get_mpi_rank())+".txt"));
 #else
 
-  TotalEnergyHistory
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    ("res.txt"));
+  TotalEnergyHistory<CE, CP>("res.txt"));
 
 #endif // PARALLEL
 

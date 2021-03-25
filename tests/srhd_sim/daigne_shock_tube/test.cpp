@@ -19,10 +19,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;
-#endif // SCAFFOLDING
 
 using namespace std;
 
@@ -59,11 +57,7 @@ namespace {
     const RigidWall bc_;
     PCM sr_;
     const Planar geometry_;
-    SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim_;
+    SRHDSimulation<CE, CP> sim_;
   };
 }
 
@@ -75,27 +69,16 @@ int main()
   SimData sim_data;
   auto& sim = sim_data.getSim();
 
-#if SCAFFOLDING == 1
-  main_loop(sim,
-	    SafeTimeTermination(0.303,1e6),
-	    &SRHDSimulation::timeAdvance,
-	    WriteTime("time.txt"));
-#else
   main_loop
     (sim,
      SafeTimeTermination<CE,CP>(0.303,1e6),
      &SRHDSimulation<CE,CP>::timeAdvance,
      WriteTime<CE,CP>("time.txt"));
-#endif // SCAFFOLDING
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim,"final_"+int2str(get_mpi_rank())+".h5");
 #else
-  write_hdf5_snapshot
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    (sim,"final.h5");
+  write_hdf5_snapshot<CE, CP>(sim,"final.h5");
 #endif // PARALLEL
 
   ofstream("test_terminated_normally.res").close();

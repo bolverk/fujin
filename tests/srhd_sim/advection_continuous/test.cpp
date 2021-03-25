@@ -15,10 +15,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-#if SCAFFOLDING != 1
 using CE = vector<double>;
 using CP = vector<Primitive>;  
-#endif 
 
 using namespace std;
 
@@ -55,11 +53,7 @@ namespace {
     const Periodic bc_;
     VanLeer sr_;
     const Planar geometry_;
-    SRHDSimulation
-#if SCAFFOLDING != 1
-    <CE, CP>
-#endif // SCAFFOLDING
-    sim_;
+    SRHDSimulation<CE, CP> sim_;
   };
 }
 
@@ -78,18 +72,11 @@ int main(void)
   write_hdf5_snapshot(sim, "initial.h5");
 #endif // PARALLEL
 
-#if SCAFFOLDING == 1
-  main_loop(sim,
-	    SafeTimeTermination(2,1e6),
-	    &SRHDSimulation::timeAdvance,
-	    WriteTime("time.txt"));
-#else
     main_loop
       (sim,
        SafeTimeTermination<CE,CP>(2,1e6),
        &SRHDSimulation<CE,CP>::timeAdvance,
        WriteTime<CE,CP>("time.txt"));
-#endif // SCAFFOLDING
 
   //  write_snapshot(sim,"snapshot.txt");
 #ifdef PARALLEL
