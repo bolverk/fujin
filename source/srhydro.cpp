@@ -308,6 +308,7 @@ namespace{
 #endif // PARALLEL
 }
 
+/*
 void CalcFluxes
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
  const SpatialReconstruction<simple_vector,simple_vector>& sr,
@@ -381,6 +382,7 @@ void CalcFluxes
 	    [&rs](const pair<Primitive, Primitive>& pp)
 	    {return rs(pp.first, pp.second);});
 }
+*/
 
 namespace{
 
@@ -393,6 +395,7 @@ namespace{
     \param rbc Right boundary condition
     \return Fluxes
   */
+  /*
   vector<RiemannSolution> CalcFluxes
     (const NewHydroSnapshot<simple_vector, simple_vector>& data,
      const SpatialReconstruction<simple_vector, simple_vector>& sr,
@@ -406,6 +409,7 @@ namespace{
     CalcFluxes(data,sr,rs,dt,lbc,rbc,res);
     return res;
   }
+  */
 }
 
 void UpdateConserved(vector<RiemannSolution>  const& psvs,
@@ -615,6 +619,7 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
   }
 }
 
+/*
 NewHydroSnapshot<simple_vector, simple_vector>
 BasicTimeAdvance
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
@@ -643,6 +648,7 @@ BasicTimeAdvance
 
   return NewHydroSnapshot<simple_vector, simple_vector>(res.edges, res.cells);
 }
+*/
 
 /*
 HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,

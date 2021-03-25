@@ -167,8 +167,9 @@ public:
     const double dt = calcTimeStep();
 #endif // PARALLEL
 
-    data_ = BasicTimeAdvance(data_,sr_,rs_,eos_,dt,geometry_,
-			     innerBC_, outerBC_);
+    data_ = BasicTimeAdvance<CE, CP>
+      (data_,sr_,rs_,eos_,dt,geometry_,
+       innerBC_, outerBC_);
 
     time_ += dt;
     cycle_++;
@@ -182,12 +183,13 @@ public:
 #endif // PARALLEL
     const double dt = calcTimeStep();
 
-    const NewHydroSnapshot<simple_vector, simple_vector> mid = BasicTimeAdvance(data_,sr_,rs_,eos_,0.5*dt,
-										geometry_,
-										innerBC_,
-										outerBC_);
-
-    CalcFluxes(mid,
+    const NewHydroSnapshot<simple_vector, simple_vector> mid =
+      BasicTimeAdvance<CE, CP>(data_,sr_,rs_,eos_,0.5*dt,
+		       geometry_,
+		       innerBC_,
+		       outerBC_);
+    
+    CalcFluxes<CE, CP>(mid,
 	       sr_,rs_,dt,
 	       innerBC_,
 	       outerBC_,
@@ -212,7 +214,7 @@ public:
   //! \brief Advances the simulation in time
   void timeAdvance(void)
   {
-    CalcFluxes(data_,
+    CalcFluxes<CE, CP>(data_,
 	       sr_,rs_,0,
 	       innerBC_,
 	       outerBC_,

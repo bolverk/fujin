@@ -35,8 +35,8 @@ double CellVolume(double rl, double rr,
   \return Vector of rest masses
 */
 /*
-vector<double> CalcRestMasses(const HydroSnapshot& hs,
-			      const Geometry& geometry);
+  vector<double> CalcRestMasses(const HydroSnapshot& hs,
+  const Geometry& geometry);
 */
 template<template<class> class CE, template<class> class CP>
 class RestMassCalculator: public Index2Member<double>
@@ -46,7 +46,7 @@ public:
   /*! \brief Class constructor
     \param hs Hydrodynamic snapshot
     \param geometry Geometry
-   */
+  */
   RestMassCalculator(const NewHydroSnapshot<CE, CP>& hs,
 		     const Geometry& geometry):
     hs_(hs), geometry_(geometry) {}
@@ -106,7 +106,7 @@ vector<NewConserved> primitives_to_new_conserveds
   \return Max time step
 */
 double MaxTimeStepSingle(double width, Primitive const& p,
-		   const EquationOfState& eos );
+			 const EquationOfState& eos );
 
 /*! \brief Calculates the maximum time step according to CFL condition, for the entire grid
   \param v Vertices
@@ -115,8 +115,8 @@ double MaxTimeStepSingle(double width, Primitive const& p,
   \return Max time step
 */
 /*
-double MaxTimeStep(vector<double> const& v, vector<Primitive> const& p,
-		   const EquationOfState& eos);
+  double MaxTimeStep(vector<double> const& v, vector<Primitive> const& p,
+  const EquationOfState& eos);
 */
 
 template<template<class> class CE, template<class> class CP>
@@ -153,14 +153,97 @@ double MaxTimeStep
   \param rbc Right boundary conditions
   \param psvs Riemann solutions
 */
-void CalcFluxes
+template<template<class> class CE, template<class> class CP> void CalcFluxes
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
  const SpatialReconstruction<simple_vector, simple_vector>& sr,
  const RiemannSolver& rs,
  double dt, 
  const BoundaryCondition& lbc,
  const BoundaryCondition& rbc,
- vector<RiemannSolution>& psvs);
+ vector<RiemannSolution>& psvs)
+{
+#ifdef PARALLEL
+  MPI_Request send_left, send_right;
+  // Send data
+  if(get_mpi_rank()>0)
+    MPI_Isend(&serialise_primitive(data.cells.front()).front(),
+	      3,
+	      MPI_DOUBLE,
+	      get_mpi_rank()-1,
+	      0,
+	      MPI_COMM_WORLD,
+	      &send_left);
+  if(get_mpi_rank()<get_mpi_size()-1)
+    MPI_Isend(&serialise_primitive(data.cells.back()).front(),
+	      3,
+	      MPI_DOUBLE,
+	      get_mpi_rank()+1,
+	      1,
+	      MPI_COMM_WORLD,
+	      &send_right);
+
+  // Receive data and calculate edge fluxes
+  if(get_mpi_rank()==0)
+    psvs.front() = lbc.CalcRS(0,data.cells);
+  else{
+    vector<double> buffer(3,0);
+    MPI_Recv(&buffer.front(),
+	     3,
+	     MPI_DOUBLE,
+	     get_mpi_rank()-1,
+	     1,
+	     MPI_COMM_WORLD,
+	     MPI_STATUS_IGNORE);
+    MPI_Wait(&send_left, MPI_STATUS_IGNORE);
+    psvs.front() = rs(unserialise_primitive(buffer),
+		      data.cells.front());
+  } 
+  if(get_mpi_rank()==get_mpi_size()-1)
+    psvs.back() = rbc.CalcRS(data.edges.size()-1,data.cells);
+  else{
+    vector<double> buffer(3,0);
+    MPI_Recv(&buffer.front(),
+	     3,
+	     MPI_DOUBLE,
+	     get_mpi_rank()+1,
+	     0,
+	     MPI_COMM_WORLD,
+	     MPI_STATUS_IGNORE);
+    MPI_Wait(&send_right, MPI_STATUS_IGNORE);
+    psvs.back() = rs(data.cells.back(),
+		     unserialise_primitive(buffer));
+    
+  }
+#else
+  psvs[0] = lbc.CalcRS(0,data.cells);
+  psvs[psvs.size()-1] = rbc.CalcRS(data.edges.size()-1,data.cells);
+#endif // PARALLEL
+  const vector<std::pair<Primitive, Primitive> > interp_vals =
+    sr.interpolateAll(data,dt);
+  transform(interp_vals.begin(),
+	    interp_vals.end(),
+	    psvs.begin()+1,
+	    [&rs](const pair<Primitive, Primitive>& pp)
+	    {return rs(pp.first, pp.second);});
+}
+
+namespace srhydro
+{
+  template<template<class> class CE, template<class> class CP>
+  vector<RiemannSolution> CalcFluxes1
+    (const NewHydroSnapshot<simple_vector, simple_vector>& data,
+     const SpatialReconstruction<simple_vector, simple_vector>& sr,
+     const RiemannSolver& rs,
+     double dt,
+     const BoundaryCondition& lbc,
+     const BoundaryCondition& rbc)
+  {
+    vector<RiemannSolution> res(data.edges.size());
+    vector<Primitive> new_cells(data.cells.size());
+    CalcFluxes<simple_vector, simple_vector>(data,sr,rs,dt,lbc,rbc,res);
+    return res;
+  }
+}
 
 /*! \brief Updates the conserved variables and vertices
   \param psvs Riemann solutions
@@ -252,6 +335,7 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
   \param rbc Right boundary conditions
   \return Hydrodynamic data at the end of the time step
 */
+template<template<class> class CE, template<class> class CP>
 NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
  const SpatialReconstruction<simple_vector, simple_vector>& sr,
@@ -260,7 +344,25 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
  double dt, 
  const Geometry& geometry,
  const BoundaryCondition& lbc,
- const BoundaryCondition& rbc);
+ const BoundaryCondition& rbc)
+{
+  NewHydroSnapshot<simple_vector, simple_vector> res(data);
+
+  vector<RiemannSolution> fluxes=
+    srhydro::CalcFluxes1<simple_vector, simple_vector>(data,sr,rs,dt,lbc,rbc);
+
+  const vector<double> rest_masses = serial_generate
+    (RestMassCalculator<simple_vector, simple_vector>(data, geometry));
+
+  vector<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
+  UpdateConserved(fluxes,rest_masses,dt,geometry,
+		  res.edges,conserved);
+
+  vector<bool> filter = NeedUpdate(fluxes);
+  UpdatePrimitives(conserved,eos,filter,res.cells);
+
+  return NewHydroSnapshot<simple_vector, simple_vector>(res.edges, res.cells);
+}
 
 /*! \brief Second order time advance
   \param data Hydrodynamic snapshot
@@ -272,17 +374,17 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
   \param lbc Left boundary condition
   \param rbc Right boundary condition
   \return Hydrodynamic snapshot
- */
+*/
 /*
-HydroSnapshot TimeAdvanceRK2
-(HydroSnapshot const& data,
- SpatialReconstruction<spatialreconstruction const& sr,
- RiemannSolver const& rs,
- EquationOfState const& eos,
- double dt, 
- Geometry const& geometry,
- BoundaryCondition const& lbc,
- BoundaryCondition const& rbc);
+  HydroSnapshot TimeAdvanceRK2
+  (HydroSnapshot const& data,
+  SpatialReconstruction<spatialreconstruction const& sr,
+  RiemannSolver const& rs,
+  EquationOfState const& eos,
+  double dt, 
+  Geometry const& geometry,
+  BoundaryCondition const& lbc,
+  BoundaryCondition const& rbc);
 */
 
 #endif // SRHYDRO_HPP
