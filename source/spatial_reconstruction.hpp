@@ -9,11 +9,10 @@
 #include <vector>
 #include "hydrodynamic_variables.hpp"
 
-template<class T> using simple_vector = vector<T>;
-
 using std::min;
 
 //! \brief Base class for interpolations
+template<template<class> class CE, template<class> class CP>
 class SpatialReconstruction
 {
 public:
@@ -25,10 +24,10 @@ public:
    */
   virtual vector<std::pair<Primitive,Primitive> > 
   interpolateAll
-  (const NewHydroSnapshot<simple_vector, simple_vector>& hs,
+  (const NewHydroSnapshot<CE, CP>& hs,
    double dt) const = 0;
 
-  virtual ~SpatialReconstruction(void);
+  virtual ~SpatialReconstruction(void) {}
 };
 
 #endif

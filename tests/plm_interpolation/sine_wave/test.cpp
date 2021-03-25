@@ -14,8 +14,9 @@
 using namespace std;
 
 namespace {
-  vector<double> interpolated_values(const HydroSnapshot& hs, 
-				     const SpatialReconstruction& sr)
+  vector<double> interpolated_values
+  (const HydroSnapshot& hs, 
+   const SpatialReconstruction<simple_vector, simple_vector>& sr)
   {
     const vector<pair<Primitive,Primitive> > temp =
       sr.interpolateAll(hs,0);
@@ -52,8 +53,9 @@ namespace {
     return res/static_cast<double>(v1.size());
   }
 
-  double test_interpolation(SpatialReconstruction& sr,
-			    size_t np)
+  double test_interpolation
+  (SpatialReconstruction<simple_vector, simple_vector>& sr,
+   size_t np)
   {
     vector<double> edges = linspace(0,1,np);
     SineWave density(0.5,1,0,1);
@@ -70,8 +72,9 @@ namespace {
     return l1_error_norm(numeric, analytic);
   }
 
-  vector<double> test_series(SpatialReconstruction& sr,
-			     vector<size_t> const& np_range)
+  vector<double> test_series
+  (SpatialReconstruction<simple_vector, simple_vector>& sr,
+   vector<size_t> const& np_range)
   {
     vector<double> res(np_range.size(),0);
     for(size_t i=0;i<np_range.size();++i)

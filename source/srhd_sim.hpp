@@ -59,7 +59,7 @@ private:
   //! \brief rs Riemann sovler
   const RiemannSolver& rs_;
   //! \brief Spatial reconstruction method
-  const SpatialReconstruction& sr_;
+  const SpatialReconstruction<CE, CP>& sr_;
   //! \brief Courant Friedrichs Lewy factor
   double cfl_;
   //! \brief Vectors of conserved variables
@@ -98,7 +98,7 @@ public:
 		 const BoundaryCondition& outer_bc,
 		 const EquationOfState& eos,
 		 const RiemannSolver& riemann_solver,
-		 const SpatialReconstruction& interpolation_method,
+		 const SpatialReconstruction<CE, CP>& interpolation_method,
 		 const Geometry& geometry):
     data_(distribute_vertices1(vertices),
 	  InitCells(distribute_vertices1(vertices),
@@ -134,7 +134,7 @@ public:
    const BoundaryCondition& piOuterBC,
    const EquationOfState& reos,
    const RiemannSolver& rRiemannSolver,
-   const SpatialReconstruction& pInterpolationMethod,
+   const SpatialReconstruction<CE, CP>& pInterpolationMethod,
    const Geometry& geometry):
     data_(init_cond),
     eos_(reos), 

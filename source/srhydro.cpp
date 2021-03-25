@@ -310,7 +310,7 @@ namespace{
 
 void CalcFluxes
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
- const SpatialReconstruction& sr,
+ const SpatialReconstruction<simple_vector,simple_vector>& sr,
  const RiemannSolver& rs,
  double dt,
  const BoundaryCondition& lbc,
@@ -395,7 +395,7 @@ namespace{
   */
   vector<RiemannSolution> CalcFluxes
     (const NewHydroSnapshot<simple_vector, simple_vector>& data,
-     const SpatialReconstruction& sr,
+     const SpatialReconstruction<simple_vector, simple_vector>& sr,
      const RiemannSolver& rs,
      double dt,
      const BoundaryCondition& lbc,
@@ -618,7 +618,7 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
 NewHydroSnapshot<simple_vector, simple_vector>
 BasicTimeAdvance
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
- SpatialReconstruction const& sr,
+ SpatialReconstruction<simple_vector, simple_vector> const& sr,
  RiemannSolver const& rs,
  EquationOfState const& eos,
  double dt, 
@@ -644,6 +644,7 @@ BasicTimeAdvance
   return NewHydroSnapshot<simple_vector, simple_vector>(res.edges, res.cells);
 }
 
+/*
 HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
 			     const SpatialReconstruction& sr,
 			     const RiemannSolver& rs,
@@ -669,3 +670,4 @@ HydroSnapshot TimeAdvanceRK2(const HydroSnapshot& old,
   return res;
 }
 			     
+*/

@@ -6,7 +6,7 @@
 template<class T> using simple_vector = vector<T>;
 
 //! \brief Piecewise constant interpolation
-class PCM: public SpatialReconstruction
+class PCM: public SpatialReconstruction<simple_vector, simple_vector>
 {
 
 public:

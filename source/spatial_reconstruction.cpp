@@ -1,3 +1,3 @@
 #include "spatial_reconstruction.hpp"
 
-SpatialReconstruction::~SpatialReconstruction(void) {}
+//SpatialReconstruction::~SpatialReconstruction(void) {}

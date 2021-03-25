@@ -155,7 +155,7 @@ double MaxTimeStep
 */
 void CalcFluxes
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
- const SpatialReconstruction& sr,
+ const SpatialReconstruction<simple_vector, simple_vector>& sr,
  const RiemannSolver& rs,
  double dt, 
  const BoundaryCondition& lbc,
@@ -254,7 +254,7 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
 */
 NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
 (const NewHydroSnapshot<simple_vector, simple_vector>& data,
- const SpatialReconstruction& sr,
+ const SpatialReconstruction<simple_vector, simple_vector>& sr,
  const RiemannSolver& rs,
  const EquationOfState& eos,
  double dt, 
@@ -273,13 +273,16 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
   \param rbc Right boundary condition
   \return Hydrodynamic snapshot
  */
-HydroSnapshot TimeAdvanceRK2(HydroSnapshot const& data,
-			     SpatialReconstruction const& sr,
-			     RiemannSolver const& rs,
-			     EquationOfState const& eos,
-			     double dt, 
-			     Geometry const& geometry,
-			     BoundaryCondition const& lbc,
-			     BoundaryCondition const& rbc);
+/*
+HydroSnapshot TimeAdvanceRK2
+(HydroSnapshot const& data,
+ SpatialReconstruction<spatialreconstruction const& sr,
+ RiemannSolver const& rs,
+ EquationOfState const& eos,
+ double dt, 
+ Geometry const& geometry,
+ BoundaryCondition const& lbc,
+ BoundaryCondition const& rbc);
+*/
 
 #endif // SRHYDRO_HPP
