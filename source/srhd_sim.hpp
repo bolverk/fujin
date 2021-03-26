@@ -63,7 +63,7 @@ private:
   //! \brief Courant Friedrichs Lewy factor
   double cfl_;
   //! \brief Vectors of conserved variables
-  vector<NewConserved> consVars_;
+  CP<NewConserved> consVars_;
   //! \brief Rest masses of the cells
   CP<double> restMass_;
   //! \brief Geometry
