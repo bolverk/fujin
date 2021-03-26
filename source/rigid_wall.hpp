@@ -16,8 +16,8 @@ public:
    */
   explicit RigidWall(RiemannSolver const& rs);
 
-  RiemannSolution CalcRS
-  (size_t idx, vector<Primitive> const& cells) const;
+  RiemannSolution operator()
+  (bool idx, vector<Primitive> const& cells) const override;
 
 private:
 

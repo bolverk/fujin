@@ -19,10 +19,9 @@ namespace {
   }
 }
 
-RiemannSolution RigidWall::CalcRS
-(size_t idx, vector<Primitive> const& cells) const
+RiemannSolution RigidWall::operator()
+(bool side, vector<Primitive> const& cells) const
 {
-  assert(idx==0 || idx==cells.size());
-  return idx==0 ? rs_(invert_celerity(cells.front()), cells.front()) :
-    rs_(cells.back(), invert_celerity(cells.back()));
+  return side ? rs_(cells.back(), invert_celerity(cells.back())) :
+    rs_(invert_celerity(cells.front()), cells.front());
 }

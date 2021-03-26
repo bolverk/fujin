@@ -13,10 +13,9 @@ namespace {
   }
 }
 
-RiemannSolution FreeFlow::CalcRS
-(size_t idx, vector<Primitive> const& cells) const
+RiemannSolution FreeFlow::operator()
+(bool side, vector<Primitive> const& cells) const
 {
-  assert(idx==0 || idx==cells.size());
-  return idx==0 ? Primitive2RiemannSolution(cells.front()) :
-    Primitive2RiemannSolution(cells.back());
+  return side ? Primitive2RiemannSolution(cells.back()) :
+    Primitive2RiemannSolution(cells.front());
 }

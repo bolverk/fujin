@@ -304,8 +304,8 @@ template<template<class> class CE, template<class> class CP> void CalcFluxes
     
   }
 #else
-  psvs[0] = lbc.CalcRS(0,data.cells);
-  psvs[psvs.size()-1] = rbc.CalcRS(data.edges.size()-1,data.cells);
+  psvs.front() = lbc(false,data.cells);
+  psvs.back() = rbc(true,data.cells);
 #endif // PARALLEL
   const vector<std::pair<Primitive, Primitive> > interp_vals =
     sr.interpolateAll(data,dt);

@@ -33,8 +33,9 @@ namespace {
   }
 }
 
-RiemannSolution Periodic::CalcRS(size_t idx,
-				 vector<Primitive> const& cells) const
+RiemannSolution Periodic::operator()
+  (bool idx,
+   vector<Primitive> const& cells) const
 {
   if(get_mpi_rank()==0){
     MPI_Request req;
@@ -83,12 +84,13 @@ RiemannSolution Periodic::CalcRS(size_t idx,
 
 #else
 
-RiemannSolution Periodic::CalcRS(size_t idx,
-				 vector<Primitive> const& cells) const
+RiemannSolution Periodic::operator()
+(bool side,
+ vector<Primitive> const& cells) const
 {
-  assert(idx==0 || cells.size()==idx);
-  return idx==0 ? rs_(cells.back(),cells.front()) :
-    rs_(cells.front(),cells.back());
+  return side ? rs_(cells.front(),cells.back()) :
+    rs_(cells.back(),cells.front());
+    
 }
 
 #endif // PARALLEL

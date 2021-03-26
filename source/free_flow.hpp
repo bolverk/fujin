@@ -11,8 +11,8 @@ class FreeFlow: public BoundaryCondition
   
 public:
 
-  RiemannSolution CalcRS
-  (size_t idx, vector<Primitive> const& cells) const;
+  RiemannSolution operator()
+  (bool side, vector<Primitive> const& cells) const;
 };
 
 #endif // FREE_FLOW_HPP
