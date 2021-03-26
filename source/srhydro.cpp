@@ -487,6 +487,7 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
 }
 */
 
+/*
 void UpdatePrimitives(vector<Conserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<Primitive>& cells)
@@ -501,7 +502,9 @@ void UpdatePrimitives(vector<Conserved> const& conserved,
 		(prim,
 		 old_to_new_conserved(cons));});
 }
+*/
 
+ /*
 void UpdatePrimitives(vector<NewConserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<Primitive>& cells)
@@ -515,6 +518,7 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
 	    {return eos.Conserved2Primitive
 		(prim, cons);});
 }
+ */
 
 vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs)
 {
@@ -543,6 +547,7 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs)
   return serial_generate(checker);
 }
 
+/*
 void UpdatePrimitives(vector<Conserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<bool> const& filter,
@@ -554,7 +559,9 @@ void UpdatePrimitives(vector<Conserved> const& conserved,
 					 old_to_new_conserved(conserved[i]));
   }
 }
+*/
 
+/*
 void UpdatePrimitives(vector<NewConserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<bool> const& filter,
@@ -565,6 +572,7 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
       cells[i] = eos.Conserved2Primitive(cells[i], conserved[i]);
   }
 }
+*/
 
 /*
 NewHydroSnapshot<simple_vector, simple_vector>

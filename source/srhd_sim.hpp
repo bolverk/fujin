@@ -239,7 +239,7 @@ public:
        data_.edges,
        consVars_);
 
-    UpdatePrimitives(consVars_, eos_, filter, data_.cells);
+    UpdatePrimitives<CP>(consVars_, eos_, filter, data_.cells);
 
     time_ += dt;
     cycle_++;
@@ -292,7 +292,7 @@ public:
 
     const vector<bool> filter = NeedUpdate(psvs_);
 
-    UpdatePrimitives(consVars_, eos_, filter, data_.cells);
+    UpdatePrimitives<CP>(consVars_, eos_, filter, data_.cells);
 
     time_ += dt;
     cycle_++;

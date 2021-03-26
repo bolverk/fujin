@@ -130,7 +130,7 @@ CP<Primitive> InitCells(const CE<double>& v,
 			const SpatialDistribution& pd,
 			const SpatialDistribution& vd)
 {
-  return serial_generate(srhydro::CellGenerator<CE>(v,dd,pd,vd));
+  return serial_generate<Primitive, CP>(srhydro::CellGenerator<CE>(v,dd,pd,vd));
 }
 
 /*! \brief Calculates the vector of conserved variables
@@ -184,7 +184,8 @@ template<template<class> class CP>
 CP<NewConserved> primitives_to_new_conserveds
 (const CP<Primitive>& p, const EquationOfState& eos)
 {
-  return serial_generate(srhydro::Primitive2NewConservedConverter<CP>(p,eos));
+  return serial_generate<NewConserved, CP>
+    (srhydro::Primitive2NewConservedConverter<CP>(p,eos));
 }
 
 /*! \brief Calculates the maximum time step according to CFL condition, for a single cell
@@ -440,9 +441,22 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
   \param eos Equation of state
   \param cells Primitive variables
 */
-void UpdatePrimitives(vector<Conserved> const& conserved,
-		      EquationOfState const& eos,
-		      vector<Primitive>& cells);
+template<template<class> class CP>
+void UpdatePrimitives
+(const CP<Conserved>& conserved,
+ const EquationOfState& eos,
+ CP<Primitive>& cells)
+{
+    transform(conserved.begin(),
+	    conserved.end(),
+	    cells.begin(),
+	    cells.begin(),
+	    [&eos](const Conserved& cons,
+	       const Primitive& prim)
+	    {return eos.Conserved2Primitive
+		(prim,
+		 old_to_new_conserved(cons));});
+}
 
 /*! \brief Updates the primitive variables
   \param conserved Conserved variables
@@ -459,10 +473,12 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
   \param filter array which determines which cells should be updated
   \param cells Primitive variables
 */
+/*
 void UpdatePrimitives(vector<Conserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<bool> const& filter,
 		      vector<Primitive>& cells);
+*/
 
 /*! \brief Updates the primitive variables
   \param conserved Conserved variables
@@ -470,10 +486,30 @@ void UpdatePrimitives(vector<Conserved> const& conserved,
   \param filter array which determines which cells should be updated
   \param cells Primitive variables
 */
-void UpdatePrimitives(vector<NewConserved> const& conserved,
+template<template<class> class CP>
+void UpdatePrimitives(const CP<NewConserved>& conserved,
+		      const EquationOfState& eos,
+		      const vector<bool>& filter,
+		      CP<Primitive>& cells)
+{
+  for(size_t i=0;i<cells.size();++i){
+    if(filter[i])
+      cells[i] = eos.Conserved2Primitive(cells[i], conserved[i]);
+  }
+}
+
+template<template<class> class CP>
+void UpdatePrimitives(CP<Conserved> const& conserved,
 		      EquationOfState const& eos,
 		      vector<bool> const& filter,
-		      vector<Primitive>& cells);
+		      CP<Primitive>& cells)
+{
+  for(size_t i=0;i<cells.size();++i){
+    if(filter[i])
+      cells[i] = eos.Conserved2Primitive(cells[i],
+					 old_to_new_conserved(conserved[i]));
+  }
+}
 
 /*! \brief Checks which cells need to be updated
   \details This can save run time by skipping cells with no velocity or pressure gradients
@@ -512,12 +548,12 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
   const vector<double> rest_masses = serial_generate
     (RestMassCalculator<CE, CP>(data, geometry));
 
-  vector<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
+  CP<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
   UpdateConserved(fluxes,rest_masses,dt,geometry,
 		  res.edges,conserved);
 
   vector<bool> filter = NeedUpdate(fluxes);
-  UpdatePrimitives(conserved,eos,filter,res.cells);
+  UpdatePrimitives<CP>(conserved,eos,filter,res.cells);
 
   return NewHydroSnapshot<CE, CP>(res.edges, res.cells);
 }

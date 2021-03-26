@@ -226,7 +226,7 @@ template<class T, template<class> class C=simple_vector> C<T>
   C<T> res;
   resize_if_necessary(res, i2m.getLength());
   size_t n = 0;
-  generate(res.begin(),
+  std::generate(res.begin(),
 	   res.end(),
 	   [&n,&i2m]()mutable
 	   {return i2m(n++);});

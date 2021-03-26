@@ -246,7 +246,7 @@ public:
 
 private:
   //! \brief List of primitive variables
-  const vector<Primitive>& cells_;
+  const CP<Primitive>& cells_;
 
   //! \brief Pointer to member of primitives
   const size_t idx_;
