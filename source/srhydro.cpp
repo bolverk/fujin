@@ -105,53 +105,7 @@ double RestMassCalculator::operator()(size_t i) const
 }
 */
 
-namespace {
-
-  //! \brief Initialises the cells
-  class CellGenerator: public Index2Member<Primitive>
-  {
-  public:
-
-    /*! \brief Class constructor
-      \param grid Computational grid
-      \param density Density distribution
-      \param pressure Pressure distribution
-      \param celerity Celerity distribution
-     */
-    CellGenerator(const vector<double>& grid,
-		  const SpatialDistribution& density,
-		  const SpatialDistribution& pressure,
-		  const SpatialDistribution& celerity):
-      grid_(grid),
-      density_(density),
-      pressure_(pressure),
-      celerity_(celerity) {}
-
-    size_t getLength(void) const
-    {
-      return grid_.size()-1;
-    }
-    
-    Primitive operator()(size_t i) const
-    {
-      const double x = 0.5*(grid_[i]+grid_[i+1]);
-      return Primitive(density_(x),
-		       pressure_(x),
-		       celerity_(x));
-    }
-
-  private:
-    //! \brief Computational grid
-    const vector<double>& grid_;
-    //! \brief Density distribution
-    const SpatialDistribution& density_;
-    //! \brief Pressure distribution
-    const SpatialDistribution& pressure_;
-    //! \brief Velocity distribution
-    const SpatialDistribution& celerity_;
-  };
-}
-
+/*
 vector<Primitive> InitCells(vector<double> const& v,
 			    SpatialDistribution const& dd,
 			    SpatialDistribution const& pd,
@@ -159,6 +113,7 @@ vector<Primitive> InitCells(vector<double> const& v,
 {
   return serial_generate(CellGenerator(v,dd,pd,vd));
 }
+*/
 
 namespace {
 
@@ -419,50 +374,30 @@ void UpdateConserved(vector<RiemannSolution>  const& psvs,
 
 namespace {
 
-  /*! \brief Flux of the positive conserved variable
-    \param p Pressure
-    \param w Celerity
-    \return Flux of the positive conserved variable
-   */
-  double positive_flux(double p, double w)
-  {
-    return p*(w>0 ?
-	      1+celerity2velocity(w) :
-	      1./(1+pow(w,2)-w*sqrt(1+pow(w,2))));
-  }
-
   /*! \brief Calculates the flux of the positive conserved variable
     \param rs Riemann solution
     \return Flux of the positive conserved variable
    */
+  /*
   double positive_flux(const RiemannSolution& rs)
   {
     return positive_flux(rs.Pressure, rs.Celerity);
   }
-
-  /*! \brief Flux of the negative conserved variable
-    \param p Pressure
-    \param w Celerity
-    \return Flux of the negative conserved variable
-   */
-  double negative_flux(double p, double w)
-  {
-    return p*(w<0 ?
-	      -(1-celerity2velocity(w)) :
-	      -1./(1+pow(w,2)+w*sqrt(1+pow(w,2))));
-  }
+  */
      
   /*! \brief Calculates the flux of the negative conserved variable
     \param rs Riemann solution
     \return Flux of the negative conserved variable
-   */ 
+   */
+  /*
   double negative_flux(const RiemannSolution& rs)
   {
     return negative_flux(rs.Pressure, rs.Celerity);
   }
+  */
 }
 
-namespace{
+/*
   vector<double> calc_all_vertex_areas
     (const Geometry& geo,
      const vector<double>& vertices)
@@ -475,8 +410,47 @@ namespace{
 	      {return geo.calcArea(r);});
     return res;
   }
+*/
+
+/*! \brief Flux of the positive conserved variable
+  \param p Pressure
+  \param w Celerity
+  \return Flux of the positive conserved variable
+*/
+double srhydro::positive_flux(double p, double w)
+{
+  return p*(w>0 ?
+	    1+celerity2velocity(w) :
+	    1./(1+pow(w,2)-w*sqrt(1+pow(w,2))));
 }
 
+/*! \brief Calculates the flux of the positive conserved variable
+  \param rs Riemann solution
+  \return Flux of the positive conserved variable
+*/
+double srhydro::positive_flux(const RiemannSolution& rs)
+{
+  return srhydro::positive_flux(rs.Pressure, rs.Celerity);
+}
+
+double srhydro::negative_flux(const RiemannSolution& rs)
+{
+  return negative_flux(rs.Pressure, rs.Celerity);
+}
+
+  /*! \brief Flux of the negative conserved variable
+    \param p Pressure
+    \param w Celerity
+    \return Flux of the negative conserved variable
+   */
+double srhydro::negative_flux(double p, double w)
+{
+  return p*(w<0 ?
+	    -(1-celerity2velocity(w)) :
+	    -1./(1+pow(w,2)+w*sqrt(1+pow(w,2))));
+}
+
+/*
 void update_new_conserved(const vector<RiemannSolution>& psvs,
 			  const vector<Primitive>& cells,
 			  const vector<double>& rest_mass,
@@ -511,6 +485,7 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
       (volume_new[i+1]-volume_new[i]);
   }
 }
+*/
 
 void UpdatePrimitives(vector<Conserved> const& conserved,
 		      EquationOfState const& eos,

@@ -41,8 +41,40 @@ template<template<class> class CE, template<class> class CP> double new_calc_tim
   return cfl/its;
 }
 
-vector<double> distribute_vertices1
-(const vector<double>& vertices);
+template<template<class> class CE>
+CE<double> distribute_vertices1
+(const CE<double>& vertices)
+  {
+#ifdef PARALLEL
+  spdlog::debug("Inside parallel distribute vertices");
+  const size_t cell_num = vertices.size()-1;
+  const int rank = get_mpi_rank();
+  const int size = get_mpi_size();
+  spdlog::debug("cell_num {0}, rank {1}, size {2}",
+		cell_num, rank, size);
+    
+  vector<int> partition(static_cast<size_t>(size), cell_num/size);
+  for(size_t i=0;i<cell_num%size;++i)
+    ++partition.at(i);
+    
+  vector<int> cumpar(partition.size()+1,0);
+  for(size_t i=1;i<cumpar.size();++i)
+    cumpar.at(i) = cumpar.at(i-1) + partition.at(i-1);
+
+  const size_t low = cumpar.at(rank);
+  const size_t high = cumpar.at(rank+1);
+
+  vector<double> res(high-low+1,0);
+  for(size_t i=0;i<res.size();++i)
+    res.at(i) = vertices.at(low+i);
+  spdlog::debug("low {0}, high {1}",
+		res.front(),
+		res.back());
+  return res;
+#else
+  return vertices;
+#endif // PARALLEL
+}
 
 /*! \brief Special relativistic hydrodynamic simulation
   \details The simulation is based on <a href="http://adsabs.harvard.edu/abs/2000A%26A...358.1157D"> F. Daigne & R. Moskovitch, "Gamma-ray bursts from internal shocks in a relativistic wind: a hydrodynamical study", A&A, v. 358 p 1157-1166 (2000) </a>
@@ -90,7 +122,7 @@ public:
     \param interpolation_method Pointer to spatial reconstruction
     \param geometry Geometry
   */
-  SRHDSimulation(const vector<double>& vertices,
+  SRHDSimulation(const CE<double>& vertices,
 		 const SpatialDistribution& density_distribution,
 		 const SpatialDistribution& pressure_distribution,
 		 const SpatialDistribution& proper_velocity_distribution,
@@ -100,13 +132,14 @@ public:
 		 const RiemannSolver& riemann_solver,
 		 const SpatialReconstruction<CE, CP>& interpolation_method,
 		 const Geometry& geometry):
-    data_(distribute_vertices1(vertices),
-	  InitCells(distribute_vertices1(vertices),
-		    density_distribution,
-		    pressure_distribution,
-		    proper_velocity_distribution)),
+    data_(distribute_vertices1<CE>(vertices),
+	  InitCells<CE,CP>
+	  (distribute_vertices1<CE>(vertices),
+	   density_distribution,
+	   pressure_distribution,
+	   proper_velocity_distribution)),
     eos_(eos), 
-    psvs_(distribute_vertices1(vertices).size(),
+    psvs_(distribute_vertices1<CE>(vertices).size(),
 	  RiemannSolution()),
     rs_(riemann_solver), 
     sr_(interpolation_method),
@@ -197,13 +230,14 @@ public:
 
     const vector<bool> filter = NeedUpdate(psvs_);
 
-    update_new_conserved(psvs_,
-			 data_.cells,
-			 restMass_,
-			 dt, 
-			 geometry_,
-			 data_.edges,
-			 consVars_);
+    update_new_conserved<CE,CP>
+      (psvs_,
+       data_.cells,
+       restMass_,
+       dt, 
+       geometry_,
+       data_.edges,
+       consVars_);
 
     UpdatePrimitives(consVars_, eos_, filter, data_.cells);
 
@@ -242,7 +276,7 @@ public:
 					 cfl_);
 #endif // PARALLEL
 
-    update_new_conserved(psvs_,
+    update_new_conserved<CE,CP>(psvs_,
 			 data_.cells,
 			 restMass_,
 			 dt, geometry_,

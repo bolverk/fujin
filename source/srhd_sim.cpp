@@ -18,40 +18,6 @@
 
 using namespace std;
 
-vector<double> distribute_vertices1
-(const vector<double>& vertices)
-{
-#ifdef PARALLEL
-  spdlog::debug("Inside parallel distribute vertices");
-  const size_t cell_num = vertices.size()-1;
-  const int rank = get_mpi_rank();
-  const int size = get_mpi_size();
-  spdlog::debug("cell_num {0}, rank {1}, size {2}",
-		cell_num, rank, size);
-    
-  vector<int> partition(static_cast<size_t>(size), cell_num/size);
-  for(size_t i=0;i<cell_num%size;++i)
-    ++partition.at(i);
-    
-  vector<int> cumpar(partition.size()+1,0);
-  for(size_t i=1;i<cumpar.size();++i)
-    cumpar.at(i) = cumpar.at(i-1) + partition.at(i-1);
-
-  const size_t low = cumpar.at(rank);
-  const size_t high = cumpar.at(rank+1);
-
-  vector<double> res(high-low+1,0);
-  for(size_t i=0;i<res.size();++i)
-    res.at(i) = vertices.at(low+i);
-  spdlog::debug("low {0}, high {1}",
-		res.front(),
-		res.back());
-  return res;
-#else
-  return vertices;
-#endif // PARALLEL
-}
-
 namespace{
 
 #ifdef PARALLEL

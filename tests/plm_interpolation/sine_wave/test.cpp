@@ -62,10 +62,12 @@ namespace {
     Uniform pressure(1);
     Uniform velocity(0);
     IdealGas eos(4./3.);
-    vector<Primitive> cells = InitCells(edges,
-					density,
-					pressure,
-					velocity);
+    vector<Primitive> cells =
+      InitCells<simple_vector, simple_vector>
+      (edges,
+       density,
+       pressure,
+       velocity);
     HydroSnapshot hs(edges, cells);
     vector<double> numeric = interpolated_values(hs, sr);
     vector<double> analytic = calculated_values(edges,density);
@@ -109,10 +111,12 @@ namespace {
     Uniform pressure(1);
     Uniform velocity(0);
     IdealGas eos(4./3.);
-    vector<Primitive> cells = InitCells(edges,
-					density,
-					pressure,
-					velocity);
+    vector<Primitive> cells =
+      InitCells<simple_vector, simple_vector>
+      (edges,
+       density,
+       pressure,
+       velocity);
     const HydroSnapshot hs(edges, cells);
     vector<double> pcm_data = interpolated_values(hs, pcm);
     vector<double> plm_data = interpolated_values(hs, plm);

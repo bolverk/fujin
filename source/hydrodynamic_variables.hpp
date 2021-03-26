@@ -241,8 +241,8 @@ template<template<class> class CE, template<class> class CP> class NewHydroSnaps
 {
 public:
 
-  NewHydroSnapshot(const vector<double>& edges_i,
-		   const vector<Primitive>& cells_i):
+  NewHydroSnapshot(const CE<double>& edges_i,
+		   const CP<Primitive>& cells_i):
     pair<CE<double>, CP<Primitive> >(edges_i, cells_i),
     edges((*this).first),
     cells((*this).second) {}

@@ -124,6 +124,18 @@ vector<double> linspace
  const double vmax,
  const size_t num);
 
+template<size_t N> array<double, N> linspace
+(const double vmin, const double vmax, size_t /*num*/)
+{
+  const double dx = (vmax-vmin)/static_cast<double>(N-1);
+  array<double, N> res;
+  std::generate(res.begin(),
+	   res.end(),
+	   [n = 0, &dx, &vmin]() mutable
+	   { return vmin+(n++)*dx; });
+  return res;
+}
+
 //! \brief A scalar function
 class ScalarFunction 
 {
@@ -166,14 +178,14 @@ public:
 };
 
 //! \brief Converts a vector to Index2Member
-template<class T> class Echo: public Index2Member<T>
+template<class T, template<class> class C> class Echo: public Index2Member<T>
 {
 public:
 
   /*! \brief Class constructor
     \param v stl vector
    */
-  explicit Echo(const vector<T>& v):
+  explicit Echo(const C<T>& v):
     v_(v) {}
 
   size_t getLength(void) const
@@ -188,7 +200,7 @@ public:
 
 private:
   //! \brief Reference to stl vector
-  const vector<T>& v_;
+  const C<T>& v_;
 };
 
 template<class T> using simple_vector=vector<T>;

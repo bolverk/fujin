@@ -70,6 +70,53 @@ private:
   const Geometry& geometry_;
 };
 
+namespace srhydro{
+  //! \brief Initialises the cells
+  template<template<class> class CE>
+  class CellGenerator: public Index2Member<Primitive>
+  {
+  public:
+
+    /*! \brief Class constructor
+      \param grid Computational grid
+      \param density Density distribution
+      \param pressure Pressure distribution
+      \param celerity Celerity distribution
+     */
+    CellGenerator(const CE<double>& grid,
+		  const SpatialDistribution& density,
+		  const SpatialDistribution& pressure,
+		  const SpatialDistribution& celerity):
+      grid_(grid),
+      density_(density),
+      pressure_(pressure),
+      celerity_(celerity) {}
+
+    size_t getLength(void) const
+    {
+      return grid_.size()-1;
+    }
+    
+    Primitive operator()(size_t i) const
+    {
+      const double x = 0.5*(grid_[i]+grid_[i+1]);
+      return Primitive(density_(x),
+		       pressure_(x),
+		       celerity_(x));
+    }
+
+  private:
+    //! \brief Computational grid
+    const CE<double>& grid_;
+    //! \brief Density distribution
+    const SpatialDistribution& density_;
+    //! \brief Pressure distribution
+    const SpatialDistribution& pressure_;
+    //! \brief Velocity distribution
+    const SpatialDistribution& celerity_;
+  };
+}
+
 /*! \brief Initialises primitive variables
   \param v Vertices
   \param dd Density distribution
@@ -77,10 +124,14 @@ private:
   \param vd Velocity distribution
   \return Vector of primitive variables
 */
-vector<Primitive> InitCells(vector<double> const& v,
-			    SpatialDistribution const& dd,
-			    SpatialDistribution const& pd,
-			    SpatialDistribution const& vd);
+template<template<class> class CE, template<class> class CP>
+CP<Primitive> InitCells(const CE<double>& v,
+			const SpatialDistribution& dd,
+			const SpatialDistribution& pd,
+			const SpatialDistribution& vd)
+{
+  return serial_generate(srhydro::CellGenerator<CE>(v,dd,pd,vd));
+}
 
 /*! \brief Calculates the vector of conserved variables
   \param p Primitive variables
@@ -297,6 +348,47 @@ void UpdateConserved(vector<RiemannSolution>  const& psvs,
 		     vector<double>& vertices,
 		     vector<Conserved>& conserved);
 
+namespace srhydro{
+
+  double positive_flux(double p, double w);
+      
+  double positive_flux(const RiemannSolution& rs);
+
+  double negative_flux(double p, double w);
+
+  double negative_flux(const RiemannSolution& rs);
+
+  template<template<class> class CE>
+  vector<double> calc_all_vertex_areas
+  (const Geometry& geo,
+   const CE<double>& vertices)
+  {
+    CE<double> res;
+    resize_if_necessary(res, vertices.size());
+    transform(vertices.begin(),
+	      vertices.end(),
+	      res.begin(),
+	      [&geo](const double r)
+	      {return geo.calcArea(r);});
+    return res;
+  }
+
+  template<template<class> class CE, template<class> class CP>
+  CP<double> VerticesVolumes
+  (const CE<double>& vertices, 
+   Geometry const& geometry)
+  {
+    CP<double> res;
+    resize_if_necessary(res, vertices.size());
+    transform(vertices.begin(),
+	      vertices.end(),
+	      res.begin(),
+	      [&geometry](const double r)
+	      {return geometry.calcVolume(r);});
+    return res;
+  }
+}
+
 /*! \brief Updates the conserved variables and vertices
   \param psvs Riemann solutions
   \param cells Primitive variables
@@ -306,13 +398,42 @@ void UpdateConserved(vector<RiemannSolution>  const& psvs,
   \param vertices Vertices
   \param conserved Conserved variables
 */
+template<template<class> class CE, template<class> class CP>
 void update_new_conserved(const vector<RiemannSolution>& psvs,
-			  const vector<Primitive>& cells,
-			  const vector<double>& rest_mass,
+			  const CP<Primitive>& cells,
+			  const CP<double>& rest_mass,
 			  double dt, 
 			  const Geometry& geometry,
-			  vector<double>& vertices,
-			  vector<NewConserved>& conserved);
+			  CE<double>& vertices,
+			  CP<NewConserved>& conserved)
+{
+  const CE<double> vertex_areas =
+    srhydro::calc_all_vertex_areas<CE>(geometry, vertices);
+  
+  transform(psvs.begin(),
+	    psvs.end(),
+	    vertices.begin(),
+	    vertices.begin(),
+	    [&dt](const RiemannSolution& rsol, double pos)
+	    {return pos + dt*celerity2velocity(rsol.Celerity);});
+
+  const CE<double> volume_new = srhydro::VerticesVolumes<CE,CP>(vertices,geometry);
+
+  for(size_t i=0;i<conserved.size();++i){
+    conserved[i].positive += 
+      (srhydro::positive_flux(psvs[i])*vertex_areas[i]-
+       srhydro::positive_flux(psvs[i+1])*vertex_areas[i+1])*dt/
+      rest_mass[i]+
+      cells[i].Pressure*(vertex_areas[i+1]-vertex_areas[i])*dt/rest_mass[i];
+    conserved[i].negative +=
+      (srhydro::negative_flux(psvs[i])*vertex_areas[i]-
+       srhydro::negative_flux(psvs[i+1])*vertex_areas[i+1])*dt/
+      rest_mass[i]-
+      cells[i].Pressure*(vertex_areas[i+1]-vertex_areas[i])*dt/rest_mass[i];
+    conserved[i].mass = rest_mass[i]/
+      (volume_new[i+1]-volume_new[i]);
+  }
+}
 
 /*! \brief Updates the primitive variables
   \param conserved Conserved variables

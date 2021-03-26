@@ -52,9 +52,10 @@ void write_hdf5_snapshot
 {
   (HDF5Shortcut(fname))
     ("position",
-     serial_generate(MidValues<double>(Echo<double>(sim.getHydroSnapshot().edges))))
+     serial_generate(MidValues<double>(Echo<double, CE>
+				       (sim.getHydroSnapshot().edges))))
     ("edges",
-     serial_generate(Echo<double>(sim.getHydroSnapshot().edges)))
+     serial_generate(Echo<double, CE>(sim.getHydroSnapshot().edges)))
     ("density",
      serial_generate(PrimitivePropertyGetter<CE, CP>(sim,0)))
     ("pressure",
