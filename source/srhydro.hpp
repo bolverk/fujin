@@ -152,8 +152,8 @@ double MaxTimeStep
   \param psvs Riemann solutions
 */
 template<template<class> class CE, template<class> class CP> void CalcFluxes
-(const NewHydroSnapshot<simple_vector, simple_vector>& data,
- const SpatialReconstruction<simple_vector, simple_vector>& sr,
+(const NewHydroSnapshot<CE, CP>& data,
+ const SpatialReconstruction<CE, CP>& sr,
  const RiemannSolver& rs,
  double dt, 
  const BoundaryCondition& lbc,
@@ -229,8 +229,8 @@ namespace srhydro
 {
   template<template<class> class CE, template<class> class CP>
   vector<RiemannSolution> CalcFluxes1
-    (const NewHydroSnapshot<simple_vector, simple_vector>& data,
-     const SpatialReconstruction<simple_vector, simple_vector>& sr,
+    (const NewHydroSnapshot<CE, CP>& data,
+     const SpatialReconstruction<CE, CP>& sr,
      const RiemannSolver& rs,
      double dt,
      const BoundaryCondition& lbc,
@@ -238,7 +238,7 @@ namespace srhydro
   {
     vector<RiemannSolution> res(data.edges.size());
     vector<Primitive> new_cells(data.cells.size());
-    CalcFluxes<simple_vector, simple_vector>(data,sr,rs,dt,lbc,rbc,res);
+    CalcFluxes<CE, CP>(data,sr,rs,dt,lbc,rbc,res);
     return res;
   }
 }
