@@ -352,7 +352,7 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
     srhydro::CalcFluxes1<simple_vector, simple_vector>(data,sr,rs,dt,lbc,rbc);
 
   const vector<double> rest_masses = serial_generate
-    (RestMassCalculator<simple_vector, simple_vector>(data, geometry));
+    (RestMassCalculator<CE, CP>(data, geometry));
 
   vector<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
   UpdateConserved(fluxes,rest_masses,dt,geometry,
@@ -361,7 +361,7 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
   vector<bool> filter = NeedUpdate(fluxes);
   UpdatePrimitives(conserved,eos,filter,res.cells);
 
-  return NewHydroSnapshot<simple_vector, simple_vector>(res.edges, res.cells);
+  return NewHydroSnapshot<CE, CP>(res.edges, res.cells);
 }
 
 /*! \brief Second order time advance

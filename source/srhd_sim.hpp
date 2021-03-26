@@ -183,7 +183,7 @@ public:
 #endif // PARALLEL
     const double dt = calcTimeStep();
 
-    const NewHydroSnapshot<simple_vector, simple_vector> mid =
+    const NewHydroSnapshot<CE, CP> mid =
       BasicTimeAdvance<CE, CP>(data_,sr_,rs_,eos_,0.5*dt,
 		       geometry_,
 		       innerBC_,

@@ -124,7 +124,7 @@ public:
   VanLeer(void) {}
 
   vector<std::pair<Primitive,Primitive> > interpolateAll
-  (const NewHydroSnapshot<simple_vector, simple_vector>& hs,
+  (const NewHydroSnapshot<CE, CP>& hs,
    double /*dt*/) const
   {
     const class Interpolator: 
@@ -152,7 +152,7 @@ public:
       }
 
     private:
-      const NewHydroSnapshot<simple_vector, simple_vector>& hs_;
+      const NewHydroSnapshot<CE, CP>& hs_;
       const vector<Primitive> cell_slopes_;
     } interpolator(hs);
 
