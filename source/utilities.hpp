@@ -207,7 +207,7 @@ template<class T, size_t M> void resize_if_necessary(array<T, M>, size_t /*n*/)
   \param i2m Lazy list
   \return stl vector
  */
-template<class T, template<class> class C=simple_vector> vector<T>
+template<class T, template<class> class C=simple_vector> C<T>
   serial_generate(const Index2Member<T>& i2m)
 {
   //  C<T> res(i2m.getLength());

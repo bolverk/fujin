@@ -112,7 +112,7 @@ public:
     sr_(interpolation_method),
     cfl_(1./3.), 
     consVars_(primitives_to_new_conserveds<CP>(data_.cells,eos)),
-    restMass_(serial_generate(RestMassCalculator<CE, CP>(data_,geometry))),
+    restMass_(serial_generate<double, CP>(RestMassCalculator<CE, CP>(data_,geometry))),
     geometry_(geometry),
     time_(0),
     cycle_(0),
