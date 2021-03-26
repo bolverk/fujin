@@ -129,7 +129,7 @@ public:
     \param geometry Geometry
   */
   SRHDSimulation
-  (const NewHydroSnapshot<simple_vector, simple_vector>& init_cond,
+  (const NewHydroSnapshot<CE, CP>& init_cond,
    const BoundaryCondition& piInnerBC,
    const BoundaryCondition& piOuterBC,
    const EquationOfState& reos,
