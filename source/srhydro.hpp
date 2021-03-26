@@ -334,9 +334,9 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
   \return Hydrodynamic data at the end of the time step
 */
 template<template<class> class CE, template<class> class CP>
-NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
-(const NewHydroSnapshot<simple_vector, simple_vector>& data,
- const SpatialReconstruction<simple_vector, simple_vector>& sr,
+NewHydroSnapshot<CE, CP> BasicTimeAdvance
+(const NewHydroSnapshot<CE, CP>& data,
+ const SpatialReconstruction<CE, CP>& sr,
  const RiemannSolver& rs,
  const EquationOfState& eos,
  double dt, 
@@ -344,7 +344,7 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
  const BoundaryCondition& lbc,
  const BoundaryCondition& rbc)
 {
-  NewHydroSnapshot<simple_vector, simple_vector> res(data);
+  NewHydroSnapshot<CE, CP> res(data);
 
   vector<RiemannSolution> fluxes=
     srhydro::CalcFluxes1<CE, CP>(data,sr,rs,dt,lbc,rbc);
