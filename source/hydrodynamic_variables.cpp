@@ -5,6 +5,9 @@
 
 using std::function;
 
+Conserved::Conserved(const Conserved& source):
+  Conserved(array<double, 3>(source)) {}
+
 Conserved::Conserved(const array<double, 3>& source):
   array<double, 3>{source},
   Mass((*this)[0]),

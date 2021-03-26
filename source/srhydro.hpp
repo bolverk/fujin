@@ -16,6 +16,7 @@
 #include "geometry.hpp"
 #include "utilities.hpp"
 #include <cassert>
+#include "advanced_hydrodynamic_variables.hpp"
 
 /*! \brief Calculates the volume of the cell
   \param rl Radius of inner cell interface
@@ -89,13 +90,51 @@ vector<Primitive> InitCells(vector<double> const& v,
 vector<Conserved> Primitives2Conserveds
 (vector<Primitive> const& p, const EquationOfState& eos);
 
+namespace srhydro
+{
+  template<template<class> class CP>
+  class Primitive2NewConservedConverter: public Index2Member<NewConserved>
+  {
+  public:
+
+    /*! \brief Class constructor
+      \param p_list Computational cells
+      \param eos Equation of state
+    */
+    Primitive2NewConservedConverter
+    (const CP<Primitive>& p_list,
+     const EquationOfState& eos):
+      p_list_(p_list), eos_(eos) {}
+
+    size_t getLength(void) const
+    {
+      return p_list_.size();
+    }
+
+    NewConserved operator()(size_t i) const
+    {
+      return primitive_to_new_conserved(p_list_[i],eos_);
+    }
+
+  private:
+    //! \brief Computational cells
+    const CP<Primitive>& p_list_;
+    //! \brief Equation of state
+    const EquationOfState& eos_;
+  };
+}
+
 /*! \brief Calculates the vector of conserved variables
   \param p Primitive variables
   \param eos Equation of state
   \return Vector of conserved variables
 */
-vector<NewConserved> primitives_to_new_conserveds
-(vector<Primitive> const& p, const EquationOfState& eos);
+template<template<class> class CP>
+CP<NewConserved> primitives_to_new_conserveds
+(const CP<Primitive>& p, const EquationOfState& eos)
+{
+  return serial_generate(srhydro::Primitive2NewConservedConverter<CP>(p,eos));
+}
 
 /*! \brief Calculates the maximum time step according to CFL condition, for a single cell
   \param width Cell width
@@ -229,12 +268,12 @@ namespace srhydro
 {
   template<template<class> class CE, template<class> class CP>
   vector<RiemannSolution> CalcFluxes1
-    (const NewHydroSnapshot<CE, CP>& data,
-     const SpatialReconstruction<CE, CP>& sr,
-     const RiemannSolver& rs,
-     double dt,
-     const BoundaryCondition& lbc,
-     const BoundaryCondition& rbc)
+  (const NewHydroSnapshot<CE, CP>& data,
+   const SpatialReconstruction<CE, CP>& sr,
+   const RiemannSolver& rs,
+   double dt,
+   const BoundaryCondition& lbc,
+   const BoundaryCondition& rbc)
   {
     vector<RiemannSolution> res(data.edges.size());
     vector<Primitive> new_cells(data.cells.size());

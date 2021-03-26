@@ -103,9 +103,9 @@ namespace {
     const InitCond init_cond_;
     const HLL rs_;
     const Periodic bc_;
-    VanLeer<simple_vector, simple_vector> sr_;
+    VanLeer<CE, CP> sr_;
     const Planar geometry_;
-    SRHDSimulation<simple_vector, simple_vector> sim_;
+    SRHDSimulation<CE, CP> sim_;
   };
 }
 
@@ -125,9 +125,9 @@ int main(void)
 
   main_loop
     (sim,
-     SafeTimeTermination<simple_vector, simple_vector>(10,1e6),
-     &SRHDSimulation<simple_vector, simple_vector>::timeAdvance,
-     WriteTime<simple_vector, simple_vector>("time.txt"));
+     SafeTimeTermination<CE, CP>(10,1e6),
+     &SRHDSimulation<CE, CP>::timeAdvance,
+     WriteTime<CE, CP>("time.txt"));
 
 #ifdef PARALLEL
   write_hdf5_snapshot(sim, "final_"+int2str(get_mpi_rank())+".h5");

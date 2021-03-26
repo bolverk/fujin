@@ -191,36 +191,6 @@ namespace {
     //! \brief Equation of state
     const EquationOfState& eos_;
   };
-
-  //! \brief Converts primitives to conserved variables
-  class Primitive2NewConservedConverter: public Index2Member<NewConserved>
-  {
-  public:
-
-    /*! \brief Class constructor
-      \param p_list Computational cells
-      \param eos Equation of state
-     */
-    Primitive2NewConservedConverter(const vector<Primitive>& p_list,
-				 const EquationOfState& eos):
-      p_list_(p_list), eos_(eos) {}
-
-    size_t getLength(void) const
-    {
-      return p_list_.size();
-    }
-
-    NewConserved operator()(size_t i) const
-    {
-      return primitive_to_new_conserved(p_list_[i],eos_);
-    }
-
-  private:
-    //! \brief Computational cells
-    const vector<Primitive>& p_list_;
-    //! \brief Equation of state
-    const EquationOfState& eos_;
-  };
 }
 
 vector<Conserved> Primitives2Conserveds
@@ -230,12 +200,14 @@ vector<Conserved> Primitives2Conserveds
   return serial_generate(Primitive2ConservedConverter(p,eos));
 }
 
+/*
 vector<NewConserved> primitives_to_new_conserveds
 (const vector<Primitive>& p_list,
  const EquationOfState& eos)
 {
   return serial_generate(Primitive2NewConservedConverter(p_list,eos));
 }
+*/
 
 
 double MaxTimeStepSingle(double width, Primitive const& p, 
