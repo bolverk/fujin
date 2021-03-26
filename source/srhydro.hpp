@@ -17,8 +17,6 @@
 #include "utilities.hpp"
 #include <cassert>
 
-template<class T> using simple_vector = vector<T>;
-
 /*! \brief Calculates the volume of the cell
   \param rl Radius of inner cell interface
   \param rr Radius of outer cell interface
@@ -65,7 +63,7 @@ public:
   }
 private:
   //! \brief Hydrodynamic snapshot
-  const NewHydroSnapshot<simple_vector, simple_vector>& hs_;
+  const NewHydroSnapshot<CE, CP>& hs_;
 
   //! \brief Geometry
   const Geometry& geometry_;
@@ -349,7 +347,7 @@ NewHydroSnapshot<simple_vector, simple_vector> BasicTimeAdvance
   NewHydroSnapshot<simple_vector, simple_vector> res(data);
 
   vector<RiemannSolution> fluxes=
-    srhydro::CalcFluxes1<simple_vector, simple_vector>(data,sr,rs,dt,lbc,rbc);
+    srhydro::CalcFluxes1<CE, CP>(data,sr,rs,dt,lbc,rbc);
 
   const vector<double> rest_masses = serial_generate
     (RestMassCalculator<CE, CP>(data, geometry));
