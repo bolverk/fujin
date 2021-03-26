@@ -8,6 +8,7 @@
 
 #include <complex>
 #include <vector>
+#include <array>
 #include "trans_eqn_solver.hpp"
 #include <algorithm>
 
@@ -15,6 +16,7 @@ using std::complex;
 using std::string;
 using std::vector;
 using std::transform;
+using std::array;
 
 /*! \brief Relativistic velocity addition
   \param v1 First velocity
@@ -191,6 +193,16 @@ private:
 
 template<class T> using simple_vector=vector<T>;
 
+template<class T> void resize_if_necessary(vector<T>& arr, size_t n)
+{
+  arr.resize(n);
+}
+
+template<class T, size_t M> void resize_if_necessary(array<T, M>, size_t /*n*/)
+{
+  return;
+}
+
 /*! \brief Generates a vector
   \param i2m Lazy list
   \return stl vector
@@ -198,7 +210,9 @@ template<class T> using simple_vector=vector<T>;
 template<class T, template<class> class C=simple_vector> vector<T>
   serial_generate(const Index2Member<T>& i2m)
 {
-  C<T> res(i2m.getLength());
+  //  C<T> res(i2m.getLength());
+  C<T> res;
+  resize_if_necessary(res, i2m.getLength());
   size_t n = 0;
   generate(res.begin(),
 	   res.end(),
