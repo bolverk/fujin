@@ -2,7 +2,6 @@
 #include <boost/foreach.hpp>
 #include "diagnostics.hpp"
 #include "advanced_hydrodynamic_variables.hpp"
-#include "vector_initializer.hpp"
 #include <assert.h>
 #include <memory>
 
