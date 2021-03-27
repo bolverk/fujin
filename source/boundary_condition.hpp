@@ -10,6 +10,7 @@
 #include "riemann_solver.hpp"
 
 //! \brief Base class for boundary condition
+template<template<class> class CP>
 class BoundaryCondition
 {
 public:
@@ -19,9 +20,9 @@ public:
     \return Riemann solution (pressure and velocity)
    */
   virtual RiemannSolution
-  operator()(bool side, const vector<Primitive>& cells) const = 0;
+  operator()(bool side, const CP<Primitive>& cells) const = 0;
 
-  virtual ~BoundaryCondition(void);
+  virtual ~BoundaryCondition(void) {}
 };
 
 #endif // BOUNDARY_CONDITION_HPP

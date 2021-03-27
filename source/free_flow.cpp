@@ -1,6 +1,8 @@
 #include "free_flow.hpp"
 #include <cassert>
 
+#if 0
+
 namespace {
 
   /*! \brief Creates an instance of a Riemann solution
@@ -19,3 +21,5 @@ RiemannSolution FreeFlow::operator()
   return side ? Primitive2RiemannSolution(cells.back()) :
     Primitive2RiemannSolution(cells.front());
 }
+
+#endif // 0

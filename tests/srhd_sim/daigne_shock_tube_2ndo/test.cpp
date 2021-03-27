@@ -33,7 +33,7 @@ int main()
   IdealGasRiemannSolver rs(g);
   VanLeer<simple_vector, simple_vector> sr;
   const Planar geometry;
-  RigidWall bc(rs);
+  RigidWall<simple_vector> bc(rs);
 
   SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,

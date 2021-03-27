@@ -57,8 +57,8 @@ private:
   Uniform dv_;
   IdealGas eos_;
   LinearRS rs_;
-  RigidWall left_bc_;
-  FreeFlow right_bc_;
+  RigidWall<simple_vector> left_bc_;
+  FreeFlow<simple_vector> right_bc_;
   //PCM sr_;
   VanLeer<simple_vector, simple_vector> sr_;
   const Planar geometry_;

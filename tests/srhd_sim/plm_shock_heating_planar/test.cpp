@@ -52,8 +52,8 @@ int main()
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;
-  FreeFlow LeftBC;
-  FreeFlow RightBC;
+  FreeFlow<simple_vector> LeftBC;
+  FreeFlow<simple_vector> RightBC;
   const double tf = 0.2;
   const Planar geometry;
 

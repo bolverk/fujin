@@ -6,18 +6,33 @@
 
 /*! \brief Rigid wall boundary conditions
  */
-class RigidWall: public BoundaryCondition
+template<template<class> class CP>
+class RigidWall: public BoundaryCondition<CP>
 {
+
+private:
+
+  Primitive invert_celerity(const Primitive& p) const
+  {
+    Primitive res = p;
+    res.Celerity = -res.Celerity;
+    return res;
+  }
   
 public:
 
   /*! \brief Class constructor
     \param rs Pointer to Riemann solver
    */
-  explicit RigidWall(RiemannSolver const& rs);
+  explicit RigidWall(RiemannSolver const& rs):
+    rs_(rs) {}
 
   RiemannSolution operator()
-  (bool idx, vector<Primitive> const& cells) const override;
+  (bool side, vector<Primitive> const& cells) const override
+  {
+    return side ? rs_(cells.back(), invert_celerity(cells.back())) :
+      rs_(invert_celerity(cells.front()), cells.front());
+  }
 
 private:
 

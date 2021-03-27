@@ -1,3 +1,3 @@
 #include "boundary_condition.hpp"
 
-BoundaryCondition::~BoundaryCondition(void) {}
+//BoundaryCondition::~BoundaryCondition(void) {}

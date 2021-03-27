@@ -41,8 +41,8 @@ int main()
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   VanLeer<simple_vector, simple_vector> sr;
-  FreeFlow LeftBC;
-  RigidWall RightBC(rs);
+  FreeFlow<simple_vector> LeftBC;
+  RigidWall<simple_vector> RightBC(rs);
   const double tf = 0.3;
   Planar geometry;
 

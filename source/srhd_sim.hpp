@@ -105,9 +105,9 @@ private:
   //! \brief Cycle number
   int cycle_;
   //! \brief Innter boundary condition
-  const BoundaryCondition& innerBC_;
+  const BoundaryCondition<CP>& innerBC_;
   //! \brief Outer boundary condition
-  const BoundaryCondition& outerBC_;
+  const BoundaryCondition<CP>& outerBC_;
 
 public:
   /*! \brief Class constructor
@@ -126,8 +126,8 @@ public:
 		 const SpatialDistribution& density_distribution,
 		 const SpatialDistribution& pressure_distribution,
 		 const SpatialDistribution& proper_velocity_distribution,
-		 const BoundaryCondition& inner_bc,
-		 const BoundaryCondition& outer_bc,
+		 const BoundaryCondition<CP>& inner_bc,
+		 const BoundaryCondition<CP>& outer_bc,
 		 const EquationOfState& eos,
 		 const RiemannSolver& riemann_solver,
 		 const SpatialReconstruction<CE, CP>& interpolation_method,
@@ -163,8 +163,8 @@ public:
   */
   SRHDSimulation
   (const NewHydroSnapshot<CE, CP>& init_cond,
-   const BoundaryCondition& piInnerBC,
-   const BoundaryCondition& piOuterBC,
+   const BoundaryCondition<CP>& piInnerBC,
+   const BoundaryCondition<CP>& piOuterBC,
    const EquationOfState& reos,
    const RiemannSolver& rRiemannSolver,
    const SpatialReconstruction<CE, CP>& pInterpolationMethod,

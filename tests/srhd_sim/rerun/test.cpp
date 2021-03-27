@@ -92,7 +92,7 @@ private:
   //  IdealGasRiemannSolver rs_;
   HLL rs_;
   PCM<simple_vector, simple_vector> sr_;
-  RigidWall bc_;
+  RigidWall<simple_vector> bc_;
   const Planar geometry_;
   SRHDSimulation<simple_vector, simple_vector> sim_;
 };

@@ -102,7 +102,7 @@ namespace {
     const IdealGas eos_;
     const InitCond init_cond_;
     const HLL rs_;
-    const Periodic bc_;
+    const Periodic<CP> bc_;
     VanLeer<CE, CP> sr_;
     const Planar geometry_;
     SRHDSimulation<CE, CP> sim_;

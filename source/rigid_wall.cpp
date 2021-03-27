@@ -2,6 +2,8 @@
 #include "rigid_wall.hpp"
 #include "advanced_hydrodynamic_variables.hpp"
 
+#if 0
+
 RigidWall::RigidWall(RiemannSolver const& rs):
   rs_(rs) {}
 
@@ -11,7 +13,7 @@ namespace {
     \param p Primitive variable
     \return Primitive variable with reversed celerity
    */
-  Primitive invert_celerity(Primitive const& p)
+  Primitive invert_celerity(Primitive const& p) const
   {
     Primitive res = p;
     res.Celerity = -res.Celerity;
@@ -25,3 +27,5 @@ RiemannSolution RigidWall::operator()
   return side ? rs_(cells.back(), invert_celerity(cells.back())) :
     rs_(invert_celerity(cells.front()), cells.front());
 }
+
+#endif // 0

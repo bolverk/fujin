@@ -38,7 +38,7 @@ int main()
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;
-  RigidWall bc(rs);
+  RigidWall<simple_vector> bc(rs);
   const Spherical geometry;
 
   SRHDSimulation <simple_vector, simple_vector> sim

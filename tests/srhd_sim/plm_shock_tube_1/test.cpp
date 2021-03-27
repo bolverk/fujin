@@ -42,7 +42,7 @@ int main()
   IdealGas eos(g);
   HLL rs(eos);
   VanLeer<simple_vector, simple_vector> sr;
-  RigidWall bc(rs);
+  RigidWall<simple_vector> bc(rs);
   const Planar geometry;
 
   SRHDSimulation<simple_vector, simple_vector> sim

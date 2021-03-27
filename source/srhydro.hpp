@@ -247,8 +247,8 @@ template<template<class> class CE, template<class> class CP> void CalcFluxes
  const SpatialReconstruction<CE, CP>& sr,
  const RiemannSolver& rs,
  double dt, 
- const BoundaryCondition& lbc,
- const BoundaryCondition& rbc,
+ const BoundaryCondition<CP>& lbc,
+ const BoundaryCondition<CP>& rbc,
  vector<RiemannSolution>& psvs)
 {
 #ifdef PARALLEL
@@ -324,8 +324,8 @@ namespace srhydro
    const SpatialReconstruction<CE, CP>& sr,
    const RiemannSolver& rs,
    double dt,
-   const BoundaryCondition& lbc,
-   const BoundaryCondition& rbc)
+   const BoundaryCondition<CP>& lbc,
+   const BoundaryCondition<CP>& rbc)
   {
     vector<RiemannSolution> res(data.edges.size());
     vector<Primitive> new_cells(data.cells.size());
@@ -537,8 +537,8 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
  const EquationOfState& eos,
  double dt, 
  const Geometry& geometry,
- const BoundaryCondition& lbc,
- const BoundaryCondition& rbc)
+ const BoundaryCondition<CP>& lbc,
+ const BoundaryCondition<CP>& rbc)
 {
   NewHydroSnapshot<CE, CP> res(data);
 

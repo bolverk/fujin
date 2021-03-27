@@ -6,13 +6,24 @@
 
 /*! \brief Free flow boundary (continuous) conditions
  */
-class FreeFlow: public BoundaryCondition
+template<template<class> class CP>
+class FreeFlow: public BoundaryCondition<CP>
 {
+private:
+  
+  RiemannSolution Primitive2RiemannSolution(const Primitive& p) const
+  {
+    return RiemannSolution(p.Pressure,p.Celerity);
+  }
   
 public:
 
   RiemannSolution operator()
-  (bool side, vector<Primitive> const& cells) const;
+  (bool side, vector<Primitive> const& cells) const
+  {
+    return side ? Primitive2RiemannSolution(cells.back()) :
+      Primitive2RiemannSolution(cells.front());
+  }
 };
 
 #endif // FREE_FLOW_HPP

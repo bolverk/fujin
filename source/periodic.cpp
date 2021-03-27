@@ -4,8 +4,8 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
-Periodic::Periodic(RiemannSolver const& rs):
-  rs_(rs) {}
+//Periodic::Periodic(RiemannSolver const& rs):
+//  rs_(rs) {}
 
 #ifdef PARALLEL
 
@@ -84,6 +84,7 @@ RiemannSolution Periodic::operator()
 
 #else
 
+/*
 RiemannSolution Periodic::operator()
 (bool side,
  vector<Primitive> const& cells) const
@@ -92,5 +93,6 @@ RiemannSolution Periodic::operator()
     rs_(cells.back(),cells.front());
     
 }
+*/
 
 #endif // PARALLEL

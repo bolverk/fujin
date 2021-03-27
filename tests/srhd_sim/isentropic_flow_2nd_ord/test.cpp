@@ -153,7 +153,7 @@ namespace {
     const IdealGas eos_;
     const IdealGasRiemannSolver rs_;
     VanLeer<simple_vector, simple_vector> sr_;
-    const RigidWall bc_;
+    const RigidWall<simple_vector> bc_;
     const Planar geometry_;
     SRHDSimulation<simple_vector, simple_vector> sim_;
   };

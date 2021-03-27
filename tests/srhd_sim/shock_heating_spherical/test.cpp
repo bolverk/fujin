@@ -45,8 +45,8 @@ int main()
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;
-  RigidWall LeftBC(rs);
-  FreeFlow RightBC;
+  RigidWall<simple_vector> LeftBC(rs);
+  FreeFlow<simple_vector> RightBC;
   const double tf = 0.5;
   Spherical geometry;
 

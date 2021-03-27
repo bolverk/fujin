@@ -5,22 +5,28 @@
 #include "riemann_solver.hpp"
 
 //! \brief Periodic boundary conditions
-class Periodic: public BoundaryCondition
+template<template<class> class CP>
+class Periodic: public BoundaryCondition<CP>
 {
 public:
 
   /*! \brief Class constructor
     \param rs Riemann solver
    */
-  explicit Periodic(RiemannSolver const& rs);
+  explicit Periodic(RiemannSolver const& rs):
+    rs_(rs) {}
 
   RiemannSolution operator()
-  (bool side, vector<Primitive> const& cells) const override;
-
+  (bool side, vector<Primitive> const& cells) const override
+  {
+    return side ? rs_(cells.front(),cells.back()) :
+     rs_(cells.back(),cells.front());
+  }
+  
 private:
 
   //! \brief Riemann solver  
-  RiemannSolver const& rs_;
+  const RiemannSolver& rs_;
 };
 
 # endif // PERIODIC_HPP

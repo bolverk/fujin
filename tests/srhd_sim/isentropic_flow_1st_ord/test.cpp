@@ -122,7 +122,7 @@ int main()
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;
-  RigidWall bc(rs);
+  RigidWall<simple_vector> bc(rs);
   const double tf = 0.8;
   Planar geometry;
 

@@ -50,7 +50,7 @@ namespace {
     const IdealGasRiemannSolver rs_;
     PCM<simple_vector, simple_vector> sr_;
     const Planar geometry_;
-    const RigidWall bc_;
+    const RigidWall<simple_vector> bc_;
     SRHDSimulation<simple_vector,simple_vector> sim_;
   };
 }
