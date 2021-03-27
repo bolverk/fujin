@@ -74,6 +74,7 @@ Primitive& Primitive::operator=(const Primitive& source)
   return *this;
 }
 
+/*
 HydroSnapshot::HydroSnapshot
 (vector<double> const& edges_i,
  vector<Primitive> const& cells_i):
@@ -110,3 +111,4 @@ HydroSnapshot operator*(double d,
 {
   return HydroSnapshot(d*hs.edges,d*hs.cells);
 }
+*/

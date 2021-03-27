@@ -71,7 +71,7 @@ public:
     bc_(rs_),
     geometry_(),
     sim_(NewHydroSnapshot<simple_vector, simple_vector>
-	 (read_hdf5_snapshot(fname)),
+	 (read_hdf5_snapshot_new<simple_vector, simple_vector>(fname)),
 	 bc_, bc_,
 	 eos_, rs_,
 	 sr_, 

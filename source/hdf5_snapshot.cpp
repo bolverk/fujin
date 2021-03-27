@@ -9,6 +9,7 @@
 using namespace H5;
 
 namespace {
+  /*
   template<class T> vector<T> read_vector_from_hdf5
   (const Group& file,
    const string& field,
@@ -23,7 +24,9 @@ namespace {
     dataset.read(&result[0], datatype);
     return result;
   }
+  */
 
+  /*
   vector<double> read_double_vector_from_hdf5
   (const Group& file,
    const string& field)
@@ -31,7 +34,9 @@ namespace {
     return read_vector_from_hdf5<double>
       (file, field, PredType::NATIVE_DOUBLE);
   }
+  */
 
+  /*
   vector<Primitive> combine2cells
   (const vector<double>& density,
    const vector<double>& pressure,
@@ -46,8 +51,10 @@ namespace {
 			 celerity[i]);
     return res;
   }
+  */
 }
 
+/*
 HydroSnapshot read_hdf5_snapshot
 (const string& fname)
 {
@@ -70,3 +77,4 @@ HydroSnapshot read_hdf5_snapshot
 				     data["pressure"],
 				     data["celerity"]));
 }
+*/

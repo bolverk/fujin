@@ -117,6 +117,7 @@ public:
 };
 
 //! \brief Union for grid and primitive variables
+#if 0
 class HydroSnapshot: public pair<vector<double>, vector<Primitive> >
 {
 public:
@@ -169,6 +170,7 @@ HydroSnapshot operator-(HydroSnapshot const& hs1,
  */
 HydroSnapshot operator*(double d,
 			HydroSnapshot const& hs);
+#endif // 0
 
 /*! \brief Converts primitive variables to conserved (normalised by volume)
   \param p Primitive variables
@@ -250,8 +252,8 @@ public:
   NewHydroSnapshot(const NewHydroSnapshot<CE, CP>& source):
     NewHydroSnapshot(source.edges, source.cells) {}
 
-  NewHydroSnapshot(const HydroSnapshot& source):
-    NewHydroSnapshot(source.edges, source.cells) {}
+  //  NewHydroSnapshot(const HydroSnapshot& source):
+  //    NewHydroSnapshot(source.edges, source.cells) {}
 
   NewHydroSnapshot& operator=(const NewHydroSnapshot& source)
   {

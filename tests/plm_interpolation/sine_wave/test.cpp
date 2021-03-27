@@ -15,7 +15,7 @@ using namespace std;
 
 namespace {
   vector<double> interpolated_values
-  (const HydroSnapshot& hs, 
+  (const NewHydroSnapshot<simple_vector, simple_vector>& hs, 
    const SpatialReconstruction<simple_vector, simple_vector>& sr)
   {
     const vector<pair<Primitive,Primitive> > temp =
@@ -68,7 +68,7 @@ namespace {
        density,
        pressure,
        velocity);
-    HydroSnapshot hs(edges, cells);
+    NewHydroSnapshot<simple_vector, simple_vector> hs(edges, cells);
     vector<double> numeric = interpolated_values(hs, sr);
     vector<double> analytic = calculated_values(edges,density);
     return l1_error_norm(numeric, analytic);
@@ -117,7 +117,7 @@ namespace {
        density,
        pressure,
        velocity);
-    const HydroSnapshot hs(edges, cells);
+    const NewHydroSnapshot<simple_vector, simple_vector> hs(edges, cells);
     vector<double> pcm_data = interpolated_values(hs, pcm);
     vector<double> plm_data = interpolated_values(hs, plm);
     vector<double> analytic = calculated_values(edges,velocity);

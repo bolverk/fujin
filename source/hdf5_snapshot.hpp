@@ -72,8 +72,71 @@ void write_hdf5_snapshot
   \param fname File name
   \return Hydrodynamic snapshot
 */
+/*
 HydroSnapshot read_hdf5_snapshot
 (const string& fname);
+*/
+
+template<class FC> FC read_from_hdf5
+(const H5::Group& file,
+ const string& field,
+ const H5::DataType& datatype)
+{
+  H5::DataSet dataset = file.openDataSet(field);
+  H5::DataSpace filespace = dataset.getSpace();
+  hsize_t dimes_out[2];
+  filespace.getSimpleExtentDims(dimes_out);
+  const size_t NX = static_cast<size_t>(dimes_out[0]);
+  FC res;
+  resize_if_necessary(res, NX);
+  assert(NX == res.size());
+  dataset.read(&res.front(), datatype);
+  return res;
+}
+
+template<template<class> class CP> CP<Primitive> combine2cells
+(const CP<double>& density,
+ const CP<double>& pressure,
+ const CP<double>& celerity)
+{
+  assert(density.size()==pressure.size() &&
+	 density.size()==celerity.size());
+  CP<Primitive> res;
+  resize_if_necessary(res, density.size());
+  //  array<CP<double>*, 3> master = {&density, &pressure, &celerity};
+  for(size_t i=0;i<density.size();++i){
+    res[i].Density = density[i];
+    res[i].Pressure = pressure[i];
+    res[i].Celerity = celerity[i];
+    //    for(size_t j=0;j<3;++j)
+    //      res[i][j] = master[j][i];
+  }
+  return res;
+}
+
+template<template<class> class CE, template<class> class CP>
+NewHydroSnapshot<CE, CP> read_hdf5_snapshot_new
+(const string& fname)
+{
+  H5::H5File file(fname, H5F_ACC_RDONLY);
+  const CE<double> edges = read_from_hdf5<CE<double> >
+    (file, "edges", H5::PredType::NATIVE_DOUBLE);
+  const CP<double> density = read_from_hdf5<CP<double> >
+    (file, "density", H5::PredType::NATIVE_DOUBLE);
+  const CP<double> pressure = read_from_hdf5<CP<double> >
+    (file, "pressure", H5::PredType::NATIVE_DOUBLE);
+  const CP<double> celerity = read_from_hdf5<CP<double> >
+    (file, "celerity", H5::PredType::NATIVE_DOUBLE);
+  assert(density.size()+1==edges.size());
+  assert(density.size()==pressure.size());
+  assert(density.size()==celerity.size());
+  return NewHydroSnapshot<CE, CP>
+    (edges,
+     combine2cells<CP>
+     (density,
+      pressure,
+      celerity));
+}
 
 #endif // HDF5_SNAPSHOT_HPP
 
