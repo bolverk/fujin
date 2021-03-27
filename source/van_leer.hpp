@@ -81,7 +81,7 @@ namespace van_leer
     \return List of slopes
    */
   template<template<class> class CE, template<class> class CP>
-  vector<Primitive> calc_cell_slopes
+  CP<Primitive> calc_cell_slopes
   (const NewHydroSnapshot<CE, CP>& hs)
   {
     const CE<Primitive> edge_slopes = calc_edge_slopes(hs);
@@ -108,7 +108,7 @@ namespace van_leer
       const CE<Primitive>& edge_slopes_;
     } minmoder(edge_slopes);
 
-    return serial_generate(minmoder);
+    return serial_generate<Primitive, CP>(minmoder);
   }
 }
 
@@ -154,7 +154,7 @@ public:
 
     private:
       const NewHydroSnapshot<CE, CP>& hs_;
-      const vector<Primitive> cell_slopes_;
+      const CP<Primitive> cell_slopes_;
     } interpolator(hs);
 
     return serial_generate(interpolator);
