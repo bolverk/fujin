@@ -17,7 +17,7 @@ public:
     rs_(rs) {}
 
   RiemannSolution operator()
-  (bool side, vector<Primitive> const& cells) const override
+  (bool side, const CP<Primitive>& cells) const override
   {
     return side ? rs_(cells.front(),cells.back()) :
      rs_(cells.back(),cells.front());

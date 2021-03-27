@@ -360,7 +360,7 @@ namespace srhydro{
   double negative_flux(const RiemannSolution& rs);
 
   template<template<class> class CE>
-  vector<double> calc_all_vertex_areas
+  CE<double> calc_all_vertex_areas
   (const Geometry& geo,
    const CE<double>& vertices)
   {
@@ -374,12 +374,12 @@ namespace srhydro{
     return res;
   }
 
-  template<template<class> class CE, template<class> class CP>
-  CP<double> VerticesVolumes
+  template<template<class> class CE>
+  CE<double> VerticesVolumes
   (const CE<double>& vertices, 
    Geometry const& geometry)
   {
-    CP<double> res;
+    CE<double> res;
     resize_if_necessary(res, vertices.size());
     transform(vertices.begin(),
 	      vertices.end(),
@@ -418,7 +418,7 @@ void update_new_conserved(const vector<RiemannSolution>& psvs,
 	    [&dt](const RiemannSolution& rsol, double pos)
 	    {return pos + dt*celerity2velocity(rsol.Celerity);});
 
-  const CE<double> volume_new = srhydro::VerticesVolumes<CE,CP>(vertices,geometry);
+  const CE<double> volume_new = srhydro::VerticesVolumes<CE>(vertices,geometry);
 
   for(size_t i=0;i<conserved.size();++i){
     conserved[i].positive += 
