@@ -45,7 +45,7 @@ namespace van_leer
     \return Derivatives of the hydrodynamic variables on the edges
    */
   template<template<class> class CE, template<class> class CP>
-  vector<Primitive> calc_edge_slopes
+  CE<Primitive> calc_edge_slopes
   (const NewHydroSnapshot<CE, CP>& hs)
   {
     const class DerivativeInterface: public Index2Member<Primitive>
@@ -73,7 +73,7 @@ namespace van_leer
     private:
       const NewHydroSnapshot<CE, CP>& hs_;
     } deriv_interface(hs);
-    return serial_generate(deriv_interface);
+    return serial_generate<Primitive,CE>(deriv_interface);
   }
 
   /*! \brief Calculates the slopes on the computational cells
@@ -82,14 +82,15 @@ namespace van_leer
    */
   template<template<class> class CE, template<class> class CP>
   vector<Primitive> calc_cell_slopes
-  (const NewHydroSnapshot<CP, CE>& hs)
+  (const NewHydroSnapshot<CE, CP>& hs)
   {
-    const vector<Primitive> edge_slopes = calc_edge_slopes(hs);
-    const class Minmoder: public Index2Member<Primitive>
+    const CE<Primitive> edge_slopes = calc_edge_slopes(hs);
+
+    class Minmoder: public Index2Member<Primitive>
     {
     public:
 
-     explicit Minmoder(const vector<Primitive>& edge_slopes_i):
+     explicit Minmoder(const CE<Primitive>& edge_slopes_i):
 	edge_slopes_(edge_slopes_i) {}
 
       size_t getLength(void) const
@@ -104,7 +105,7 @@ namespace van_leer
       }
 
     private:
-      const vector<Primitive>& edge_slopes_;
+      const CE<Primitive>& edge_slopes_;
     } minmoder(edge_slopes);
 
     return serial_generate(minmoder);
