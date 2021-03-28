@@ -1,8 +1,6 @@
 #include "trans_eqn_solver.hpp"
-#include <vector>
 #include <algorithm>
 
-using std::vector;
 using std::size_t;
 using std::for_each;
 

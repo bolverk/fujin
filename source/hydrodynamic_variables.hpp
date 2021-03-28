@@ -7,11 +7,9 @@
 #define HYDRODYNAMIC_VARIABLES_HPP 1
 
 #include <string>
-#include <vector>
 #include <array>
 #include <functional>
 
-using std::vector;
 using std::string;
 using std::array;
 using std::function;
@@ -115,62 +113,6 @@ public:
   //! \brief Celerity
   double& Celerity;
 };
-
-//! \brief Union for grid and primitive variables
-#if 0
-class HydroSnapshot: public pair<vector<double>, vector<Primitive> >
-{
-public:
-
-  /*! \brief Class constructor
-    \param edges_i Grid
-    \param cells_i List of primitive variables
-   */
-  HydroSnapshot(vector<double> const& edges_i,
-		vector<Primitive> const& cells_i);
-
-  /*! \brief Copy constructor
-    \param source Source
-   */
-  HydroSnapshot(HydroSnapshot const& source);
-
-  /*! \brief Copy constructor
-    \param source Source
-    return reference to self
-  */
-  HydroSnapshot& operator=(const HydroSnapshot& source);
-
-  //! \brief Grid
-  vector<double>& edges;
-
-  //! \brief Primitive variables
-  vector<Primitive>& cells;
-};
-
-/*! \brief Addition operator
-  \param hs1 Left argument
-  \param hs2 Right argument
-  \return Sum
- */
-HydroSnapshot operator+(HydroSnapshot const& hs1,
-			HydroSnapshot const& hs2);
-
-/*! \brief Subtraction operation
-  \param hs1 Left argument
-  \param hs2 Right argument
-  \return Difference
- */
-HydroSnapshot operator-(HydroSnapshot const& hs1,
-			HydroSnapshot const& hs2);
-
-/*! \brief Multiplication by a scalar
-  \param d Scalar
-  \param hs Hydrodynamic snapshot
-  \return Product
- */
-HydroSnapshot operator*(double d,
-			HydroSnapshot const& hs);
-#endif // 0
 
 /*! \brief Converts primitive variables to conserved (normalised by volume)
   \param p Primitive variables

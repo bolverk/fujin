@@ -28,7 +28,7 @@ public:
     rs_(rs) {}
 
   RiemannSolution operator()
-  (bool side, vector<Primitive> const& cells) const override
+  (bool side, CP<Primitive> const& cells) const override
   {
     return side ? rs_(cells.back(), invert_celerity(cells.back())) :
       rs_(invert_celerity(cells.front()), cells.front());

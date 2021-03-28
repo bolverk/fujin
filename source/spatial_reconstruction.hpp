@@ -10,6 +10,7 @@
 #include "hydrodynamic_variables.hpp"
 
 using std::min;
+using std::vector;
 
 //! \brief Base class for interpolations
 template<template<class> class CE, template<class> class CP>
