@@ -332,6 +332,36 @@ namespace srhydro
     CalcFluxes<CE, CP>(data,sr,rs,dt,lbc,rbc,res);
     return res;
   }
+
+  template<template<class> class CE>
+  CE<double> VerticesVolumes(const CE<double>& vertices, 
+			     const Geometry& geometry)
+  {
+    CE<double> res;
+    resize_if_necessary(res, vertices.size());
+    transform(vertices.begin(),
+	      vertices.end(),
+	      res.begin(),
+	      [&geometry](const double r)
+	      {return geometry.calcVolume(r);});
+    return res;
+  }
+
+  template<template<class> class CE, template<class> class CP>
+  CP<double> CellAreas
+  (CE<double> const& vertices, 
+   Geometry const& geometry)
+  {
+    CP<double> res;
+    resize_if_necessary(res, vertices.size()-1);
+    transform(vertices.begin(),
+	      vertices.end()-1,
+	      vertices.begin()+1,
+	      res.begin(),
+	      [&geometry](const double x, const double y)
+	      {return geometry.calcArea(0.5*(x+y));});
+    return res;
+  }
 }
 
 /*! \brief Updates the conserved variables and vertices
@@ -342,12 +372,39 @@ namespace srhydro
   \param vertices Vertices
   \param conserved Conserved variables
 */
+template<template<class> class CE, template<class> class CP>
 void UpdateConserved(vector<RiemannSolution>  const& psvs,
 		     vector<double> const& rest_mass,
 		     double dt, 
 		     Geometry const& geometry,
 		     vector<double>& vertices,
-		     vector<Conserved>& conserved);
+		     vector<Conserved>& conserved)
+{
+  const CE<double> volume_old = srhydro::VerticesVolumes<CE>
+    (vertices,geometry);
+  const CE<double> area_old = srhydro::CellAreas<CE, CP>(vertices,geometry);
+  transform(psvs.begin(),
+	    psvs.end(),
+	    vertices.begin(),
+	    vertices.begin(),
+	    [&dt](const RiemannSolution& rsol, const double pos)
+	    {return pos+dt*celerity2velocity(rsol.Celerity);});
+
+  const CE<double> volume_new = srhydro::VerticesVolumes<CE>(vertices,geometry);
+  const CP<double> area_new = srhydro::CellAreas<CE, CP>(vertices,geometry);
+
+  for(size_t i=0;i<conserved.size();++i){
+    conserved[i].Energy += 
+      (psvs[i].Pressure*(volume_new[i]-volume_old[i])-
+       psvs[i+1].Pressure*(volume_new[i+1]-volume_old[i+1]))/
+      rest_mass[i];
+    conserved[i].Momentum +=
+      (psvs[i].Pressure-psvs[i+1].Pressure)*dt*
+      0.5*(area_new[i]+area_old[i])/rest_mass[i];
+    conserved[i].Mass = rest_mass[i]/
+      (volume_new[i+1]-volume_new[i]);
+  }
+}
 
 namespace srhydro{
 
@@ -371,21 +428,6 @@ namespace srhydro{
 	      res.begin(),
 	      [&geo](const double r)
 	      {return geo.calcArea(r);});
-    return res;
-  }
-
-  template<template<class> class CE>
-  CE<double> VerticesVolumes
-  (const CE<double>& vertices, 
-   Geometry const& geometry)
-  {
-    CE<double> res;
-    resize_if_necessary(res, vertices.size());
-    transform(vertices.begin(),
-	      vertices.end(),
-	      res.begin(),
-	      [&geometry](const double r)
-	      {return geometry.calcVolume(r);});
     return res;
   }
 }
@@ -457,17 +499,6 @@ void UpdatePrimitives
 		(prim,
 		 old_to_new_conserved(cons));});
 }
-
-/*! \brief Updates the primitive variables
-  \param conserved Conserved variables
-  \param eos Equation of state
-  \param cells Primitive variables
-*/
-/*
-void UpdatePrimitives(vector<NewConserved> const& conserved,
-		      EquationOfState const& eos,
-		      vector<Primitive>& cells);
-*/
 
 /*! \brief Updates the primitive variables
   \param conserved Conserved variables
@@ -564,7 +595,7 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
     (RestMassCalculator<CE, CP>(data, geometry));
 
   CP<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
-  UpdateConserved(fluxes,rest_masses,dt,geometry,
+  UpdateConserved<CE, CP>(fluxes,rest_masses,dt,geometry,
 		  res.edges,conserved);
 
   const CP<bool> filter = NeedUpdate<CE, CP>(fluxes);

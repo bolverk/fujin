@@ -45,6 +45,7 @@ namespace {
     \param geometry Geometry
     \return Areas of cells
   */
+  /*
   vector<double> CellAreas(vector<double> const& vertices, 
 			   Geometry const& geometry)
   {
@@ -57,12 +58,14 @@ namespace {
 	      {return geometry.calcArea(0.5*(x+y));});
     return res;
   }
+  */
 
   /*! \brief Volumes contained within vertices
     \param vertices Position of vertices
     \param geometry Geometry
     \return Volumes
   */
+  /*
   vector<double> VerticesVolumes(vector<double> vertices, 
 				 Geometry const& geometry)
   {
@@ -74,6 +77,7 @@ namespace {
 	      {return geometry.calcVolume(r);});
     return res;
   }
+  */
 }
 
 double CellVolume(double rl, double rr, Geometry const& geometry)
@@ -339,6 +343,7 @@ namespace{
   */
 }
 
+/*
 void UpdateConserved(vector<RiemannSolution>  const& psvs,
 		     vector<double> const& rest_mass,
 		     double dt, 
@@ -371,6 +376,7 @@ void UpdateConserved(vector<RiemannSolution>  const& psvs,
       (volume_new[i+1]-volume_new[i]);
   }
 }
+*/
 
 namespace {
 
