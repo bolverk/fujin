@@ -122,6 +122,7 @@ vector<Primitive> InitCells(vector<double> const& v,
 namespace {
 
   //! \brief Converts primitives to conserved variables
+  #if 0
   class Primitive2ConservedConverter: public Index2Member<Conserved>
   {
   public:
@@ -150,14 +151,17 @@ namespace {
     //! \brief Equation of state
     const EquationOfState& eos_;
   };
+#endif // 0
 }
 
+/*
 vector<Conserved> Primitives2Conserveds
 (vector<Primitive> const& p,
  const EquationOfState& eos )
 {
   return serial_generate(Primitive2ConservedConverter(p,eos));
 }
+*/
 
 /*
 vector<NewConserved> primitives_to_new_conserveds

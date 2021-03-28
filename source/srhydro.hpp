@@ -138,8 +138,10 @@ CP<Primitive> InitCells(const CE<double>& v,
   \param eos Equation of state
   \return Vector of conserved variables
 */
+/*
 vector<Conserved> Primitives2Conserveds
 (vector<Primitive> const& p, const EquationOfState& eos);
+*/
 
 namespace srhydro
 {
@@ -175,10 +177,10 @@ namespace srhydro
   };
 }
 
-/*! \brief Calculates the vector of conserved variables
+/*! \brief Calculates the list of conserved variables
   \param p Primitive variables
   \param eos Equation of state
-  \return Vector of conserved variables
+  \return List of conserved variables
 */
 template<template<class> class CP>
 CP<NewConserved> primitives_to_new_conserveds
@@ -197,24 +199,12 @@ CP<NewConserved> primitives_to_new_conserveds
 double MaxTimeStepSingle(double width, Primitive const& p,
 			 const EquationOfState& eos );
 
-/*! \brief Calculates the maximum time step according to CFL condition, for the entire grid
-  \param v Vertices
-  \param p Cells
-  \param eos Equation of state
-  \return Max time step
-*/
-/*
-  double MaxTimeStep(vector<double> const& v, vector<Primitive> const& p,
-  const EquationOfState& eos);
-*/
-
 template<template<class> class CE, template<class> class CP>
 double MaxTimeStep
 (const CE<double>& v_list,
  const CP<Primitive>& p_list,
  const EquationOfState& eos)
 {
-  //  vector<double> valid_time_steps;
   double res = 0;
   for(size_t i=0;i<p_list.size();++i){
     const Primitive p = p_list[i];
@@ -327,10 +317,8 @@ namespace srhydro
    const BoundaryCondition<CP>& lbc,
    const BoundaryCondition<CP>& rbc)
   {
-    //CE<RiemannSolution> res(data.edges.size());
     CE<RiemannSolution> res;
     resize_if_necessary(res, data.edges.size());
-    //    vector<Primitive> new_cells(data.cells.size());
     CalcFluxes<CE, CP>(data,sr,rs,dt,lbc,rbc,res);
     return res;
   }
@@ -431,6 +419,46 @@ namespace srhydro{
 	      [&geo](const double r)
 	      {return geo.calcArea(r);});
     return res;
+  }
+
+  template<template<class> class CP>
+  class Primitive2ConservedConverter: public Index2Member<Conserved>
+  {
+  public:
+
+    /*! \brief Class constructor
+      \param p_list Computational cells
+      \param eos Equation of state
+     */
+    Primitive2ConservedConverter
+    (const CP<Primitive>& p_list,
+     const EquationOfState& eos):
+      p_list_(p_list), eos_(eos) {}
+
+    size_t getLength(void) const
+    {
+      return p_list_.size();
+    }
+
+    Conserved operator()(size_t i) const
+    {
+      return Primitive2Conserved(p_list_[i],eos_);
+    }
+
+  private:
+    //! \brief Computational cells
+    const CP<Primitive>& p_list_;
+    //! \brief Equation of state
+    const EquationOfState& eos_;
+  };
+
+  template<template<class> class CP>
+  CP<Conserved> Primitives2Conserveds
+  (const CP<Primitive>& p,
+   const EquationOfState& eos)
+  {
+    return serial_generate<Conserved, CP>
+      (Primitive2ConservedConverter<CP>(p,eos));
   }
 }
 
@@ -596,7 +624,7 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
   const CP<double> rest_masses = serial_generate
     (RestMassCalculator<CE, CP>(data, geometry));
 
-  CP<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
+  CP<Conserved> conserved = srhydro::Primitives2Conserveds<CP>(data.cells,eos);
   UpdateConserved<CE, CP>(fluxes,rest_masses,dt,geometry,
 		  res.edges,conserved);
 
