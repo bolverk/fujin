@@ -9,6 +9,8 @@
 #include "utilities.hpp"
 #include "polynomial.hpp"
 
+template<class T> using quartic = array<double, 5>;
+
 //! \brief Enthalpy equation
 class EnthalpyEquation: public SVDifferentiable
 {
@@ -28,7 +30,7 @@ public:
 private:
 
   //! \brief Left hand side of enthalpy equation
-  const Polynomial poly_;
+  const Polynomial<quartic> poly_;
 };
 
 #endif // ENTHALPY_EQUATION_HPP
