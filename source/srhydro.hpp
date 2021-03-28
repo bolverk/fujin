@@ -319,7 +319,7 @@ template<template<class> class CE, template<class> class CP> void CalcFluxes
 namespace srhydro
 {
   template<template<class> class CE, template<class> class CP>
-  vector<RiemannSolution> CalcFluxes1
+  CE<RiemannSolution> CalcFluxes1
   (const NewHydroSnapshot<CE, CP>& data,
    const SpatialReconstruction<CE, CP>& sr,
    const RiemannSolver& rs,
@@ -327,8 +327,10 @@ namespace srhydro
    const BoundaryCondition<CP>& lbc,
    const BoundaryCondition<CP>& rbc)
   {
-    vector<RiemannSolution> res(data.edges.size());
-    vector<Primitive> new_cells(data.cells.size());
+    //CE<RiemannSolution> res(data.edges.size());
+    CE<RiemannSolution> res;
+    resize_if_necessary(res, data.edges.size());
+    //    vector<Primitive> new_cells(data.cells.size());
     CalcFluxes<CE, CP>(data,sr,rs,dt,lbc,rbc,res);
     return res;
   }
