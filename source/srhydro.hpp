@@ -463,20 +463,9 @@ void UpdatePrimitives
   \param eos Equation of state
   \param cells Primitive variables
 */
+/*
 void UpdatePrimitives(vector<NewConserved> const& conserved,
 		      EquationOfState const& eos,
-		      vector<Primitive>& cells);
-
-/*! \brief Updates the primitive variables
-  \param conserved Conserved variables
-  \param eos Equation of state
-  \param filter array which determines which cells should be updated
-  \param cells Primitive variables
-*/
-/*
-void UpdatePrimitives(vector<Conserved> const& conserved,
-		      EquationOfState const& eos,
-		      vector<bool> const& filter,
 		      vector<Primitive>& cells);
 */
 
