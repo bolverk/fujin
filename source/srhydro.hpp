@@ -501,7 +501,7 @@ void UpdatePrimitives(const CP<NewConserved>& conserved,
 template<template<class> class CP>
 void UpdatePrimitives(CP<Conserved> const& conserved,
 		      EquationOfState const& eos,
-		      vector<bool> const& filter,
+		      CP<bool> const& filter,
 		      CP<Primitive>& cells)
 {
   for(size_t i=0;i<cells.size();++i){
@@ -568,7 +568,7 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
 {
   NewHydroSnapshot<CE, CP> res(data);
 
-  vector<RiemannSolution> fluxes=
+  CE<RiemannSolution> fluxes=
     srhydro::CalcFluxes1<CE, CP>(data,sr,rs,dt,lbc,rbc);
 
   const CP<double> rest_masses = serial_generate
