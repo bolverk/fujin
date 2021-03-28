@@ -373,12 +373,12 @@ namespace srhydro
   \param conserved Conserved variables
 */
 template<template<class> class CE, template<class> class CP>
-void UpdateConserved(vector<RiemannSolution>  const& psvs,
-		     vector<double> const& rest_mass,
+void UpdateConserved(CE<RiemannSolution>  const& psvs,
+		     CP<double> const& rest_mass,
 		     double dt, 
 		     Geometry const& geometry,
-		     vector<double>& vertices,
-		     vector<Conserved>& conserved)
+		     CE<double>& vertices,
+		     CP<Conserved>& conserved)
 {
   const CE<double> volume_old = srhydro::VerticesVolumes<CE>
     (vertices,geometry);
