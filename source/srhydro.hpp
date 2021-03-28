@@ -249,7 +249,7 @@ template<template<class> class CE, template<class> class CP> void CalcFluxes
  double dt, 
  const BoundaryCondition<CP>& lbc,
  const BoundaryCondition<CP>& rbc,
- vector<RiemannSolution>& psvs)
+ CE<RiemannSolution>& psvs)
 {
 #ifdef PARALLEL
   MPI_Request send_left, send_right;
@@ -400,7 +400,7 @@ namespace srhydro{
   \param conserved Conserved variables
 */
 template<template<class> class CE, template<class> class CP>
-void update_new_conserved(const vector<RiemannSolution>& psvs,
+void update_new_conserved(const CE<RiemannSolution>& psvs,
 			  const CP<Primitive>& cells,
 			  const CP<double>& rest_mass,
 			  double dt, 
@@ -489,7 +489,7 @@ void UpdatePrimitives(vector<Conserved> const& conserved,
 template<template<class> class CP>
 void UpdatePrimitives(const CP<NewConserved>& conserved,
 		      const EquationOfState& eos,
-		      const vector<bool>& filter,
+		      const CP<bool>& filter,
 		      CP<Primitive>& cells)
 {
   for(size_t i=0;i<cells.size();++i){
@@ -516,7 +516,33 @@ void UpdatePrimitives(CP<Conserved> const& conserved,
   \param psvs Riemann solutions at edges
   \return Array of boolean variables, denoting cells that should be updated by true
 */
-vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs);
+template<template<class> class CE, template<class> class CP>
+CP<bool> NeedUpdate(CE<RiemannSolution> const& psvs)
+{
+  const class Checker: public Index2Member<bool>
+  {
+  public:
+    explicit Checker(const CE<RiemannSolution>& psvs_i):
+      psvs_(psvs_i) {}
+
+    size_t getLength(void) const
+    {
+      return psvs_.size()-1;
+    }
+
+    bool operator()(size_t i) const
+    {
+      return !(effectively_zero(psvs_[i].Celerity)&&
+	       effectively_zero(psvs_[i+1].Celerity)&&
+	       effectively_zero(psvs_[i].Pressure-
+				psvs_[i+1].Pressure));
+    }
+
+  private:
+    const CE<RiemannSolution>& psvs_;
+  } checker(psvs);
+  return serial_generate<bool, CP>(checker);
+}
 
 /*! \brief Returns the hydrodynamic data in the next time step
   \param data Old hydrodynamic data
@@ -552,7 +578,7 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
   UpdateConserved(fluxes,rest_masses,dt,geometry,
 		  res.edges,conserved);
 
-  vector<bool> filter = NeedUpdate(fluxes);
+  const CP<bool> filter = NeedUpdate<CE, CP>(fluxes);
   UpdatePrimitives<CP>(conserved,eos,filter,res.cells);
 
   return NewHydroSnapshot<CE, CP>(res.edges, res.cells);

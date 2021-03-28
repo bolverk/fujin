@@ -17,9 +17,10 @@
 #include <cassert>
 #include "srhydro.hpp"
 
-template<template<class> class CE, template<class> class CP> double new_calc_time_step
+template<template<class> class CE, template<class> class CP>
+double new_calc_time_step
 (const NewHydroSnapshot<CE, CP>& data,
- const vector<RiemannSolution>& psvs,
+ const CE<RiemannSolution>& psvs,
  const EquationOfState& eos,
  const double cfl)
 {
@@ -87,7 +88,7 @@ private:
   //! \brief Equation of state
   const EquationOfState& eos_;
   //! \brief Riemann solutions
-  vector<RiemannSolution> psvs_;
+  CE<RiemannSolution> psvs_;
   //! \brief rs Riemann sovler
   const RiemannSolver& rs_;
   //! \brief Spatial reconstruction method
@@ -138,9 +139,12 @@ public:
 	   density_distribution,
 	   pressure_distribution,
 	   proper_velocity_distribution)),
-    eos_(eos), 
+    eos_(eos),
+    /*
     psvs_(distribute_vertices1<CE>(vertices).size(),
 	  RiemannSolution()),
+    */
+    psvs_(),
     rs_(riemann_solver), 
     sr_(interpolation_method),
     cfl_(1./3.), 
@@ -150,7 +154,10 @@ public:
     time_(0),
     cycle_(0),
     innerBC_(inner_bc), 
-    outerBC_(outer_bc) {}
+    outerBC_(outer_bc)
+  {
+    resize_if_necessary(psvs_, data_.edges.size());
+  }
 
   /*! \brief Class constructor
     \param init_cond Initial conditions
@@ -228,7 +235,7 @@ public:
 	       outerBC_,
 	       psvs_);
 
-    const vector<bool> filter = NeedUpdate(psvs_);
+    const CP<bool> filter = NeedUpdate<CE, CP>(psvs_);
 
     update_new_conserved<CE,CP>
       (psvs_,
@@ -270,10 +277,11 @@ public:
     const double dt = temp;
     spdlog::debug("dt = {0}", dt);
 #else
-    const double dt = new_calc_time_step(data_,
-					 psvs_,
-					 eos_,
-					 cfl_);
+    const double dt = new_calc_time_step<CE, CP>
+      (data_,
+       psvs_,
+       eos_,
+       cfl_);
 #endif // PARALLEL
 
     update_new_conserved<CE,CP>(psvs_,
@@ -290,7 +298,7 @@ public:
 	     [](const NewConserved& cv)
 	     {assert(cv.mass>0);});
 
-    const vector<bool> filter = NeedUpdate(psvs_);
+    const CP<bool> filter = NeedUpdate<CE, CP>(psvs_);
 
     UpdatePrimitives<CP>(consVars_, eos_, filter, data_.cells);
 

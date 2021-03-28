@@ -5,7 +5,7 @@ LIB_FILE := libfujin.a
 CC := clang++
 SILENCE_WARNINGS := 0
 ifeq ($(MODE),debug)
-	CFLAGS := -O0 -g -pg -Weverything -Werror -ferror-limit=1 -Wno-error=padded
+	CFLAGS := -O0 -g -pg -Weverything -Werror -ferror-limit=1 -Wno-error=padded -Wno-c++98-compat
 	LFLAGS := -pg
 else ifeq ($(MODE),parallel)
 	CC = mpiCC

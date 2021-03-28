@@ -3,7 +3,7 @@ EXECUTION_PREFIX =
 PROCESS_NUM = 2
 ifeq ($(MODE),debug)
 	CC = clang++
-	CFLAGS := -O0 -g -pg -Weverything -Werror -Wno-error=padded -ferror-limit=1
+	CFLAGS := -O0 -g -pg -Weverything -Werror -Wno-error=padded -ferror-limit=1 -Wno-c++98-compat
 	LFLAGS := -pg
 else ifeq ($(MODE),gcc)
 	CC = gcc

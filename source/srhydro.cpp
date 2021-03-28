@@ -520,6 +520,7 @@ void UpdatePrimitives(vector<NewConserved> const& conserved,
 }
  */
 
+  /*
 vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs)
 {
   const class Checker: public Index2Member<bool>
@@ -546,6 +547,7 @@ vector<bool> NeedUpdate(vector<RiemannSolution> const& psvs)
   } checker(psvs);
   return serial_generate(checker);
 }
+  */
 
 /*
 void UpdatePrimitives(vector<Conserved> const& conserved,
