@@ -19,7 +19,8 @@ private:
 public:
 
   RiemannSolution operator()
-  (bool side, vector<Primitive> const& cells) const
+  (bool side,
+   const CP<Primitive>& cells) const
   {
     return side ? Primitive2RiemannSolution(cells.back()) :
       Primitive2RiemannSolution(cells.front());

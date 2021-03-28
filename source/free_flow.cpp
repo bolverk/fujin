@@ -15,11 +15,13 @@ namespace {
   }
 }
 
+/*
 RiemannSolution FreeFlow::operator()
 (bool side, vector<Primitive> const& cells) const
 {
   return side ? Primitive2RiemannSolution(cells.back()) :
     Primitive2RiemannSolution(cells.front());
 }
+*/
 
 #endif // 0
