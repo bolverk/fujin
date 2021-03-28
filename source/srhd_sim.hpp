@@ -95,7 +95,7 @@ private:
   const SpatialReconstruction<CE, CP>& sr_;
   //! \brief Courant Friedrichs Lewy factor
   double cfl_;
-  //! \brief Vectors of conserved variables
+  //! \brief List of conserved variables
   CP<NewConserved> consVars_;
   //! \brief Rest masses of the cells
   CP<double> restMass_;
@@ -348,12 +348,12 @@ public:
   /*! \brief Returns a list of Riemann solutions
     \return Riemann solutions
   */
-  const vector<RiemannSolution>& getRiemannSolutions(void) const;
+  const CE<RiemannSolution>& getRiemannSolutions(void) const;
 
   /*! \brief Returns the conserved variables
     \return Conserved variables
   */
-  const vector<NewConserved>& getConserved(void) const
+  const CP<NewConserved>& getConserved(void) const
   {
     return consVars_;
   }
