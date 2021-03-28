@@ -395,7 +395,7 @@ public:
   /*! \brief Returns the rest masses
     \return Rest masses
   */
-  const vector<double>&  getRestMasses(void) const
+  const CP<double>&  getRestMasses(void) const
   {
     return restMass_;
   }
