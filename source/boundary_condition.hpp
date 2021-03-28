@@ -6,7 +6,6 @@
 #ifndef BOUNDARY_CONDITION_HPP
 #define BOUNDARY_CONDITION_HPP 1
 
-#include <vector>
 #include "riemann_solver.hpp"
 
 //! \brief Base class for boundary condition

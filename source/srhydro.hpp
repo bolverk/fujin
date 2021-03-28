@@ -27,16 +27,6 @@
 double CellVolume(double rl, double rr,
 		  Geometry const& geometry);
 
-/*! \brief Calculates the rest masses
-  \param v Vertices
-  \param p Primitive variables
-  \param geometry Geometry
-  \return Vector of rest masses
-*/
-/*
-  vector<double> CalcRestMasses(const HydroSnapshot& hs,
-  const Geometry& geometry);
-*/
 template<template<class> class CE, template<class> class CP>
 class RestMassCalculator: public Index2Member<double>
 {
@@ -122,7 +112,7 @@ namespace srhydro{
   \param dd Density distribution
   \param pd Pressure distribution
   \param vd Velocity distribution
-  \return Vector of primitive variables
+  \return List of primitive variables
 */
 template<template<class> class CE, template<class> class CP>
 CP<Primitive> InitCells(const CE<double>& v,
@@ -132,16 +122,6 @@ CP<Primitive> InitCells(const CE<double>& v,
 {
   return serial_generate<Primitive, CP>(srhydro::CellGenerator<CE>(v,dd,pd,vd));
 }
-
-/*! \brief Calculates the vector of conserved variables
-  \param p Primitive variables
-  \param eos Equation of state
-  \return Vector of conserved variables
-*/
-/*
-vector<Conserved> Primitives2Conserveds
-(vector<Primitive> const& p, const EquationOfState& eos);
-*/
 
 namespace srhydro
 {
