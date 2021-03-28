@@ -20,13 +20,15 @@ namespace pcm{
 
     size_t getLength(void) const
     {
-      return hs_.cells.size()-1;
+      return hs_.cells.size()+1;
     }
 
     std::pair<Primitive,Primitive> operator()(size_t i) const
     {
-      return std::pair<Primitive,Primitive>(hs_.cells[i],
-					    hs_.cells[i+1]);
+      if(i==0 || i==getLength()-1)
+	return std::pair<Primitive,Primitive>();
+      return std::pair<Primitive,Primitive>(hs_.cells[i-1],
+					    hs_.cells[i]);
     }
 
   private:

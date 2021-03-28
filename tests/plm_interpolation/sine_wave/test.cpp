@@ -14,12 +14,21 @@
 using namespace std;
 
 namespace {
+
+  template<class T> vector<T> chop_ends(const vector<T>& arr)
+  {
+    vector<T> res(arr.size()-2);
+    for(size_t i=0;i<res.size();++i)
+      res.at(i) = arr.at(i+1);
+    return res;
+  }
+  
   vector<double> interpolated_values
   (const NewHydroSnapshot<simple_vector, simple_vector>& hs, 
    const SpatialReconstruction<simple_vector, simple_vector>& sr)
   {
     const vector<pair<Primitive,Primitive> > temp =
-      sr.interpolateAll(hs,0);
+      chop_ends(sr.interpolateAll(hs,0));
 
     vector<double> res;
     for(size_t i=0;i<temp.size();++i){
@@ -71,6 +80,9 @@ namespace {
     NewHydroSnapshot<simple_vector, simple_vector> hs(edges, cells);
     vector<double> numeric = interpolated_values(hs, sr);
     vector<double> analytic = calculated_values(edges,density);
+    cout << "debug" << endl;
+    cout << numeric[0] << " " << analytic[0] << endl;
+    cout << "end debug" << endl;
     return l1_error_norm(numeric, analytic);
   }
 
@@ -92,6 +104,7 @@ namespace {
     return res;
   }
 
+  /*
   vector<double> order_edges(vector<double> const& edges)
   {
     vector<double> res;
@@ -101,7 +114,9 @@ namespace {
     }
     return res;
   }
+  */
 
+  /*
   void interpolation_snapshot(size_t np)
   {
     PCM<simple_vector, simple_vector> pcm;
@@ -129,6 +144,7 @@ namespace {
     write_to_file(plm_data,"plm_data.txt");
     write_to_file(analytic,"analytic_data.txt");
   }
+  */
 
   void interpolation_comparison(void)
   {
@@ -145,7 +161,7 @@ namespace {
 
 int main(void)
 {
-  interpolation_snapshot(10);
+  //  interpolation_snapshot(10);
 
   interpolation_comparison();
 

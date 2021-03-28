@@ -277,10 +277,10 @@ template<template<class> class CE, template<class> class CP> void CalcFluxes
   psvs.front() = lbc(false,data.cells);
   psvs.back() = rbc(true,data.cells);
 #endif // PARALLEL
-  const vector<std::pair<Primitive, Primitive> > interp_vals =
+  const CE<std::pair<Primitive, Primitive> > interp_vals =
     sr.interpolateAll(data,dt);
-  transform(interp_vals.begin(),
-	    interp_vals.end(),
+  transform(interp_vals.begin()+1,
+	    interp_vals.end()-1,
 	    psvs.begin()+1,
 	    [&rs](const pair<Primitive, Primitive>& pp)
 	    {return rs(pp.first, pp.second);});

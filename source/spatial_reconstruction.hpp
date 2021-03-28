@@ -23,7 +23,7 @@ public:
     \param dt Time step
     \return List of interpolated values on both sides of each interface
    */
-  virtual vector<std::pair<Primitive,Primitive> > 
+  virtual CE<std::pair<Primitive,Primitive> > 
   interpolateAll
   (const NewHydroSnapshot<CE, CP>& hs,
    double dt) const = 0;

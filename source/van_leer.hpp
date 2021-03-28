@@ -124,7 +124,7 @@ public:
    */
   VanLeer(void) {}
 
-  vector<std::pair<Primitive,Primitive> > interpolateAll
+  CE<std::pair<Primitive,Primitive> > interpolateAll
   (const NewHydroSnapshot<CE, CP>& hs,
    double /*dt*/) const
   {
@@ -140,16 +140,18 @@ public:
 
       size_t getLength(void) const
       {
-	return hs_.edges.size()-2;
+	return hs_.edges.size();
       }
 
       std::pair<Primitive, Primitive> operator()(size_t i) const
       {
+	if(i==0 || i==getLength()-1)
+	  return std::pair<Primitive, Primitive>();
 	return std::pair<Primitive, Primitive>
-	  (hs_.cells[i]+
-	   0.5*(hs_.edges[i+1]-hs_.edges[i])*cell_slopes_[i],
-	   hs_.cells[i+1]-
-	   0.5*(hs_.edges[i+2]-hs_.edges[i+1])*cell_slopes_[i+1]);
+	  (hs_.cells[i-1]+
+	   0.5*(hs_.edges[i]-hs_.edges[i-1])*cell_slopes_[i-1],
+	   hs_.cells[i]-
+	   0.5*(hs_.edges[i+1]-hs_.edges[i])*cell_slopes_[i]);
       }
 
     private:
@@ -157,7 +159,7 @@ public:
       const CP<Primitive> cell_slopes_;
     } interpolator(hs);
 
-    return serial_generate(interpolator);
+    return serial_generate<pair<Primitive,Primitive>, CE>(interpolator);
   }
 };
 
