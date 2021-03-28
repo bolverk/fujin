@@ -571,7 +571,7 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
   vector<RiemannSolution> fluxes=
     srhydro::CalcFluxes1<CE, CP>(data,sr,rs,dt,lbc,rbc);
 
-  const vector<double> rest_masses = serial_generate
+  const CP<double> rest_masses = serial_generate
     (RestMassCalculator<CE, CP>(data, geometry));
 
   CP<Conserved> conserved = Primitives2Conserveds(data.cells,eos);
