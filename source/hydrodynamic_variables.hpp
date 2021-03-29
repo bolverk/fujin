@@ -32,7 +32,7 @@ public:
 	    double momentum,
 	    double energy);
 
-  Conserved(const array<double, 3>& source);
+  explicit Conserved(const array<double, 3>& source);
 
   Conserved(const Conserved& source);
 
@@ -74,7 +74,7 @@ public:
 	       double positive_i,
 	       double negative_i);
 
-  NewConserved(const array<double, 3>& source);
+  explicit NewConserved(const array<double, 3>& source);
 
   NewConserved(const NewConserved& source);
 
@@ -86,7 +86,7 @@ class Primitive: public array<double, 3>
 {
 public:
 
-  Primitive(const array<double, 3>& source);
+  explicit Primitive(const array<double, 3>& source);
 
   //! \brief Null constructor
   Primitive(void);

@@ -25,7 +25,7 @@ class SVDifferentiable: public SVFunction
 {
 public:
 
-  virtual double operator()(double x) const = 0;
+  virtual double operator()(double x) const override = 0;
 
   /*! \brief Evaluates the derivative
     \param x Argument
@@ -33,7 +33,7 @@ public:
    */
   virtual double diff(double x) const = 0;
 
-  virtual ~SVDifferentiable(void);
+  virtual ~SVDifferentiable(void) override;
 };
 
 /*! \brief Stopping condition for the solvers
@@ -93,7 +93,7 @@ public:
    */
   explicit SVRelStep(double tol);
 
-  bool operator()(double x, double f, SVFunction const& svf) const;
+  bool operator()(double x, double f, SVFunction const& svf) const override;
 
   /*! \brief Returns the number of iterations
    */
