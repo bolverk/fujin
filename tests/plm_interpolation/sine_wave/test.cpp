@@ -80,9 +80,6 @@ namespace {
     NewHydroSnapshot<simple_vector, simple_vector> hs(edges, cells);
     vector<double> numeric = interpolated_values(hs, sr);
     vector<double> analytic = calculated_values(edges,density);
-    cout << "debug" << endl;
-    cout << numeric[0] << " " << analytic[0] << endl;
-    cout << "end debug" << endl;
     return l1_error_norm(numeric, analytic);
   }
 

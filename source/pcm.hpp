@@ -47,12 +47,13 @@ public:
   //! \brief Class constructor
   PCM(void) {}
 
-  vector<std::pair<Primitive,Primitive> > 
+  CE<std::pair<Primitive,Primitive> > 
   interpolateAll
   (const NewHydroSnapshot<CE, CP>& hs,
    double /*dt*/) const
   {
-    return serial_generate(pcm::Interpolator<CE, CP>(hs));
+    return serial_generate<pair<Primitive, Primitive>, CE>
+      (pcm::Interpolator<CE, CP>(hs));
   }
 };
 

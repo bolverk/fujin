@@ -19,11 +19,17 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#define N 1000
+template<class T> using CE = array<T, N+1>;
+template<class T> using CP = array<T, N>;
+//template<class T> using CE = vector<T>;
+//template<class T> using CP = vector<T>;
+
 using namespace std;
 
 namespace {
   double get_position_max_pressure
-  (const SRHDSimulation<simple_vector, simple_vector>& sim)
+  (const SRHDSimulation<CE, CP>& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
     double rpmax = sim.getHydroSnapshot().edges.at(1);
@@ -38,7 +44,7 @@ namespace {
   }
 
   double get_max_pressure
-  (const SRHDSimulation<simple_vector, simple_vector>& sim)
+  (const SRHDSimulation<CE, CP>& sim)
   {
     double pmax = sim.getHydroSnapshot().cells[0].Pressure;
     for(size_t i=0;i<sim.getHydroSnapshot().cells.size();++i)
@@ -56,7 +62,9 @@ namespace {
       bc_(rs_),
       sr_(),
       geometry_(),
-      sim_(linspace(0,1,1000),
+      sim_
+      (linspace<N+1>(0,1,N+1),
+       //(linspace(0,1,N+1),
 	   Uniform(1),
 	   Step(1e-3, 1e-9, 0.02),
 	   Uniform(0),
@@ -74,20 +82,20 @@ namespace {
   private:
     IdealGas eos_;
     HLL rs_;
-    RigidWall<simple_vector> bc_;
-    PCM<simple_vector, simple_vector> sr_;
+    RigidWall<CP> bc_;
+    PCM<CE, CP> sr_;
     const Spherical geometry_;
-    SRHDSimulation<simple_vector, simple_vector> sim_;
+    SRHDSimulation<CE, CP> sim_;
   };
 
-  class ShockFrontTracker: public DiagnosticFunction<simple_vector, simple_vector>
+  class ShockFrontTracker: public DiagnosticFunction<CE, CP>
   {
   public:
     
     ShockFrontTracker(const string& fname):
       fname_(fname), positions_(), pressures_(), times_() {}
 
-    void operator()(const SRHDSimulation<simple_vector, simple_vector>& sim) const
+    void operator()(const SRHDSimulation<CE, CP>& sim) const
     {
       times_.push_back(sim.getTime());
       pressures_.push_back(get_max_pressure(sim));
@@ -111,7 +119,7 @@ namespace {
     mutable vector<double> times_;
   };
 
-  void my_main_loop(SRHDSimulation<simple_vector, simple_vector>& sim)
+  void my_main_loop(SRHDSimulation<CE, CP>& sim)
   {
 #ifdef PARALLEL
     ShockFrontTracker sft("rpmax_"+int2str(get_mpi_rank())+".txt");
@@ -119,8 +127,11 @@ namespace {
     ShockFrontTracker
       sft("rpmax.txt");
 #endif // PARALLEL
-    SafeTimeTermination<simple_vector, simple_vector> stt(50, 1e6);
-    main_loop(sim, stt, &SRHDSimulation<simple_vector, simple_vector>::timeAdvance, sft);
+    SafeTimeTermination<CE, CP> stt(50, 1e6);
+    main_loop(sim,
+	      stt,
+	      &SRHDSimulation<CE, CP>::timeAdvance,
+	      sft);
   }
 }
 
