@@ -15,6 +15,10 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#define N 100
+template<class T> using CE = array<T, N+1>;
+template<class T> using CP = array<T, N>;
+
 using namespace std;
 
 int main()
@@ -24,9 +28,9 @@ int main()
   MPI_Init(NULL, NULL);
 #endif // PARALLEL
 
-  vector<double> vertex;
-  const size_t n = 100;
-  vertex.resize(n);
+  CE<double> vertex;
+  const size_t n = N+1;
+  //  vertex.resize(n);
   for (size_t i=0; i<n; i++)
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
 
@@ -36,11 +40,11 @@ int main()
   Uniform dv(0.0);
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
-  PCM<simple_vector, simple_vector> sr;
-  RigidWall<simple_vector> bc(rs);
+  PCM<CE, CP> sr;
+  RigidWall<CP> bc(rs);
   const Spherical geometry;
 
-  SRHDSimulation<simple_vector, simple_vector>
+  SRHDSimulation<CE, CP>
     sim(vertex,
 		     dd, dp, dv,
 		     bc, bc,
