@@ -23,6 +23,10 @@
 #include "parallel_helper.hpp"
 #endif // PARALLEL
 
+#define N 1000
+template<class T> using CE = array<T, N+1>;
+template<class T> using CP = array<T, N>;
+
 using namespace std;
 
 class SimData
@@ -39,7 +43,7 @@ public:
     right_bc_(),
     sr_(),
     geometry_(),
-    sim_(linspace(0,1,100),
+    sim_(linspace<N+1>(0,1,100),
 	 dd_,dp_,dv_,
 	 left_bc_, right_bc_,
 	 eos_,rs_,sr_,
@@ -57,17 +61,17 @@ private:
   Uniform dv_;
   IdealGas eos_;
   LinearRS rs_;
-  RigidWall<simple_vector> left_bc_;
-  FreeFlow<simple_vector> right_bc_;
+  RigidWall<CP> left_bc_;
+  FreeFlow<CP> right_bc_;
   //PCM sr_;
-  VanLeer<simple_vector, simple_vector> sr_;
+  VanLeer<CE, CP> sr_;
   const Planar geometry_;
-  SRHDSimulation<simple_vector, simple_vector> sim_;
+  SRHDSimulation<CE, CP> sim_;
 };
 
 namespace {
 
-  void main_loop(SRHDSimulation<simple_vector, simple_vector>& sim)
+  void main_loop(SRHDSimulation<CE, CP>& sim)
   {
     double tf = 0.5;
 
@@ -78,7 +82,7 @@ namespace {
   }
 
   void Output
-  (const SRHDSimulation<simple_vector, simple_vector>& sim)
+  (const SRHDSimulation<CE, CP>& sim)
   {
     ofstream f("res.txt");
     f << sim.getHydroSnapshot().cells[sim.getHydroSnapshot().cells.size()/2].Pressure << "\n";
