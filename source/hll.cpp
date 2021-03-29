@@ -260,7 +260,7 @@ RiemannSolution HLL::operator()(Primitive const& left_i,
 			right_i.Pressure,
 			celerity_addition(right_i.Celerity,
 					  -offset));
-  std::pair<NewConserved,NewConserved> uhll_fhll = 
+  const std::pair<NewConserved,NewConserved> uhll_fhll = 
     calc_uhll_fhll(left, right, eos_);
   const NewConserved& uhll = uhll_fhll.first;
   const NewConserved& fhll = uhll_fhll.second;
