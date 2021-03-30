@@ -29,6 +29,7 @@ public:
   (Primitive const& old, NewConserved const& c) const override;
 
   /*! \brief Returns the value of the adiabatic index
+    \return Value of the adiabatic index
    */
   double getAdiabaticIndex(void) const;
 };

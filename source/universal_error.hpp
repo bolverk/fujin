@@ -32,6 +32,7 @@ public:
   void operator()(string const& field, double val);
   
   /*! \brief Returns the error message
+    \return Error message
    */
   string const& getErrorMessage(void) const;
 

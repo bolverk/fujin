@@ -68,15 +68,12 @@ void write_hdf5_snapshot
      vector<double>(1,sim.getCycle()));
 }
 
-/*! \brief Read an hdf5 snapshot
-  \param fname File name
-  \return Hydrodynamic snapshot
+/*! \brief Read dataset from file
+  \param file File or group name
+  \param field Name of field
+  \param datatype Data type
+  \return Dataset
 */
-/*
-HydroSnapshot read_hdf5_snapshot
-(const string& fname);
-*/
-
 template<class FC> FC read_from_hdf5
 (const H5::Group& file,
  const string& field,
@@ -94,6 +91,12 @@ template<class FC> FC read_from_hdf5
   return res;
 }
 
+/*! \brief Combined lists of hydrodynamics variable to form computational cells
+  \param density List of densities
+  \param pressure List of pressures
+  \param celerity List of proper velocities
+  \return List of cells
+ */
 template<template<class> class CP> CP<Primitive> combine2cells
 (const CP<double>& density,
  const CP<double>& pressure,
@@ -114,6 +117,10 @@ template<template<class> class CP> CP<Primitive> combine2cells
   return res;
 }
 
+/*! \brief Read data from snapshot file
+  \param fname File name
+  \return Hydrodynamic snapshot
+ */
 template<template<class> class CE, template<class> class CP>
 NewHydroSnapshot<CE, CP> read_hdf5_snapshot_new
 (const string& fname)

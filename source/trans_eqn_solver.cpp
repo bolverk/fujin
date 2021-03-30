@@ -50,31 +50,36 @@ public:
     return (xm>=xl_&&xm<=xr_);
   }
 
-  //! Width of the bracket
+  //! \brief Width of the bracket
+  //! \return Width
   double width(void) const
   {
     return xr_ - xl_;
   }
 
   //! \brief Position of left bracket
+  //! \return Left bracket
   double get_xl(void) const
   {
     return xl_;
   }
 
   //! \brief Position of right bracket
+  //! \return Right bracket
   double get_xr(void) const
   {
     return xr_;
   }
 
   //! \brief Value of the function at the left bracket
+  //! \return Function value at left bracket
   double get_fl(void) const
   {
     return fl_;
   }
 
   //! \brief Value of the function at the right bracket
+  //! \return Value of the function at the right bracket
   double get_fr(void) const
   {
     return fr_;

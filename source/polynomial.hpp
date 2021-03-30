@@ -16,6 +16,10 @@ private:
   //! \brief Polynomial coefficients of first derivative
   const C<double> deriv_coefs_;
 
+  /*! \brief Calculate the coefficients of the derivatives
+    \param coefs Original coefficients
+    \return Coefficients of the derivative polynomial
+   */
   C<double> calc_deriv_coefs_(const C<double>& coefs) const
   {
     C<double> res;
@@ -26,6 +30,11 @@ private:
     return res;
   }
 
+  /*! \brief Evaluate polynomial
+    \param x Value of the independent variable
+    \param coefs Coefficients
+    \return Value of the polynomial
+   */
   double poly_eval_(double x, const C<double>& coefs) const
   {
     double res = 0;

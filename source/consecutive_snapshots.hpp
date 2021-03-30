@@ -23,7 +23,10 @@ public:
     FileNamePattern& fnp):
      trigger_(trigger), fnp_(fnp) {}    
 
-   void operator()(const SRHDSimulation<CE, CP>& sim) const
+  /*! \brief perform diagnostic
+    \param sim Hydrodynamic simulation
+   */
+   void operator()(const SRHDSimulation<CE, CP>& sim) const override
   {
     if(trigger_(sim))
       write_hdf5_snapshot(sim, fnp_(trigger_.getCount()));

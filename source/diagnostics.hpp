@@ -46,6 +46,9 @@ template<template<class> class CE, template<class> class CP> class CellVolumes: 
 {
 public:
 
+  /*! \brief Class constructor
+    \param sim Simulation class
+   */
   explicit CellVolumes(const SRHDSimulation<CE, CP>& sim):
     sim_(sim) {}
 
@@ -60,7 +63,8 @@ public:
   }
 
 private:
-
+  
+  //! \brief Simulation class
   const SRHDSimulation<CE, CP>& sim_;
 };
 
@@ -69,6 +73,10 @@ template<template<class> class CE, template<class> class CP> class StressCalcula
 {
 public:
 
+  /*! \brief Class constructor
+    \param sim Hydrodynamic simulation
+    \param idx Index to member
+   */ 
   StressCalculator(const SRHDSimulation<CE, CP>& sim,
 		   size_t idx):
     sim_(sim), idx_(idx) {}
@@ -85,7 +93,9 @@ public:
 
 private:
 
+  //! \brief Hydrodynamic simulation
   const SRHDSimulation<CE, CP>& sim_;
+  //! \brief Index
   const size_t idx_;
 };
 
@@ -96,6 +106,10 @@ private:
   {
   public:
 
+    /*! \brief Class constructor
+      \param list_1 First list
+      \param list_2 Second list
+     */
     ElementwiseSum
     (const Index2Member<T>& list_1,
      const Index2Member<T>& list_2):
@@ -116,7 +130,9 @@ private:
     }
 
   private:
+    //! \brief First list
     const Index2Member<T>& list_1_;
+    //! \brief Second list
     const Index2Member<T>& list_2_;
   };
 
@@ -127,6 +143,10 @@ private:
   {
   public:
 
+    /*! \brief Class constructor
+      \param list_1 First list
+      \param list_2 Second list      
+     */
     ElementwiseProduct
     (const Index2Member<T1>& list_1,
      const Index2Member<T2>& list_2):
@@ -147,7 +167,9 @@ private:
     }
 
   private:
+    //! \brief First list
     const Index2Member<T1>& list_1_;
+    //! \brief Second list
     const Index2Member<T2>& list_2_;
   };
 
@@ -202,17 +224,6 @@ template <class T> void write_to_file(vector<T> const& v, string const& fname,
 	   {f << t << "\n";});
   f.close();
 }
-
-/*! \brief Writes grid and cells to a file
-  \param sim Hydrodynamic simulation
-  \param fname Name of file
-  \param precision Number of digits
- */
-/*
-void write_snapshot(SRHDSimulation const& sim,
-		    string const& fname,
-		    int precision=6);
-*/
 
 /*! \brief Writes a single number to a file
   \param num Number

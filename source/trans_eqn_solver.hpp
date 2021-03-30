@@ -96,6 +96,7 @@ public:
   bool operator()(double x, double f, SVFunction const& svf) const override;
 
   /*! \brief Returns the number of iterations
+    \return Number of iterators
    */
   int get_iter(void) const;
 

@@ -9,7 +9,8 @@
 #include "utilities.hpp"
 #include "polynomial.hpp"
 
-template<class T> using quartic = array<double, 5>;
+//! \brief Container for polynomial coefficients
+template<class T> using quartic = array<T, 5>;
 
 //! \brief Enthalpy equation
 class EnthalpyEquation: public SVDifferentiable

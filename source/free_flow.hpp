@@ -10,7 +10,11 @@ template<template<class> class CP>
 class FreeFlow: public BoundaryCondition<CP>
 {
 private:
-  
+
+  /*! \brief Convert primitive to Riemann solution
+    \param p Primitive variables
+    \return Riemann solution
+   */
   RiemannSolution Primitive2RiemannSolution(const Primitive& p) const
   {
     return RiemannSolution(p.Pressure,p.Celerity);

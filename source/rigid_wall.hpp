@@ -12,6 +12,10 @@ class RigidWall: public BoundaryCondition<CP>
 
 private:
 
+  /*! \brief Invert the celerity
+    \param p Original primitive variables
+    \return Same variables, with the celerity reversed
+   */
   Primitive invert_celerity(const Primitive& p) const
   {
     Primitive res = p;

@@ -18,14 +18,14 @@ using std::vector;
 using std::transform;
 using std::array;
 
-/*! \brief Relativistic velocity addition
+/* \brief Relativistic velocity addition
   \param v1 First velocity
   \param v2 Second velocity
   \return Velocity
  */
 double RelVelAdd(double v1, double v2);
 
-/*! \brief Differential of the velocity addition
+/* \brief Differential of the velocity addition
   \param b1 First velocity
   \param b2 Second velocity
   \param db1 Differential of the first velocity
@@ -107,13 +107,7 @@ string int2str(int n);
  */
 bool is_nan(double x);
 
-/*! \brief Calculates the smallest term in an array
-  \param v Array
-  \return Smallest term
- */
-//double min(vector<double> const& v);
-
-/*! \brief Array of uniformly spaced real values
+/* \brief Array of uniformly spaced real values
   \param vmin Minimum value
   \param vmax Maximum value
   \param num Number of terms
@@ -124,7 +118,11 @@ vector<double> linspace
  const double vmax,
  const size_t num);
 
-//! \brief Creats array with uniformly spaced entries
+/*! \brief Creats array with uniformly spaced entries
+  \param vmin Low end
+  \param vmax High end
+  \return Linearly spaced array
+ */
 template<size_t N> array<double, N> linspace
 (const double vmin, const double vmax)
 {
@@ -204,13 +202,21 @@ private:
   const C<T>& v_;
 };
 
+/*! \brief alias for simple vector
+ */ 
 template<class T> using simple_vector=vector<T>;
 
+/*! \brief Resize vector if necessary
+  \param arr Vector
+  \param n New size
+ */
 template<class T> void resize_if_necessary(vector<T>& arr, size_t n)
 {
   arr.resize(n);
 }
 
+/*! \brief Resize if necessary for array
+ */
 template<class T, size_t M> void resize_if_necessary(array<T, M>, size_t /*n*/)
 {
   return;
@@ -301,6 +307,10 @@ template<class S, class T> vector<T> operator*
   return res;
 }
 
+/*! \brief Calculate minimum element
+  \param i2m Lazy list
+  \return Minimum element
+ */
 template<class T> T min(const Index2Member<T>& i2m)
 {
   T res = i2m(0);

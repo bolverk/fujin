@@ -99,6 +99,9 @@ public:
   explicit WriteTime(const string& fname):
     fname_(fname) {}
 
+  /*! \brief write time to a file
+    \param sim Hydrodynamic simulation
+   */
   void operator()(const SRHDSimulation<CE, CP>& sim) const
   {
     write_number(sim.getTime(),fname_.c_str());
@@ -122,6 +125,9 @@ public:
   explicit TotalEnergyHistory(string const& fname):
     fname_(fname), energy_() {}
 
+  /*! \brief Perform diagnostic
+    \param sim Hydrodynamic simulation
+   */
   void operator()(const SRHDSimulation<CE, CP>& sim) const
   {
     energy_.push_back(TotalEnergy(sim));
@@ -149,6 +155,9 @@ public:
 
   MultipleDiagnostics(void);
 
+  /*! \brief Perform diagnostic
+    \param sim Simulation
+   */
   void operator()(SRHDSimulation<CE, CP> const& sim) const;
 
   //! \brief List of diagnostics

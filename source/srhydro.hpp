@@ -180,6 +180,12 @@ CP<NewConserved> primitives_to_new_conserveds
 double MaxTimeStepSingle(double width, Primitive const& p,
 			 const EquationOfState& eos );
 
+/*! \brief Naive estimation of time step
+  \param v_list Cell boundaries
+  \param p_list Computational cells
+  \param eos Equation of state
+  \return Time step
+ */
 template<template<class> class CE, template<class> class CP>
 double MaxTimeStep
 (const CE<double>& v_list,
@@ -289,6 +295,15 @@ template<template<class> class CE, template<class> class CP> void CalcFluxes
 
 namespace srhydro
 {
+  /*! \brief Calculate fluxes
+    \param data Hydrodynamic snapshot
+    \param sr Interpolation scheme
+    \param rs Riemann solver
+    \param dt Time step
+    \param lbc Left boundary conditions
+    \param rbc Right boundary conditions
+    \return Fluxes
+   */
   template<template<class> class CE, template<class> class CP>
   CE<RiemannSolution> CalcFluxes1
   (const NewHydroSnapshot<CE, CP>& data,
@@ -304,6 +319,11 @@ namespace srhydro
     return res;
   }
 
+  /*! \brief Calculates cumulative volumes
+    \param vertices Cell edges
+    \param geometry Physical geometry
+    \return List of cumulative volumes
+   */
   template<template<class> class CE>
   CE<double> VerticesVolumes(const CE<double>& vertices, 
 			     const Geometry& geometry)
@@ -318,6 +338,11 @@ namespace srhydro
     return res;
   }
 
+  /*! \brief Calculates effective cell areas
+    \param vertices Cell edges
+    \param geometry Physical geometry
+    \return List of effective cell areas
+   */
   template<template<class> class CE, template<class> class CP>
   CP<double> CellAreas
   (CE<double> const& vertices, 
@@ -385,8 +410,17 @@ namespace srhydro{
 
   double negative_flux(double p, double w);
 
+  /*! \brief Calculate the negative flux component
+    \param rs Riemann solution
+    \return Negative flux
+   */
   double negative_flux(const RiemannSolution& rs);
 
+  /*! \brief Calculate all vertex areas
+    \param geo Geometry
+    \param vertices Cell edges
+    \return List of areas
+   */
   template<template<class> class CE>
   CE<double> calc_all_vertex_areas
   (const Geometry& geo,
@@ -434,6 +468,11 @@ namespace srhydro{
     const EquationOfState& eos_;
   };
 
+  /*! \brief Convert primitives to conserved variables
+    \param p List of primitives
+    \param eos Equation of state
+    \return List of conserved variables 
+   */
   template<template<class> class CP>
   CP<Conserved> Primitives2Conserveds
   (const CP<Primitive>& p,
@@ -530,6 +569,12 @@ void UpdatePrimitives(const CP<NewConserved>& conserved,
   }
 }
 
+/*! \brief Update primitive variables
+  \param conserved Conserved variables
+  \param eos Equation of statei
+  \param filter Mark cells for update
+  \param cells Computational cells
+ */
 template<template<class> class CP>
 void UpdatePrimitives(CP<Conserved> const& conserved,
 		      EquationOfState const& eos,

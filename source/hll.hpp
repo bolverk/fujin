@@ -18,6 +18,7 @@ private:
 
 public:
   /*! \brief Class constructor
+    \param eos Equation of state
    */
   explicit HLL(const EquationOfState& eos);
 

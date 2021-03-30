@@ -16,6 +16,13 @@
 #include <cassert>
 #include "srhydro.hpp"
 
+/*! \brief Calculate time step
+  \param data Hydrodynamic snapshot
+  \param psvs Riemann solutions
+  \param eos Equation of state
+  \param cfl CFL parameter
+  \return Time step
+ */ 
 template<template<class> class CE, template<class> class CP>
 double new_calc_time_step
 (const NewHydroSnapshot<CE, CP>& data,
@@ -41,6 +48,10 @@ double new_calc_time_step
   return cfl/its;
 }
 
+/*! \brief Distributes vertices to local processes
+  \param vertices global vertices
+  \return local vertices
+ */
 template<template<class> class CE>
 CE<double> distribute_vertices1
 (const CE<double>& vertices)
@@ -342,20 +353,8 @@ public:
 
   // Diagnostics
 
-  /*! \brief Calculates the time step for a certain cell
-    \param i Cell index
-    \return Time step
-  */
-  /*
-  double calcTimeStepForCell(size_t i)
-  {
-    return MaxTimeStep(data_.edges[i+1]-data_.edges[i],
-		       data_.cells[i],eos_);
-  }
-  */
-
   /*! \brief Return the volume bounded by a certain vertex
-    \param i Vertex index
+    \param i Index
     \return Volume
   */
   double getVolume(size_t i) const
