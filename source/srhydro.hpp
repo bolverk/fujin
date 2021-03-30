@@ -613,27 +613,4 @@ NewHydroSnapshot<CE, CP> BasicTimeAdvance
   return NewHydroSnapshot<CE, CP>(res.edges, res.cells);
 }
 
-/*! \brief Second order time advance
-  \param data Hydrodynamic snapshot
-  \param sr Interpolation
-  \param rs Riemann solver
-  \param eos Equation of state
-  \param dt Time step
-  \param geometry Geometry
-  \param lbc Left boundary condition
-  \param rbc Right boundary condition
-  \return Hydrodynamic snapshot
-*/
-/*
-  HydroSnapshot TimeAdvanceRK2
-  (HydroSnapshot const& data,
-  SpatialReconstruction<spatialreconstruction const& sr,
-  RiemannSolver const& rs,
-  EquationOfState const& eos,
-  double dt, 
-  Geometry const& geometry,
-  BoundaryCondition const& lbc,
-  BoundaryCondition const& rbc);
-*/
-
 #endif // SRHYDRO_HPP
