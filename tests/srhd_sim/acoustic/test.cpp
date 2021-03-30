@@ -9,7 +9,6 @@
 #include "srhd_sim.hpp"
 #include "diagnostics.hpp"
 #include "pcm.hpp"
-#include "isentropic_flow.hpp"
 #include "main_loop.hpp"
 #include "hdf5_snapshot.hpp"
 #ifdef PARALLEL

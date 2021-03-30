@@ -14,7 +14,6 @@
 #include "imgrs.hpp"
 #include "pcm.hpp"
 #include "rigid_wall.hpp"
-#include "isentropic_flow.hpp"
 #include "hdf5_snapshot.hpp"
 #ifdef PARALLEL
 #include "parallel_helper.hpp"
