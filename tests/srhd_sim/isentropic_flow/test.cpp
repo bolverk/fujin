@@ -10,7 +10,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "imgrs.hpp"
 #include "pcm.hpp"
@@ -24,6 +23,17 @@
 
 using namespace std;
 
+namespace {
+  double calc_riemann_invariant
+  (double g, double d, double p,
+   double v, double s)
+  {
+    const double cs = IdealGas(g).dp2ba(d,p);
+    return atanh(v)+s*(2/sqrt(g-1))*
+      atanh(cs/sqrt(g-1));
+  }
+}
+
 int main()
 {
 #ifdef PARALLEL
@@ -31,11 +41,26 @@ int main()
 #endif // PARALLEL
   vector<double> vertex = linspace(-0.35,1,200);
   double g = 5./3.;
-  Collela dd2(1,1,0.3,0);
-  ConstEntropy dp2(100,g,dd2);
-  ConstRiemannInv dv2
+  auto dd2 = [](double x){
+	       const double f = abs(x)<0.3?pow(pow(x/0.3,2)-1,4):0;
+	       return 1+f;
+	     };
+  auto dp2 = [&dd2,&g](double x){return 100*pow(dd2(x),g);};
+  const double jm = calc_riemann_invariant
+    (g, dd2(-10), dp2(-10), 0, -1);
+  auto dv2 = [&g, &dd2, &dp2, &jm](double x){
+	       const double d = dd2(x);
+	       const double p = dp2(x);
+	       const double aux = jm - calc_riemann_invariant(g,d,p,0,-1);
+	       return atanh(aux);
+	     };
+  //  Collela dd2(1,1,0.3,0);
+  //  ConstEntropy dp2(100,g,dd2);
+  /*
+    ConstRiemannInv dv2
     (calc_riemann_invariant(g,dd2(-10),dp2(-10),0,-1),
-     g, dd2, dp2);
+    g, dd2, dp2);
+  */
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;

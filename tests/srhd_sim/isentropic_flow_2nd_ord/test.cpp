@@ -10,7 +10,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "imgrs.hpp"
 #include "van_leer.hpp"
@@ -26,7 +25,7 @@
 using namespace std;
 
 namespace {
-  class density_distribution: public SpatialDistribution
+  class density_distribution
   {
   private:
     const double dref;
@@ -42,7 +41,7 @@ namespace {
     }
   };
 
-  class pressure_distribution: public SpatialDistribution
+  class pressure_distribution
   {
   private:
     const double k;
@@ -68,7 +67,7 @@ namespace {
   }
 
 
-  class velocity_distribution: public SpatialDistribution
+  class velocity_distribution
   {
   private:
     const double jm;

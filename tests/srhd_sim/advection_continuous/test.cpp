@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include "spatial_reconstruction.hpp"
-#include "spatial_distribution.hpp"
 #include "periodic.hpp"
 #include "ideal_gas.hpp"
 #include "hll.hpp"
@@ -30,9 +29,12 @@ namespace {
       sr_(),
       geometry_(),
       sim_(linspace(0,1,100),
-	   SineWave(1,1,0,2),
-	   Uniform(1),
-	   Uniform(0.5),
+	   [](double x){return 2+sin(2*M_PI*x);},
+	   //	   SineWave(1,1,0,2),
+	   [](double /*x*/){return 1;},
+	   //	   Uniform(1),
+	   [](double /*x*/){return 0.5;},
+	   //Uniform(0.5),
 	   bc_, bc_,
 	   eos_,
 	   rs_,

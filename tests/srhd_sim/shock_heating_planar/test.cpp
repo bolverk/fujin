@@ -10,7 +10,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "linear_rs.hpp"
 #include "pcm.hpp"
@@ -34,9 +33,9 @@ class SimData
 public:
 
   SimData(void):
-    dd_(1), 
-    dp_(1e-6), 
-    dv_(velocity2celerity(-(1.-1e-9))),
+    //    dd_(1), 
+    //    dp_(1e-6), 
+    //    dv_(velocity2celerity(-(1.-1e-9))),
     eos_(5./3.),
     rs_(eos_), 
     left_bc_(rs_),
@@ -44,7 +43,10 @@ public:
     sr_(),
     geometry_(),
     sim_(linspace<N+1>(0,1,100),
-	 dd_,dp_,dv_,
+	 [](double){return 1;},
+	 [](double){return 1e-6;},
+	 [](double){return velocity2celerity(-(1-1e-9));},
+	 //	 dd_,dp_,dv_,
 	 left_bc_, right_bc_,
 	 eos_,rs_,sr_,
 	 geometry_) {}
@@ -56,9 +58,9 @@ public:
 
 private:
 
-  Uniform dd_;
-  Uniform dp_;
-  Uniform dv_;
+  //  Uniform dd_;
+  //  Uniform dp_;
+  //  Uniform dv_;
   IdealGas eos_;
   LinearRS rs_;
   RigidWall<CP> left_bc_;

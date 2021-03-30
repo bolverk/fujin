@@ -2,6 +2,8 @@
 #include "isentropic_flow.hpp"
 #include "ideal_gas.hpp"
 
+#if 0
+
 ConstEntropy::ConstEntropy
 (double k, double g,
  SpatialDistribution const& density):
@@ -40,3 +42,5 @@ double ConstRiemannInv::operator()(double x) const
     calc_riemann_invariant(g_,d,p,0,-1);
   return tanh(aux);
 }
+
+#endif // 0

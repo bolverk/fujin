@@ -1,6 +1,7 @@
 #ifndef ISENTROPIC_FLOW_HPP
 #define ISENTROPIC_FLOW_HPP 1
 
+#if 0
 #include "spatial_distribution.hpp"
 
 //! \brief Pressure distribution that keeps the entropy constant
@@ -74,5 +75,5 @@ private:
   //! \brief Pressure distribution
   SpatialDistribution const& pressure_;
 };
-
+#endif // 0
 #endif // ISENTROPIC_FLOW_HPP

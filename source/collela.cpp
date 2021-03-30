@@ -4,6 +4,8 @@
 
 using namespace std;
 
+#if 0
+
 Collela::Collela(double ref, double alpha, 
 		 double l, double x0):
   ref_(ref), a_(alpha), l_(l), x0_(x0) {}
@@ -16,3 +18,5 @@ double Collela::operator()(double x) const
     f = pow(pow(xc/l_,2)-1,4);
   return ref_*(1+a_*f);
 }
+
+#endif // 0

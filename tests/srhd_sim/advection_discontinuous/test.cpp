@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include "spatial_reconstruction.hpp"
-#include "spatial_distribution.hpp"
 #include "periodic.hpp"
 #include "ideal_gas.hpp"
 #include "hll.hpp"
@@ -31,9 +30,12 @@ namespace {
       sr_(),
       geometry_(),
       sim_(linspace(0,1,100),
-	   Step(2,1,0.5),
-	   Uniform(1),
-	   Uniform(0.5),
+	   [](double x){return x>0.5?1:2;},
+	   [](double /*x*/){return 1;},
+	   [](double /*x*/){return 0.5;},
+	   //	   Step(2,1,0.5),
+	   //	   Uniform(1),
+	   //	   Uniform(0.5),
 	   bc_, bc_,
 	   eos_,
 	   rs_,

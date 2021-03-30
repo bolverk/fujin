@@ -6,7 +6,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "imgrs.hpp"
 #include "pcm.hpp"
@@ -42,9 +41,11 @@ int main()
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
 
   double g = 4./3.;
+  /*
   Uniform dd(1.0);
   TwoSteps dp(0.1,0.4,0.2,0.6,0.1);
   TwoSteps dv(0.0,0.4,0.1,0.6,0.0);
+  */
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;
@@ -53,7 +54,10 @@ int main()
 
   SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,
-     dd, dp, dv,
+     [](double){return 1;},
+     [](double x){return (x<0.4)||(x>0.6)?0.1:0.2;},
+     [](double x){return (x<0.4)||(x>0.6)?0.0:0.1;},
+     //     dd, dp, dv,
      bc, bc,
      eos,
      rs,

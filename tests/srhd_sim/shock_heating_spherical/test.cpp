@@ -11,7 +11,7 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
+//#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "imgrs.hpp"
 #include "pcm.hpp"
@@ -39,9 +39,12 @@ int main()
   const double vin = 0.99999;
   const double win = velocity2celerity(vin);
   const double rsr = 0.01;
-  Uniform dd(1.0);
-  Uniform dp(1e-6);
-  Step dv(0,-win,rsr); 
+  //  Uniform dd(1.0);
+  const auto dd = [](double){return 1;};
+  //  Uniform dp(1e-6);
+  const auto dp = [](double){return 1e-6;};
+  //  Step dv(0,-win,rsr);
+  const auto dv = [&rsr,&win](double x){return x<rsr?0:-win;};
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   PCM<simple_vector, simple_vector> sr;

@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "spatial_distribution.hpp"
 
 using namespace std;
 

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include "spatial_reconstruction.hpp"
-#include "spatial_distribution.hpp"
 #include "periodic.hpp"
 #include "ideal_gas.hpp"
 #include "linear_rs.hpp"
@@ -22,14 +21,17 @@ template<class T> using simple_vector = vector<T>;
 using namespace std;
 
 namespace {
-  double calc_entropy(double g,
-		      double d,
-		      double p)
+
+  double calc_riemann_invariant
+  (double g, double d, double p,
+   double v, double s)
   {
-    return p/pow(d,g);
+    const double cs = IdealGas(g).dp2ba(d,p);
+    return atanh(v)+s*(2/sqrt(g-1))*
+      atanh(cs/sqrt(g-1));
   }
 
-  class InitCond
+    class InitCond
   {
   public:
 
@@ -37,18 +39,25 @@ namespace {
 	     double pert_density,
 	     double mean_pressure,
 	     double g):
-      density_(pert_density,1,0,mean_density),
-      pressure_(calc_entropy
-		(g,mean_density,mean_pressure),
-		g,density_),
-      velocity_(calc_riemann_invariant
-		(g,density_(0),
-		 pressure_(0),
-		 0,-1),g,
-		density_,
-		pressure_) {}
+      cd_(mean_density),
+      amp_(pert_density),
+      cp_(mean_pressure),
+      g_(g),
+      density_([this](double x){return cd_+amp_*sin(2*M_PI*x);}),
+      pressure_([this](double x){return cp_*pow(density_(x)/cd_,g_);}),
+      jm_(calc_riemann_invariant
+	  (g,
+	   density_(0),
+	   pressure_(0),
+	   0,
+	   -1)),
+      velocity_([this](double x){
+		  const double d = density_(x);
+		  const double p = pressure_(x);
+		  const double aux = jm_-calc_riemann_invariant(g_,d,p,0,-1);
+		  return tanh(aux);}){}
 
-    SpatialDistribution const& getDist(string const& dname) const
+    function<double(double)> const& getDist(string const& dname) const
     {
       if("density"==dname)
 	return density_;
@@ -61,9 +70,14 @@ namespace {
     }
 
   private:
-    SineWave density_;
-    ConstEntropy pressure_;
-    ConstRiemannInv velocity_;
+    const double cd_;
+    const double amp_;
+    const double cp_;
+    const double g_;
+    const function<double(double)> density_;
+    const function<double(double)> pressure_;
+    const double jm_;
+    const function<double(double)> velocity_;
   };
 
   class SimData

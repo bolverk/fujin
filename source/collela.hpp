@@ -1,6 +1,8 @@
 #ifndef COLLELA_HPP
 #define COLLELA_HPP 1
 
+#if 0
+
 #include "spatial_distribution.hpp"
 
 //! \brief Spatial distribution attributed to P. Collela
@@ -33,5 +35,7 @@ private:
   //! \brief Horizontal offset
   const double x0_;
 };
+
+#endif // 0
 
 #endif // COLLELA_HPP

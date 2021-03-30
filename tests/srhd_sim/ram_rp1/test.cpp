@@ -47,18 +47,21 @@ public:
   SimData(void):
     adiabatic_index_(5./3.),
     edges_(linspace(0,1,100)),
-    density_(10,1,0.5),
-    pressure_(13.33,1e-8,0.5),
-    velocity_(0),
+    //    density_(10,1,0.5),
+    //    pressure_(13.33,1e-8,0.5),
+    //    velocity_(0),
     eos_(adiabatic_index_),
     rs_(eos_),
     sr_(),
     bc_(rs_),
     geometry_(),
     sim_(edges_,
-	 density_,
-	 pressure_,
-	 velocity_,
+	 [](double x){return x<0.5?10:1;},
+	 [](double x){return x<0.5?13.33:1e-8;},
+	 [](double){return 0;},
+	 //	 density_,
+	 //	 pressure_,
+	 //	 velocity_,
 	 bc_, bc_,
 	 eos_, rs_,
 	 sr_, 
@@ -72,9 +75,9 @@ public:
 private:
   double adiabatic_index_;
   vector<double> edges_;
-  Step density_;
-  Step pressure_;
-  Uniform velocity_;
+  //  Step density_;
+  //  Step pressure_;
+  //  Uniform velocity_;
   IdealGas eos_;
   //  IdealGasRiemannSolver rs_;
   HLL rs_;

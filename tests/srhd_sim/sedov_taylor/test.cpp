@@ -7,7 +7,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 //#include "imgrs.hpp"
 #include "hll.hpp"
@@ -65,9 +64,12 @@ namespace {
       sim_
       (linspace<N+1>(0,1,N+1),
        //(linspace(0,1,N+1),
-	   Uniform(1),
-	   Step(1e-3, 1e-9, 0.02),
-	   Uniform(0),
+       //	   Uniform(1),
+       [](double){return 1;},
+       //	   Step(1e-3, 1e-9, 0.02),
+       [](double x){return x<=0.02?1e-3:1e-9;},
+       //	   Uniform(0),
+       [](double){return 0;},
 	   bc_, bc_,
 	   eos_,
 	   rs_,

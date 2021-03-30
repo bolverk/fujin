@@ -8,7 +8,6 @@
 
 #include <vector>
 #include "riemann_solver.hpp"
-#include "spatial_distribution.hpp"
 #include "equation_of_state.hpp"
 #include "utilities.hpp"
 #include "spatial_reconstruction.hpp"
@@ -124,9 +123,9 @@ public:
     \param geometry Geometry
   */
   SRHDSimulation(const CE<double>& vertices,
-		 const SpatialDistribution& density_distribution,
-		 const SpatialDistribution& pressure_distribution,
-		 const SpatialDistribution& proper_velocity_distribution,
+		 const function<double(double)>& density_distribution,
+		 const function<double(double)>& pressure_distribution,
+		 const function<double(double)>& proper_velocity_distribution,
 		 const BoundaryCondition<CP>& inner_bc,
 		 const BoundaryCondition<CP>& outer_bc,
 		 const EquationOfState& eos,

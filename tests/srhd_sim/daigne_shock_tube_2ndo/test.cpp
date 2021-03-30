@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "imgrs.hpp"
 #include "spatial_reconstruction.hpp"
@@ -26,9 +25,11 @@ int main()
   vector<double> vertex = linspace(0,1,n);
 
   double g = 5./3.;
+  /*
   Uniform dd(1.0);
   Step dp(1000.0,0.1,0.5);
   Uniform dv(0.0);
+  */
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   VanLeer<simple_vector, simple_vector> sr;
@@ -37,7 +38,10 @@ int main()
 
   SRHDSimulation<simple_vector, simple_vector> sim
     (vertex,
-     dd, dp, dv,
+     [](double /*x*/){return 1.0;},
+     [](double x){return x>0.5?0.1:1000.0;},
+     [](double /*x*/){return 0.0;},
+     //dd, dp, dv,
      bc, bc,
      eos,
      rs,

@@ -35,9 +35,12 @@ int main()
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
 
   double g = 4./3.;
-  Uniform dd(1.0);
-  Step dp(1.0,10.0,0.5);
-  Step dv(velocity2celerity(0.9),0.0,0.5);
+  //  Uniform dd(1.0);
+  const auto dd = [](double){return 1;};
+  //  Step dp(1.0,10.0,0.5);
+  const auto dp = [](double x){return x<=0.5?1:10;};
+  //  Step dv(velocity2celerity(0.9),0.0,0.5);
+  const auto dv = [](double x){return x<=0.5?velocity2celerity(0.9):0;};
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   VanLeer<simple_vector, simple_vector> sr;

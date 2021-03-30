@@ -36,9 +36,12 @@ int main()
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
 
   double g = 4./3.;
-  Uniform dd(1.0);
-  Step dp(0.2,0.1,0.5); 
-  Uniform dv(0.0); 
+  //  Uniform dd(1.0);
+  const auto dd = [](double){return 1;};
+  //  Step dp(0.2,0.1,0.5);
+  const auto dp = [](double x){return x<0.5?0.2:0.1;};
+  //  Uniform dv(0.0);
+  const auto dv = [](double){return 0;};
   IdealGas eos(g);
   HLL rs(eos);
   VanLeer<simple_vector, simple_vector> sr;

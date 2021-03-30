@@ -8,7 +8,6 @@
 
 #include <vector>
 #include "hydrodynamic_variables.hpp"
-#include "spatial_distribution.hpp"
 #include "equation_of_state.hpp"
 #include "spatial_reconstruction.hpp"
 #include "riemann_solver.hpp"
@@ -74,9 +73,9 @@ namespace srhydro{
       \param celerity Celerity distribution
      */
     CellGenerator(const CE<double>& grid,
-		  const SpatialDistribution& density,
-		  const SpatialDistribution& pressure,
-		  const SpatialDistribution& celerity):
+		  const function<double(double)>& density,
+		  const function<double(double)>& pressure,
+		  const function<double(double)>& celerity):
       grid_(grid),
       density_(density),
       pressure_(pressure),
@@ -99,11 +98,11 @@ namespace srhydro{
     //! \brief Computational grid
     const CE<double>& grid_;
     //! \brief Density distribution
-    const SpatialDistribution& density_;
+    const function<double(double)>& density_;
     //! \brief Pressure distribution
-    const SpatialDistribution& pressure_;
+    const function<double(double)>& pressure_;
     //! \brief Velocity distribution
-    const SpatialDistribution& celerity_;
+    const function<double(double)>& celerity_;
   };
 }
 
@@ -116,9 +115,9 @@ namespace srhydro{
 */
 template<template<class> class CE, template<class> class CP>
 CP<Primitive> InitCells(const CE<double>& v,
-			const SpatialDistribution& dd,
-			const SpatialDistribution& pd,
-			const SpatialDistribution& vd)
+			const function<double(double)>& dd,
+			const function<double(double)>& pd,
+			const function<double(double)>& vd)
 {
   return serial_generate<Primitive, CP>(srhydro::CellGenerator<CE>(v,dd,pd,vd));
 }

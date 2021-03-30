@@ -3,7 +3,6 @@
 #include <cmath>
 #include "utilities.hpp"
 #include "ideal_gas.hpp"
-#include "spatial_distribution.hpp"
 #include "spatial_reconstruction.hpp"
 #include "srhydro.hpp"
 #include "pcm.hpp"
@@ -39,8 +38,9 @@ namespace {
     return res;
   }
 
-  vector<double> calculated_values(vector<double> const& edges,
-				   SpatialDistribution const& velocity)
+  vector<double> calculated_values
+  (vector<double> const& edges,
+   function<double(double)> const& velocity)
   {
     vector<double> res;
     for(size_t i=1;i<edges.size()-1;++i){
@@ -67,9 +67,12 @@ namespace {
    size_t np)
   {
     vector<double> edges = linspace(0,1,np);
-    SineWave density(0.5,1,0,1);
-    Uniform pressure(1);
-    Uniform velocity(0);
+    //    SineWave density(0.5,1,0,1);
+    auto density = [](double x){return 0.5*sin(x)+1;};
+    auto pressure = [](double /*x*/){return 1;};
+    auto velocity = [](double /*x*/){return 0;};
+    //    Uniform pressure(1);
+    //    Uniform velocity(0);
     IdealGas eos(4./3.);
     vector<Primitive> cells =
       InitCells<simple_vector, simple_vector>

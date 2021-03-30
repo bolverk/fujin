@@ -6,7 +6,6 @@
 #include <fstream>
 #include <vector>
 #include "srhd_sim.hpp"
-#include "spatial_distribution.hpp"
 #include "ideal_gas.hpp"
 #include "imgrs.hpp"
 #include "hll.hpp"
@@ -32,9 +31,9 @@ int main()
     vertex[i] = static_cast<double>(i)/static_cast<double>(n-1);
 
   double g = 4./3.;
-  Uniform dd(1.0);
-  Step dp(0.2,0.1,0.5); 
-  Uniform dv(0.0); 
+  auto dd = [](double){return 1;};
+  auto dp = [](double x){return x<0.5?0.2:0.1;};
+  auto dv = [](double){return 0;};
   IdealGas eos(g);
   IdealGasRiemannSolver rs(g);
   HLL rs2(eos);
