@@ -22,7 +22,7 @@ public:
     \return List of interpolated values on both sides of each interface
    */
   virtual CE<std::pair<Primitive,Primitive> > 
-  interpolateAll
+  operator()
   (const NewHydroSnapshot<CE, CP>& hs,
    double dt) const = 0;
 

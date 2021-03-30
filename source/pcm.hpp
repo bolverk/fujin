@@ -48,7 +48,7 @@ public:
   PCM(void) {}
 
   CE<std::pair<Primitive,Primitive> > 
-  interpolateAll
+  operator()
   (const NewHydroSnapshot<CE, CP>& hs,
    double /*dt*/) const override
   {

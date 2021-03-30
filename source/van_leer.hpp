@@ -124,7 +124,7 @@ public:
    */
   VanLeer(void) {}
 
-  CE<std::pair<Primitive,Primitive> > interpolateAll
+  CE<std::pair<Primitive,Primitive> > operator()
   (const NewHydroSnapshot<CE, CP>& hs,
    double /*dt*/) const
   {

@@ -27,7 +27,7 @@ namespace {
    const SpatialReconstruction<simple_vector, simple_vector>& sr)
   {
     const vector<pair<Primitive,Primitive> > temp =
-      chop_ends(sr.interpolateAll(hs,0));
+      chop_ends(sr(hs,0));
 
     vector<double> res;
     for(size_t i=0;i<temp.size();++i){
