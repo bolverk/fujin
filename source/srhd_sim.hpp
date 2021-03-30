@@ -346,11 +346,13 @@ public:
     \param i Cell index
     \return Time step
   */
+  /*
   double calcTimeStepForCell(size_t i)
   {
     return MaxTimeStep(data_.edges[i+1]-data_.edges[i],
 		       data_.cells[i],eos_);
   }
+  */
 
   /*! \brief Return the volume bounded by a certain vertex
     \param i Vertex index

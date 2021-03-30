@@ -186,7 +186,7 @@ double MaxTimeStep
 {
   double res = 0;
   for(size_t i=0;i<p_list.size();++i){
-    const Primitive p = p_list[i];
+    const Primitive& p = p_list[i];
     const double ba = eos.dp2ba(p.Density, p.Pressure);
     if(std::numeric_limits<double>::epsilon()<ba){
       const double width = v_list[i+1] - v_list[i];
