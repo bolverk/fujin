@@ -132,6 +132,21 @@ public:
 		 const RiemannSolver& riemann_solver,
 		 const SpatialReconstruction<CE, CP>& interpolation_method,
 		 const Geometry& geometry):
+    SRHDSimulation
+    (NewHydroSnapshot<CE,CP>
+     (distribute_vertices1<CE>(vertices),
+      InitCells<CE,CP>
+      (distribute_vertices1<CE>(vertices),
+       density_distribution,
+       pressure_distribution,
+       proper_velocity_distribution)),
+     inner_bc,
+     outer_bc,
+     eos,
+     riemann_solver,
+     interpolation_method,
+     geometry) {}
+  /*
     data_(distribute_vertices1<CE>(vertices),
 	  InitCells<CE,CP>
 	  (distribute_vertices1<CE>(vertices),
@@ -139,10 +154,12 @@ public:
 	   pressure_distribution,
 	   proper_velocity_distribution)),
     eos_(eos),
+  */
     /*
     psvs_(distribute_vertices1<CE>(vertices).size(),
 	  RiemannSolution()),
     */
+  /*
     psvs_(),
     rs_(riemann_solver), 
     sr_(interpolation_method),
@@ -154,9 +171,10 @@ public:
     cycle_(0),
     innerBC_(inner_bc), 
     outerBC_(outer_bc)
-  {
-    resize_if_necessary(psvs_, data_.edges.size());
-  }
+  */
+  //  {
+    //    resize_if_necessary(psvs_, data_.edges.size());
+  //  }
 
   /*! \brief Class constructor
     \param init_cond Initial conditions
@@ -176,19 +194,26 @@ public:
    const SpatialReconstruction<CE, CP>& pInterpolationMethod,
    const Geometry& geometry):
     data_(init_cond),
-    eos_(reos), 
+    eos_(reos),
+    /*
     psvs_(init_cond.edges.size(),
 	  RiemannSolution()),
+    */
+    psvs_(),
     rs_(rRiemannSolver), 
     sr_(pInterpolationMethod),
     cfl_(1./3.), 
     consVars_(primitives_to_new_conserveds<CP>(data_.cells,reos)),
-    restMass_(serial_generate(RestMassCalculator<CE, CP>(data_,geometry))),
+    restMass_(serial_generate<double, CP>
+	      (RestMassCalculator<CE, CP>(data_,geometry))),
     geometry_(geometry),
     time_(0),
     cycle_(0),
     innerBC_(piInnerBC), 
-    outerBC_(piOuterBC) {}
+    outerBC_(piOuterBC)
+  {
+    resize_if_necessary(psvs_, data_.edges.size());
+  }
   
   //! \brief Advances the simulation in time
   void timeAdvance1stOrder(void)
