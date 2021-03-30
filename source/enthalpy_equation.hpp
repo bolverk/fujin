@@ -23,9 +23,9 @@ public:
    */
   EnthalpyEquation(double em, double sm, double g);
 
-  double operator()(double h) const;
+  double operator()(double h) const override;
 
-  double diff(double h) const;
+  double diff(double h) const override;
 
 private:
 

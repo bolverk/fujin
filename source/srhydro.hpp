@@ -39,12 +39,12 @@ public:
 		     const Geometry& geometry):
     hs_(hs), geometry_(geometry) {}
 
-  size_t getLength(void) const
+  size_t getLength(void) const override
   {
     return hs_.cells.size();
   }
 
-  double operator()(size_t i) const
+  double operator()(size_t i) const override
   {
     const double lf = celerity2lorentz_factor(hs_.cells[i].Celerity);
     const double vol = geometry_.calcVolume(hs_.edges[i+1])-

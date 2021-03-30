@@ -188,12 +188,12 @@ public:
   explicit Echo(const C<T>& v):
     v_(v) {}
 
-  size_t getLength(void) const
+  size_t getLength(void) const override
   {
     return v_.size();
   }
 
-  T operator()(size_t i) const
+  T operator()(size_t i) const override
   {
     return v_[i];
   }

@@ -20,7 +20,7 @@ public:
   explicit LinearRS(const EquationOfState& eos);
 
   RiemannSolution operator()
-  (const Primitive& left, const Primitive& right) const;
+  (const Primitive& left, const Primitive& right) const override;
   
 private:
 

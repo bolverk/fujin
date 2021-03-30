@@ -19,7 +19,7 @@ public:
   Rubric(const string& prefix,
 	 const string& postfix);
 
-  string operator()(int index);
+  string operator()(int index) override;
 
 private:
 

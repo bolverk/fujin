@@ -25,7 +25,7 @@ public:
     \return Pressure and velocity at the interface
    */
   RiemannSolution operator()(Primitive const& left, 
-			     Primitive const& right) const;
+			     Primitive const& right) const override;
 };
 
 #endif

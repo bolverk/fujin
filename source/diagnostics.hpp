@@ -48,12 +48,12 @@ public:
   explicit CellVolumes(const SRHDSimulation<CE, CP>& sim):
     sim_(sim) {}
 
-  size_t getLength(void) const
+  size_t getLength(void) const override
   {
     return sim_.getHydroSnapshot().cells.size();
   }
 
-  double operator()(size_t i) const
+  double operator()(size_t i) const override
   {
     return sim_.getVolume(i);
   }
@@ -71,12 +71,12 @@ public:
 		   size_t idx):
     sim_(sim), idx_(idx) {}
 
-  size_t getLength(void) const
+  size_t getLength(void) const override
   {
     return sim_.getHydroSnapshot().cells.size();
   }
 
-  double operator()(size_t i) const
+  double operator()(size_t i) const override
   {
     return sim_.getRestMasses().at(i)*sim_.getConserved().at(i)[idx_];
   }
@@ -101,12 +101,12 @@ private:
       assert(list_1.getLength()==list_2.getLength());
     }
 
-    size_t getLength(void) const
+    size_t getLength(void) const override
     {
       return list_1_.getLength();
     }
 
-    T operator()(size_t i) const
+    T operator()(size_t i) const override
     {
       return list_1_(i) + list_2_(i);
     }
@@ -131,12 +131,12 @@ private:
       assert(list_1.getLength()==list_2.getLength());
     }
 
-    size_t getLength(void) const
+    size_t getLength(void) const override
     {
       return list_1_.getLength();
     }
 
-    T3 operator()(size_t i) const
+    T3 operator()(size_t i) const override
     {
       return list_1_(i)*list_2_(i);
     }
@@ -234,12 +234,12 @@ public:
   cells_(sim.getHydroSnapshot().cells),
     idx_(idx) {}    
 
-  size_t getLength(void) const
+  size_t getLength(void) const override
   {
     return cells_.size();
   }
 
-  double operator()(size_t i) const
+  double operator()(size_t i) const override
   {
     return cells_[i][idx_];
   }

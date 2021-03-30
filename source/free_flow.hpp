@@ -20,7 +20,7 @@ public:
 
   RiemannSolution operator()
   (bool side,
-   const CP<Primitive>& cells) const
+   const CP<Primitive>& cells) const override
   {
     return side ? Primitive2RiemannSolution(cells.back()) :
       Primitive2RiemannSolution(cells.front());

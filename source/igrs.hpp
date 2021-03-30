@@ -154,13 +154,13 @@ public:
     \param x Pressure
     \return Double
   */
-  double operator()(double x) const;
+  double operator()(double x) const override;
 
   /*! \brief Evaluates the derivative to the transcendental equation with respect to pressure
     \param x Pressure
     \return Double
    */
-  double diff(double x) const;
+  double diff(double x) const override;
 };
 
 /*! \brief Solution to the Riemann problem

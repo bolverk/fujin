@@ -21,12 +21,12 @@ public:
    */
   explicit IdealGas(double ig);
 
-  double dp2e(double d, double p) const;
+  double dp2e(double d, double p) const override;
 
-  double dp2ba(double d, double p) const;
+  double dp2ba(double d, double p) const override;
 
   Primitive Conserved2Primitive
-  (Primitive const& old, NewConserved const& c) const;
+  (Primitive const& old, NewConserved const& c) const override;
 
   /*! \brief Returns the value of the adiabatic index
    */

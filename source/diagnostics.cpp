@@ -156,12 +156,12 @@ public:
   explicit IsIncreasing(const Index2Member<T>& i2m):
     i2m_(i2m) {}
 
-  size_t getLength(void) const
+  size_t getLength(void) const override
   {
     return i2m_.getLength()-1;
   }
 
-  bool operator()(size_t i) const
+  bool operator()(size_t i) const override
   {
     return i2m_(i+1)>i2m_(i);
   }

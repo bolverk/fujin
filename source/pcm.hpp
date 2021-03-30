@@ -50,7 +50,7 @@ public:
   CE<std::pair<Primitive,Primitive> > 
   interpolateAll
   (const NewHydroSnapshot<CE, CP>& hs,
-   double /*dt*/) const
+   double /*dt*/) const override
   {
     return serial_generate<pair<Primitive, Primitive>, CE>
       (pcm::Interpolator<CE, CP>(hs));

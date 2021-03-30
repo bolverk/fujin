@@ -44,12 +44,12 @@ public:
     coefs_(coefs),
     deriv_coefs_(calc_deriv_coefs_(coefs)) {}
 
-  double operator()(double x) const
+  double operator()(double x) const override
   {
     return poly_eval_(x, coefs_);
   }
 
-  double diff(double x) const
+  double diff(double x) const override
   {
     return poly_eval_(x, deriv_coefs_);
   }

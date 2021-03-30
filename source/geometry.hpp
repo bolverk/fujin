@@ -28,9 +28,9 @@ public:
 
   Planar(void);
 
-  double calcArea(double radius) const;
+  double calcArea(double radius) const override;
 
-  double calcVolume(double radius) const;
+  double calcVolume(double radius) const override;
 };
 
 //! \brief Cylindrical geometry
@@ -40,9 +40,9 @@ public:
 
   Cylindrical(void);
 
-  double calcArea(double radius) const;
+  double calcArea(double radius) const override;
 
-  double calcVolume(double radius) const;
+  double calcVolume(double radius) const override;
 };
 
 //! \brief Spherical geometry
@@ -52,9 +52,9 @@ public:
 
   Spherical(void);
 
-  double calcArea(double radius) const;
+  double calcArea(double radius) const override;
 
-  double calcVolume(double radius) const;
+  double calcVolume(double radius) const override;
 };
 
 #endif // GEOMETRY_HPP
