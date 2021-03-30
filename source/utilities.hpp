@@ -124,8 +124,9 @@ vector<double> linspace
  const double vmax,
  const size_t num);
 
+//! \brief Creats array with uniformly spaced entries
 template<size_t N> array<double, N> linspace
-(const double vmin, const double vmax, size_t /*num*/)
+(const double vmin, const double vmax)
 {
   const double dx = (vmax-vmin)/static_cast<double>(N-1);
   array<double, N> res;

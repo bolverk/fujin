@@ -6,6 +6,7 @@
 #include "spatial_reconstruction.hpp"
 
 namespace pcm{
+  //! \brief Calculates interpolated values
   template<template<class> class CE, template<class> class CP>
   class Interpolator: public Index2Member<std::pair<Primitive,Primitive> >
   {

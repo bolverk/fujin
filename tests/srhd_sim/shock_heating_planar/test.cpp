@@ -42,7 +42,7 @@ public:
     right_bc_(),
     sr_(),
     geometry_(),
-    sim_(linspace<N+1>(0,1,100),
+    sim_(linspace<N+1>(0,1),
 	 [](double){return 1;},
 	 [](double){return 1e-6;},
 	 [](double){return velocity2celerity(-(1-1e-9));},

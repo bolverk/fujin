@@ -62,7 +62,7 @@ namespace {
       sr_(),
       geometry_(),
       sim_
-      (linspace<N+1>(0,1,N+1),
+      (linspace<N+1>(0,1),
        //(linspace(0,1,N+1),
        //	   Uniform(1),
        [](double){return 1;},

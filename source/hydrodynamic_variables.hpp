@@ -181,6 +181,7 @@ template<class T> typename std::enable_if<std::is_base_of<array<double, 3>, T>::
   return une_op(t, [&s](double d){return d/s;});
 }
 
+//! \brief Hydrodynamic snapshot
 template<template<class> class CE, template<class> class CP> class NewHydroSnapshot: public pair<CE<double>, CP<Primitive> >
 {
 public:

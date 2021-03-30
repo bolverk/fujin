@@ -26,6 +26,7 @@
 double CellVolume(double rl, double rr,
 		  Geometry const& geometry);
 
+//! \brief Calculates the rest masses
 template<template<class> class CE, template<class> class CP>
 class RestMassCalculator: public Index2Member<double>
 {
@@ -124,6 +125,7 @@ CP<Primitive> InitCells(const CE<double>& v,
 
 namespace srhydro
 {
+  //! \brief Converts primitives to conserve variables
   template<template<class> class CP>
   class Primitive2NewConservedConverter: public Index2Member<NewConserved>
   {
@@ -400,6 +402,7 @@ namespace srhydro{
     return res;
   }
 
+  //! \brief Converts primitives to conserved variables
   template<template<class> class CP>
   class Primitive2ConservedConverter: public Index2Member<Conserved>
   {

@@ -41,6 +41,7 @@ bool ConservedPrimitiveConsistency
 (const SRHDSimulation<CE, CP>& sim, 
  double thres);
 
+//! \brief Calculates cell volumes
 template<template<class> class CE, template<class> class CP> class CellVolumes: public Index2Member<double>
 {
 public:
@@ -63,6 +64,7 @@ private:
   const SRHDSimulation<CE, CP>& sim_;
 };
 
+//! \brief Calculates stresses
 template<template<class> class CE, template<class> class CP> class StressCalculator: public Index2Member<double>
 {
 public:
@@ -87,6 +89,8 @@ private:
   const size_t idx_;
 };
 
+/*! \brief Element by element sum
+ */
   template<class T> class ElementwiseSum:
     public Index2Member<T>
   {
@@ -116,6 +120,7 @@ private:
     const Index2Member<T>& list_2_;
   };
 
+//! \brief Multiplies two lists element by element
   template<class T1, class T2, class T3>
   class ElementwiseProduct:
     public Index2Member<T3>

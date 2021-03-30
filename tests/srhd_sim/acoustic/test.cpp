@@ -17,7 +17,7 @@
 
 using namespace std;
 
-#define N 20
+#define N 200
 template<class T> using CE = array<T, N+1>;
 template<class T> using CP = array<T, N>;
 //template<class T> using CE = vector<T>;
@@ -96,7 +96,7 @@ namespace {
     bc_(rs_),
     sr_(),
     geometry_(),
-    sim_(linspace<N+1>(0,1,20),
+    sim_(linspace<N+1>(0,1),
 	 init_cond_.getDist("density"),
 	 init_cond_.getDist("pressure"),
 	 init_cond_.getDist("velocity"),
